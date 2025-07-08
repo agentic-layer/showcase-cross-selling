@@ -1,9 +1,10 @@
 name: build.yml
 on:
+  workflow_dispatch:
   push:
     branches: [ main ]
   pull_request:
-  workflow_dispatch:
+
 
 jobs:
   job_id:
@@ -25,3 +26,8 @@ jobs:
             project_id: 'qaware-paal'
             workload_identity_provider: 'projects/387309373030/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider'
             service_account: 'github-actions@qaware-paal.iam.gserviceaccount.com'
+
+# Todo docker
+# docker image pull
+# add docker tag; voller registy Pfad + image
+# docker push
