@@ -1,0 +1,21 @@
+[project]
+name = "communications-agent"
+version = "0.1.0"
+description = "A2A-capable Agent that can send messages via various channels."
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "google-adk[eval]>=1.2.1",
+    "fastmcp>=2.10.1",
+    "a2a-sdk>=0.2.10",
+    "slack-sdk>=3.33.0",
+]
+
+[dependency-groups]
+dev = [
+    "deepeval>=3.0.5",
+    "pydevd-pycharm>=252.23309.36",
+    "pytest>=8.4.0",
+    "pytest-asyncio>=1.0.0",
+    "pytest-dotenv>=0.5.2",
+]
