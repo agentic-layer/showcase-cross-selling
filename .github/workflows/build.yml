@@ -11,22 +11,41 @@ env:
   GCP_PROJECT_ID: 'qaware-paal'
   GCP_REPOSITORY: 'agentic-layer-private'
 
-  # Docker image configuration
-  IMAGE_NAME: "mcp-server"
-  DOCKERFILE_PATH: "./mcp-server"
-
-
 jobs:
+  discover-services:
+    runs-on: ubuntu-latest
+    outputs:
+      services: ${{ steps.discover-services.outputs.services }}
+
+    steps:
+        - name: 'Checkout'
+          uses: actions/checkout@v4
+
+        #Todo adk web lässt sich so nicht bauen
+        - name: 'Find all services with dockerfiles'
+          id: 'discover-services'
+          run: |
+            SERVICES=$(find . -name 'Dockerfile' -exec dirname {} \; | jq -R -s -c 'split("\n") | map(select(length > 0)) | map(ltrimstr("./"))')
+            echo "services=${SERVICES}" >> $GITHUB_OUTPUT
+            echo "Found services: $SERVICES"
+
   build-and-push-image:
+    needs: discover-services
+    if: ${{ needs.discover-services.outputs.services != '[]'}} # Only run if there are services found
     permissions:
         contents: 'read'
         id-token: 'write'
 
     runs-on: ubuntu-latest
 
+    strategy:
+      fail-fast: false # Ensures that if one build fails, the others will still run
+      matrix: # Create the matrix dynamically from the JSON output of the 'discover-services' job
+        service: ${{ fromJson(needs.discover-services.outputs.services) }}
+
     steps:
         - name: 'Checkout'
-          uses: actions/checkout@v4
+          uses: 'actions/checkout@v4'
           with:
             fetch-depth: 0 # required to fetch all history for all branches and tags
 
@@ -41,21 +60,29 @@ jobs:
         - name: 'Configure Docker for Artifact Registry'
           run: gcloud auth configure-docker ${{ env.GCP_LOCATION }}-docker.pkg.dev
 
-        - name: 'Build and Tag Docker Image'
-          id: 'build_and_tag'
+        - name: 'Extract Image Name from Path'
+          id: 'extract_name'
           run: |
-            # Build and tag the docker image
-            # Always use the long form tag-distance-hash if not building a tag directly to avoid collisions
+            IMAGE_NAME=$(basename ${{ matrix.service }})            
+            echo "image-name=${IMAGE_NAME}" >> $GITHUB_OUTPUT
+            echo "Extracted Image Name: $IMAGE_NAME"
+
+        - name: 'Generate Image Tag'
+          id: 'generate_tag'
+          run: |
             IMAGE_TAG=$(git describe --tags --always ${{ github.ref_type != 'tag' && '--long' || '' }})
             echo "image-tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
-            echo "image-tag=$IMAGE_TAG"
-            
+            echo "Generated Tag: $IMAGE_TAG"            
+
+        - name: 'Build and Tag Docker Image'
+          id: 'build'
+          run: |
             # Build the image and tag it with both 'latest' and the commit hash
-            docker build -t ${{ env.GCP_LOCATION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.GCP_REPOSITORY }}/${{ env.IMAGE_NAME }}:${IMAGE_TAG} \
-                         -f ${{ env.DOCKERFILE_PATH }}/Dockerfile \
-                         .
+            docker build -t ${{ env.GCP_LOCATION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.GCP_REPOSITORY }}/${{ steps.extract_name.outputs.image-name }}:${{ steps.generate_tag.outputs.image-tag}} \
+                         -f ${{ matrix.service }}/Dockerfile \
+                        .
 
         - name: 'Push Image to Artifact Registry'
           run: |
             # Push the newly tagged image
-            docker push ${{ env.GCP_LOCATION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.GCP_REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ steps.build_and_tag.outputs.image-tag }}
+            docker push ${{ env.GCP_LOCATION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.GCP_REPOSITORY }}/${{ steps.extract_name.outputs.image-name  }}:${{ steps.generate_tag.outputs.image-tag }}
