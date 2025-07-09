@@ -32,7 +32,7 @@ RUN uv sync --frozen --no-dev && \
     chown -R app:app /app/.venv
 
 # Copy MCP server source code
-COPY --chown=app:app mcp-server/ ./
+COPY --chown=app:app mcp-server/. ./
 
 # Switch to non-root user
 USER app

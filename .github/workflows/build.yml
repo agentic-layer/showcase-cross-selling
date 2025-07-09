@@ -5,9 +5,19 @@ on:
     branches: [ main ]
   pull_request:
 
+env:
+  # GCP configuration
+  GCP_LOCATION: 'europe-west3'
+  GCP_PROJECT_ID: 'qaware-paal'
+  GCP_REPOSITORY: 'agentic-layer-private'
+
+  # Docker image configuration
+  IMAGE_NAME: "mcp-server"
+  DOCKERFILE_PATH: "./mcp-server"
+
 
 jobs:
-  job_id:
+  build-and-push-image:
     permissions:
         contents: 'read'
         id-token: 'write'
@@ -15,19 +25,37 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-        - name: Checkout
+        - name: 'Checkout'
           uses: actions/checkout@v4
           with:
             fetch-depth: 0 # required to fetch all history for all branches and tags
 
-        - id: 'auth'
+        - name: 'Authenticate to Google Cloud'
+          id: 'auth'
           uses: 'google-github-actions/auth@v2'
           with:
             project_id: 'qaware-paal'
             workload_identity_provider: 'projects/387309373030/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider'
             service_account: 'github-actions@qaware-paal.iam.gserviceaccount.com'
 
-# Todo docker
-# docker image pull
-# add docker tag; voller registy Pfad + image
-# docker push
+        - name: 'Configure Docker for Artifact Registry'
+          run: gcloud auth configure-docker ${{ env.GCP_LOCATION }}-docker.pkg.dev
+
+        - name: 'Build and Tag Docker Image'
+          id: 'build_and_tag'
+          run: |
+            # Build and tag the docker image
+            # Always use the long form tag-distance-hash if not building a tag directly to avoid collisions
+            IMAGE_TAG=$(git describe --tags --always ${{ github.ref_type != 'tag' && '--long' || '' }})
+            echo "image-tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
+            echo "image-tag=$IMAGE_TAG"
+            
+            # Build the image and tag it with both 'latest' and the commit hash
+            docker build -t ${{ env.GCP_LOCATION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.GCP_REPOSITORY }}/${{ env.IMAGE_NAME }}:${IMAGE_TAG} \
+                         -f ${{ env.DOCKERFILE_PATH }}/Dockerfile \
+                         .
+
+        - name: 'Push Image to Artifact Registry'
+          run: |
+            # Push the newly tagged image
+            docker push ${{ env.GCP_LOCATION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.GCP_REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ steps.build_and_tag.outputs.image-tag }}
