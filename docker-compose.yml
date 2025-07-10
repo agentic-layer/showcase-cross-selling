@@ -3,10 +3,7 @@ services:
   # ADK Web UI
   adk-web:
     build:
-      context: .
-      additional_contexts:
-        agents-folder: adk-agents/
-      dockerfile: adk-agents/Dockerfile
+      context: adk-agents/
     ports:
       - "${ADK_WEB_PORT:-8080}:8080"
     environment:
