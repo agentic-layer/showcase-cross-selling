@@ -1,3 +1,22 @@
+#
+# GitHub Action: `build.yml`
+#
+# This workflow automates the building and publishing of Docker images to the
+# Google Cloud Artifact Registry. It is triggered by pushes to the `main`
+# branch, pull requests, or manual dispatches (`workflow_dispatch`).
+#
+# The workflow runs in two stages:
+#   1. `discover-services`: Scans the repository to find all directories
+#      that contain a `Dockerfile`.
+#   2. `build-and-push-image`: For each service discovered, a parallel job is
+#      launched to perform the following:
+#         - Authenticate with Google Cloud.
+#         - Build the Docker image.
+#         - Tag the image with a unique version based on the Git state.
+#         - Push the tagged image to the GCP Artifact Registry.
+#
+# The build and push stage is skipped if no services with Dockerfiles are found.
+#
 name: build.yml
 on:
   workflow_dispatch:
@@ -21,7 +40,6 @@ jobs:
         - name: 'Checkout'
           uses: actions/checkout@v4
 
-        #Todo adk web lässt sich so nicht bauen
         - name: 'Find all services with dockerfiles'
           id: 'discover-services'
           run: |
@@ -35,7 +53,6 @@ jobs:
     permissions:
         contents: 'read'
         id-token: 'write'
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -86,3 +103,35 @@ jobs:
           run: |
             # Push the newly tagged image
             docker push ${{ env.GCP_LOCATION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.GCP_REPOSITORY }}/${{ steps.extract_name.outputs.image-name  }}:${{ steps.generate_tag.outputs.image-tag }}
+
+        - name: 'Save Image Info as Artifact'
+          run: |
+            # Creates the directory inside the current workspace.
+            mkdir -p image-details
+            echo "${{ steps.extract_name.outputs.image-name }};${{ steps.generate_tag.outputs.image-tag }}" > image-details/${{ steps.extract_name.outputs.image-name }}.txt
+
+        - uses: 'actions/upload-artifact@v4'
+          with:
+            name: image-detail-${{ steps.extract_name.outputs.image-name }}
+            path: image-details/
+
+  summarize-builds:
+    needs: build-and-push-image # Ensures this job runs only after all builds are done
+    if: always() # This makes the job run even if some matrix builds failed
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Download all image artifacts'
+        uses: 'actions/download-artifact@v4'
+        with:
+          path: image-details
+
+      - name: 'Create Summary Table'
+        run: |
+          echo "## 🚀 Built Docker Images" >> $GITHUB_STEP_SUMMARY
+          echo "| Service Name | Image Tag |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------------|-----------|" >> $GITHUB_STEP_SUMMARY
+          for file in $(find image-details -type f -name '*.txt'); do
+            while IFS=';' read -r name tag; do
+              echo "| **$name** | \`$tag\` |" >> $GITHUB_STEP_SUMMARY
+            done < "$file"
+          done
