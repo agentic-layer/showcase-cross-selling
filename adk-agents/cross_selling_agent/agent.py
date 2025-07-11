@@ -38,6 +38,7 @@ root_agent = Agent(
         # Core Functions
         1. **Customer Data Access**: Use the get_customer_crm_data tool to retrieve comprehensive customer information including:
            - Personal and demographic information
+           - Customer email address, address, and phone number
            - Existing insurance policies and coverage details
            - Communication history and preferences
            - Risk profile and customer segment information

@@ -28,14 +28,72 @@ def _create_success_response(message: str, **additional_data) -> dict:
 @mcp.tool()
 def get_customer_crm_data(customer_id: str) -> dict:
     """
-    Retrieves comprehensive customer data from the CRM system including
-    reference data, existing policies, and communication history.
-    
+    Retrieves a comprehensive 360-degree view of a customer from the CRM system.
+
+    This tool fetches a complete profile for a given customer, including their
+    personal information, any existing insurance policies, their complete communication
+    history with the company, and internal metrics like risk profile and lifetime value.
+    It serves as a foundational step for most customer-related inquiries.
+
     Args:
-        customer_id: ID of the customer to retrieve data for
-    
+        customer_id (str): The unique identifier for the customer (e.g., "cust001").
+                           This ID is required to locate the customer's record.
+
     Returns:
-        Dictionary with customer information including policies and communications.
+        dict: A dictionary containing the execution status and the customer's data.
+              On success, the dictionary will have the following structure:
+              {
+                  "status": "success",
+                  "message": "A confirmation message.",
+                  "customer_data": {
+                      "customer_id": "The customer's ID.",
+                      "personal_info": {
+                          "name": "Full name.",
+                          "age": "Age in years.",
+                          "address": "Full mailing address.",
+                          ...
+                      },
+                      "existing_policies": [
+                          {
+                              "policy_id": "The policy identifier.",
+                              "product_type": "Type of insurance product.",
+                              ...
+                          }
+                      ],
+                      "communication_history": [
+                          {
+                              "date": "Date of communication (YYYY-MM-DD).",
+                              "type": "Method of communication (e.g., 'phone_call').",
+                              "subject": "Subject of the communication.",
+                              "notes": "A summary of the interaction."
+                          }
+                      ],
+                      ...
+                  }
+              }
+              On failure, the dictionary will contain:
+              {
+                  "status": "error",
+                  "error_message": "A description of what went wrong.",
+                  "error_code": "A unique code for the error type (e.g., 'MISSING_CUSTOMER_ID')."
+              }
+
+    Usage Guidance:
+        This tool should be the first one you call when a user (an insurance broker) asks for help
+        information on a customer's account or policies. Use it to gather essential context
+        before attempting to answer questions, provide advice, or recommend new products.
+        Understanding the customer's history is crucial for a relevant and personalized
+        conversation. For instance, before suggesting home insurance, check the
+        communication history and existing policies to see if it has been discussed
+        or if they already have it.
+
+    Error Handling:
+        - If the status is "error" with the error_code "MISSING_CUSTOMER_ID",
+          you must ask the user to provide the customer ID.
+        - If the tool returns any other error (e.g., a customer ID that is not found
+          in the system), inform the user that you were unable to retrieve their
+          information and ask them to verify the ID they provided. Do not retry
+          with the same ID.
     """
     if not customer_id or not customer_id.strip():
         return _create_error_response(

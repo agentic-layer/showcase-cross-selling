@@ -31,13 +31,50 @@ def _create_success_response(message: str, **additional_data) -> dict:
 @mcp.tool()
 def get_insurance_products() -> dict:
     """
-    Retrieves all available insurance products from the product database
-    with their features, pricing, and eligibility criteria.
-    
+    Retrieves all available insurance products from the product database.
+
+    This tool fetches a comprehensive list of all insurance products offered,
+    including details about their features, pricing, and eligibility criteria.
+    It is the primary method for discovering what insurance options are available
+    to customers.
+
     Returns:
-        Dictionary with all available insurance products and their details.
+        A dictionary containing the status of the operation and the retrieved products.
+        On success, the dictionary will have the following structure:
+        {
+            "status": "success",
+            "message": "Insurance products retrieved successfully",
+            "products": {
+                "life_insurance": {
+                    "product_id": "LIFE001",
+                    "name": "SecureLife Premium",
+                    "description": "Comprehensive life insurance with flexible coverage options",
+                    ...
+                },
+                "health_insurance": { ... },
+                ...
+            },
+            "product_count": 7
+        }
+        On failure, the dictionary might look like this:
+        {
+            "status": "error",
+            "error_message": "Failed to connect to the product database."
+        }
+
+    Usage Guidance:
+    This tool should be used when a user (an insurance broker) asks a general question about the types
+    of insurance available, such as "What insurance products do we offer?", "Can you tell
+    me about our products?", or "I'm looking for a specific insurance for a customer." It provides the
+    foundational information needed to answer broad queries and can be the first
+    step before using more specific tools to get quotes or filter products.
+
+
+    Error Handling:
+    If the tool returns a status of "error", inform the user that you are
+    currently unable to retrieve the product information and suggest they try
+    again later.
     """
-    # TODO: Implement actual product database connection
     # For skeleton purposes, using comprehensive mock product data
     mock_products = {
         "life_insurance": {

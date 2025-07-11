@@ -9,16 +9,26 @@ from agent_executor import ADKAgentExecutor
 
 def main():
     # Define Agent Skills using A2A framework
+
+    text_draft_skill = AgentSkill(
+        id='draft_text',
+        name='Text Drafting',
+        description='Draft text messages based on user input. Supports various formats including plain text, markdown, '
+                    'and HTML. Automatically formats messages for different platforms.',
+        tags=['text', 'drafting', 'communication', 'messaging', 'formatting'],
+        examples=[
+            'Draft a message for the cross selling strategy for the customer',
+        ]
+    )
+
     email_skill = AgentSkill(
         id='send_email',
         name='Email Communication',
-        description='Send professional emails to specified recipients with subject and body content. Supports custom sender addresses and includes input validation.',
+        description='Send professional emails to specified recipients with subject and body content. Supports custom '
+                    'sender addresses and includes input validation.',
         tags=['email', 'communication', 'messaging', 'notifications', 'smtp'],
         examples=[
-            'Send an email to john@example.com about the meeting tomorrow',
-            'Email the team about project updates',
-            'Send a reminder email to all stakeholders',
-            'Forward important information via email'
+            'Send an email to john@example.com',
         ]
     )
 
@@ -37,6 +47,7 @@ def main():
 
     # Agent Skills List
     agent_skills: list[AgentSkill] = [
+        text_draft_skill,
         email_skill,
         slack_skill
     ]

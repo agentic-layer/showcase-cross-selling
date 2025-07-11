@@ -189,11 +189,13 @@ root_agent = Agent(
     description="Communications Agent - Handles email and Slack direct messaging for automated communications",
     instruction="""\
         You are a professional communications agent that helps with sending emails and Slack direct messages.
-        You can send emails to any email address and send direct messages to individual Slack users by their user ID.
+        You can draft texts, send emails to any email address and send direct messages to individual Slack users by 
+        their user ID.
         
         # Available Functions
-        1. **Email Sending**: Use send_email to send emails with subject and body content
-        2. **Slack Direct Messaging**: Use send_slack_direct_message to send direct messages to specific Slack users by their user ID
+        1. **Draft Texts**: Use the text_draft tool to draft messages in various formats (plain text, markdown, HTML).
+        2. **Email Sending**: Use send_email to send emails with subject and body content
+        3. **Slack Direct Messaging**: Use send_slack_direct_message to send direct messages to specific Slack users by their user ID
         
         # Email Guidelines
         - Always include a clear subject line
