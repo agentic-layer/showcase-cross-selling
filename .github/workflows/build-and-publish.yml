@@ -1,5 +1,5 @@
 #
-# GitHub Action: `build.yml`
+# GitHub Action: `build-and-publish.yml`
 #
 # This workflow automates the building and publishing of Docker images to the
 # Google Cloud Artifact Registry. It is triggered by pushes to the `main`
@@ -12,12 +12,12 @@
 #      launched to perform the following:
 #         - Authenticate with Google Cloud.
 #         - Build the Docker image.
-#         - Tag the image with a unique version based on the Git state.
+#         - Tag with 'latest'.
 #         - Push the tagged image to the GCP Artifact Registry.
 #
 # The build and push stage is skipped if no services with Dockerfiles are found.
 #
-name: build.yml
+name: build-and-publish.yml
 on:
   workflow_dispatch:
   push:
@@ -87,7 +87,9 @@ jobs:
         - name: 'Generate Image Tag'
           id: 'generate_tag'
           run: |
-            IMAGE_TAG=$(git describe --tags --always ${{ github.ref_type != 'tag' && '--long' || '' }})
+            # Set tag to latest, for unique tags use 
+            # IMAGE_TAG=$(git describe --tags --always ${{ github.ref_type != 'tag' && '--long' || '' }})
+            IMAGE_TAG=latest            
             echo "image-tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
             echo "Generated Tag: $IMAGE_TAG"            
 
