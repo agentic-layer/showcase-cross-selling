@@ -105,35 +105,3 @@ jobs:
           run: |
             # Push the newly tagged image
             docker push ${{ env.GCP_LOCATION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.GCP_REPOSITORY }}/${{ steps.extract_name.outputs.image-name  }}:${{ steps.generate_tag.outputs.image-tag }}
-
-        - name: 'Save Image Info as Artifact'
-          run: |
-            # Creates the directory inside the current workspace.
-            mkdir -p image-details
-            echo "${{ steps.extract_name.outputs.image-name }};${{ steps.generate_tag.outputs.image-tag }}" > image-details/${{ steps.extract_name.outputs.image-name }}.txt
-
-        - uses: 'actions/upload-artifact@v4'
-          with:
-            name: image-detail-${{ steps.extract_name.outputs.image-name }}
-            path: image-details/
-
-  summarize-builds:
-    needs: build-and-push-image # Ensures this job runs only after all builds are done
-    if: always() # This makes the job run even if some matrix builds failed
-    runs-on: ubuntu-latest
-    steps:
-      - name: 'Download all image artifacts'
-        uses: 'actions/download-artifact@v4'
-        with:
-          path: image-details
-
-      - name: 'Create Summary Table'
-        run: |
-          echo "## 🚀 Built Docker Images" >> $GITHUB_STEP_SUMMARY
-          echo "| Service Name | Image Tag |" >> $GITHUB_STEP_SUMMARY
-          echo "|--------------|-----------|" >> $GITHUB_STEP_SUMMARY
-          for file in $(find image-details -type f -name '*.txt'); do
-            while IFS=';' read -r name tag; do
-              echo "| **$name** | \`$tag\` |" >> $GITHUB_STEP_SUMMARY
-            done < "$file"
-          done
