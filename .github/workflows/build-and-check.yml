@@ -1,5 +1,5 @@
 #
-# GitHub Action: `check.yml`
+# GitHub Action: `build-and-check.yml`
 #
 # This workflow is triggered on pushes to any feature branch (`feature/**`),
 # excluding `main` and `master`. Its primary purpose is to perform checks
@@ -12,7 +12,7 @@
 #   3. `build-images`: Dynamically creates a matrix of build jobs, one for each
 #      discovered service. Each job builds a Docker image and tags it with the
 #      current Git description. This job only runs if services are found.
-name: check.yml
+name: build-and-check.yml
 on:
   push:
     branches:
