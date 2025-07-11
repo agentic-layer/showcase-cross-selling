@@ -34,7 +34,5 @@ class RemoteAgentConnections:
     def get_agent(self) -> AgentCard:
         return self.card
 
-    async def send_message(
-        self, message_request: SendMessageRequest
-    ) -> SendMessageResponse:
+    async def send_message(self, message_request: SendMessageRequest) -> SendMessageResponse:
         return await self.agent_client.send_message(message_request)

@@ -9,21 +9,14 @@ insurance_company_name = "SecureLife Insurance"
 
 def _create_error_response(message: str, error_code: str, **additional_data) -> dict:
     """Create a standardized error response."""
-    response = {
-        "status": "error",
-        "message": message,
-        "error_code": error_code
-    }
+    response = {"status": "error", "message": message, "error_code": error_code}
     response.update(additional_data)
     return response
 
 
 def _create_success_response(message: str, **additional_data) -> dict:
     """Create a standardized success response."""
-    response = {
-        "status": "success",
-        "message": message
-    }
+    response = {"status": "success", "message": message}
     response.update(additional_data)
     return response
 
@@ -52,9 +45,9 @@ def get_insurance_products() -> dict:
                 "Term and whole life options",
                 "Accidental death benefit",
                 "Disability waiver of premium",
-                "Cash value accumulation (whole life)"
+                "Cash value accumulation (whole life)",
             ],
-            "target_segments": ["families", "high_income", "business_owners"]
+            "target_segments": ["families", "high_income", "business_owners"],
         },
         "health_insurance": {
             "product_id": "HEALTH001",
@@ -67,32 +60,47 @@ def get_insurance_products() -> dict:
                 "Outpatient treatment",
                 "Prescription drugs",
                 "Preventive care",
-                "Dental and vision add-ons available"
+                "Dental and vision add-ons available",
             ],
-            "target_segments": ["families", "self_employed", "premium"]
+            "target_segments": ["families", "self_employed", "premium"],
         },
         "car_insurance": {
             "product_id": "AUTO001",
             "name": "DriveSecure Comprehensive",
             "description": "Full coverage auto insurance with competitive rates",
-            "coverage_types": ["Liability", "Collision", "Comprehensive", "Uninsured motorist"],
+            "coverage_types": [
+                "Liability",
+                "Collision",
+                "Comprehensive",
+                "Uninsured motorist",
+            ],
             "discount_factors": [
                 "Safe driver discount (up to 25%)",
                 "Multi-policy discount (15%)",
                 "Anti-theft device discount (5%)",
-                "Good student discount (10%)"
+                "Good student discount (10%)",
             ],
             "average_premium_range": {"min": 60, "max": 200},
-            "target_segments": ["all_drivers", "families", "young_professionals"]
+            "target_segments": ["all_drivers", "families", "young_professionals"],
         },
         "home_insurance": {
             "product_id": "HOME001",
             "name": "HomeShield Complete",
             "description": "Comprehensive home insurance protecting property and belongings",
-            "coverage_types": ["Dwelling", "Personal property", "Liability", "Additional living expenses"],
-            "premium_factors": ["Property value", "Location", "Construction type", "Security features"],
+            "coverage_types": [
+                "Dwelling",
+                "Personal property",
+                "Liability",
+                "Additional living expenses",
+            ],
+            "premium_factors": [
+                "Property value",
+                "Location",
+                "Construction type",
+                "Security features",
+            ],
             "average_premium_range": {"min": 80, "max": 300},
-            "target_segments": ["homeowners", "premium", "families"]
+            "target_segments": ["homeowners", "premium", "families"],
         },
         "travel_insurance": {
             "product_id": "TRAVEL001",
@@ -102,11 +110,11 @@ def get_insurance_products() -> dict:
                 "Trip cancellation/interruption",
                 "Medical emergencies abroad",
                 "Lost/delayed baggage",
-                "Emergency evacuation"
+                "Emergency evacuation",
             ],
             "premium_range": {"per_day": {"min": 2, "max": 15}},
             "trip_duration_max": 365,
-            "target_segments": ["frequent_travelers", "families", "business_travelers"]
+            "target_segments": ["frequent_travelers", "families", "business_travelers"],
         },
         "disability_insurance": {
             "product_id": "DISABILITY001",
@@ -115,21 +123,26 @@ def get_insurance_products() -> dict:
             "coverage_percentage": {"min": 60, "max": 80},
             "benefit_period_options": ["2 years", "5 years", "until retirement"],
             "waiting_period_options": [30, 90, 180, 365],
-            "target_segments": ["high_income", "professionals", "skilled_workers"]
+            "target_segments": ["high_income", "professionals", "skilled_workers"],
         },
         "business_insurance": {
             "product_id": "BUSINESS001",
             "name": "BusinessGuard Pro",
             "description": "Comprehensive business insurance for small to medium enterprises",
-            "coverage_types": ["General liability", "Property", "Business interruption", "Cyber liability"],
-            "target_segments": ["business_owners", "self_employed", "professionals"]
-        }
+            "coverage_types": [
+                "General liability",
+                "Property",
+                "Business interruption",
+                "Cyber liability",
+            ],
+            "target_segments": ["business_owners", "self_employed", "professionals"],
+        },
     }
 
     return _create_success_response(
         "Insurance products retrieved successfully",
         products=mock_products,
-        product_count=len(mock_products)
+        product_count=len(mock_products),
     )
 
 
@@ -158,13 +171,13 @@ def get_product_details(product_id: str) -> dict:
             return _create_success_response(
                 f"Product details for {product_data['name']}",
                 product=product_data,
-                product_key=product_key
+                product_key=product_key,
             )
 
     return _create_error_response(
         f"Product with ID '{product_id}' not found",
         "PRODUCT_NOT_FOUND",
-        requested_product_id=product_id
+        requested_product_id=product_id,
     )
 
 
@@ -197,12 +210,12 @@ def get_products_by_segment(segment: str) -> dict:
         return _create_error_response(
             f"No products found for segment '{segment}'",
             "NO_PRODUCTS_FOR_SEGMENT",
-            requested_segment=segment
+            requested_segment=segment,
         )
 
     return _create_success_response(
         f"Found {len(matching_products)} products for segment '{segment}'",
         products=matching_products,
         segment=segment,
-        product_count=len(matching_products)
+        product_count=len(matching_products),
     )

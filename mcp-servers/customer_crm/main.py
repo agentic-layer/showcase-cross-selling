@@ -6,21 +6,14 @@ mcp = FastMCP(name="Customer CRM")
 
 def _create_error_response(message: str, error_code: str, **additional_data) -> dict:
     """Create a standardized error response."""
-    response = {
-        "status": "error",
-        "message": message,
-        "error_code": error_code
-    }
+    response = {"status": "error", "message": message, "error_code": error_code}
     response.update(additional_data)
     return response
 
 
 def _create_success_response(message: str, **additional_data) -> dict:
     """Create a standardized success response."""
-    response = {
-        "status": "success",
-        "message": message
-    }
+    response = {"status": "success", "message": message}
     response.update(additional_data)
     return response
 
@@ -39,10 +32,7 @@ def get_customer_crm_data(customer_id: str) -> dict:
         Dictionary with customer information including policies and communications.
     """
     if not customer_id or not customer_id.strip():
-        return _create_error_response(
-            "Customer ID is required.",
-            "MISSING_CUSTOMER_ID"
-        )
+        return _create_error_response("Customer ID is required.", "MISSING_CUSTOMER_ID")
 
     customer_id = customer_id.strip()
 
@@ -62,7 +52,7 @@ def get_customer_crm_data(customer_id: str) -> dict:
                 "annual_income": 75000,
                 "marital_status": "married",
                 "children": 2,
-                "home_ownership": "owner"
+                "home_ownership": "owner",
             },
             "existing_policies": [
                 {
@@ -72,7 +62,7 @@ def get_customer_crm_data(customer_id: str) -> dict:
                     "coverage_amount": 50000,
                     "start_date": "2021-06-01",
                     "status": "active",
-                    "vehicle": "BMW 3 Series, 2020"
+                    "vehicle": "BMW 3 Series, 2020",
                 }
             ],
             "communication_history": [
@@ -80,30 +70,30 @@ def get_customer_crm_data(customer_id: str) -> dict:
                     "date": "2024-01-15",
                     "type": "phone_call",
                     "subject": "Policy renewal inquiry",
-                    "notes": "Customer asked about car insurance policy renewal and mentioned recently buying a house"
+                    "notes": "Customer asked about car insurance policy renewal and mentioned recently buying a house",
                 },
                 {
                     "date": "2023-12-20",
                     "type": "email",
                     "subject": "Claim status inquiry",
-                    "notes": "Follow-up on minor car accident claim - settled successfully"
+                    "notes": "Follow-up on minor car accident claim - settled successfully",
                 },
                 {
                     "date": "2023-11-28",
                     "type": "phone_call",
                     "subject": "Home insurance inquiry",
-                    "notes": "Customer mentioned she already has home insurance with another provider when asked about our home insurance products"
+                    "notes": "Customer mentioned she already has home insurance with another provider when asked about our home insurance products",
                 },
                 {
                     "date": "2023-10-05",
                     "type": "phone_call",
                     "subject": "Life insurance inquiry",
-                    "notes": "Customer expressed interest in life insurance after birth of second child but did not proceed"
-                }
+                    "notes": "Customer expressed interest in life insurance after birth of second child but did not proceed",
+                },
             ],
             "risk_profile": "low",
             "customer_segment": "premium",
-            "lifetime_value": 15000
+            "lifetime_value": 15000,
         }
     elif customer_id.lower() == "cust002":
         mock_customer_data = {
@@ -119,7 +109,7 @@ def get_customer_crm_data(customer_id: str) -> dict:
                 "annual_income": 95000,
                 "marital_status": "married",
                 "children": 1,
-                "home_ownership": "owner"
+                "home_ownership": "owner",
             },
             "existing_policies": [
                 {
@@ -129,7 +119,7 @@ def get_customer_crm_data(customer_id: str) -> dict:
                     "coverage_amount": 300000,
                     "start_date": "2019-03-10",
                     "status": "active",
-                    "type": "term_life"
+                    "type": "term_life",
                 },
                 {
                     "policy_id": "POL004",
@@ -137,26 +127,26 @@ def get_customer_crm_data(customer_id: str) -> dict:
                     "premium_amount": 180.00,
                     "coverage_amount": 400000,
                     "start_date": "2020-07-15",
-                    "status": "active"
-                }
+                    "status": "active",
+                },
             ],
             "communication_history": [
                 {
                     "date": "2024-02-10",
                     "type": "email",
                     "subject": "Policy review request",
-                    "notes": "Customer requested annual policy review and asked about investment products"
+                    "notes": "Customer requested annual policy review and asked about investment products",
                 },
                 {
                     "date": "2023-11-18",
                     "type": "phone_call",
                     "subject": "Claim notification",
-                    "notes": "Minor home damage claim due to storm - processed quickly"
-                }
+                    "notes": "Minor home damage claim due to storm - processed quickly",
+                },
             ],
             "risk_profile": "low",
             "customer_segment": "premium",
-            "lifetime_value": 25000
+            "lifetime_value": 25000,
         }
     else:
         # Default customer data for other IDs
@@ -173,7 +163,7 @@ def get_customer_crm_data(customer_id: str) -> dict:
                 "annual_income": 45000,
                 "marital_status": "single",
                 "children": 0,
-                "home_ownership": "renter"
+                "home_ownership": "renter",
             },
             "existing_policies": [],
             "communication_history": [
@@ -181,15 +171,15 @@ def get_customer_crm_data(customer_id: str) -> dict:
                     "date": "2024-01-05",
                     "type": "web_inquiry",
                     "subject": "Insurance information request",
-                    "notes": "Customer submitted online form asking for insurance quotes"
+                    "notes": "Customer submitted online form asking for insurance quotes",
                 }
             ],
             "risk_profile": "medium",
             "customer_segment": "standard",
-            "lifetime_value": 5000
+            "lifetime_value": 5000,
         }
 
     return _create_success_response(
         f"Customer CRM data retrieved for {customer_id}",
-        customer_data=mock_customer_data
+        customer_data=mock_customer_data,
     )

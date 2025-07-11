@@ -1,14 +1,22 @@
+import os
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from typing import Any, Dict, Optional, Protocol
+
 from google.adk.agents import Agent
 from google.adk.tools import ToolContext
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from typing import Dict, Any, Optional, Protocol
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
-import os
+
 
 # Todo add invoke method
-def send_email(tool_context: ToolContext, to_email: str, subject: str, body: str, from_email: Optional[str] = None) -> Dict[str, Any]:
+def send_email(
+    tool_context: ToolContext,
+    to_email: str,
+    subject: str,
+    body: str,
+    from_email: Optional[str] = None,
+) -> Dict[str, Any]:
     """
     Sends an email to the specified recipient.
 
@@ -27,21 +35,21 @@ def send_email(tool_context: ToolContext, to_email: str, subject: str, body: str
         return {
             "status": "error",
             "message": "Recipient email address is required.",
-            "error_code": "MISSING_TO_EMAIL"
+            "error_code": "MISSING_TO_EMAIL",
         }
 
     if not subject or not subject.strip():
         return {
             "status": "error",
             "message": "Email subject is required.",
-            "error_code": "MISSING_SUBJECT"
+            "error_code": "MISSING_SUBJECT",
         }
 
     if not body or not body.strip():
         return {
             "status": "error",
             "message": "Email body is required.",
-            "error_code": "MISSING_BODY"
+            "error_code": "MISSING_BODY",
         }
 
     # Use default sender if not provided
@@ -50,12 +58,12 @@ def send_email(tool_context: ToolContext, to_email: str, subject: str, body: str
     try:
         # Create message
         msg = MIMEMultipart()
-        msg['From'] = sender_email
-        msg['To'] = to_email.strip()
-        msg['Subject'] = subject.strip()
+        msg["From"] = sender_email
+        msg["To"] = to_email.strip()
+        msg["Subject"] = subject.strip()
 
         # Add body to email
-        msg.attach(MIMEText(body.strip(), 'plain'))
+        msg.attach(MIMEText(body.strip(), "plain"))
 
         # In production, this would connect to an actual SMTP server
         # For demo purposes, we'll simulate sending
@@ -69,7 +77,7 @@ def send_email(tool_context: ToolContext, to_email: str, subject: str, body: str
             "recipient": to_email.strip(),
             "subject": subject.strip(),
             "sender": sender_email,
-            "email_sent": True
+            "email_sent": True,
         }
 
     except Exception as e:
@@ -77,21 +85,21 @@ def send_email(tool_context: ToolContext, to_email: str, subject: str, body: str
             "status": "error",
             "message": f"Failed to send email: {str(e)}",
             "error_code": "EMAIL_SEND_FAILED",
-            "recipient": to_email.strip()
+            "recipient": to_email.strip(),
         }
 
 
 class SlackClientProtocol(Protocol):
     """Protocol for Slack client dependency injection."""
-    def chat_postMessage(self, *, channel: str, text: str) -> Dict[str, Any]:
-        ...
+
+    def chat_postMessage(self, *, channel: str, text: str) -> Dict[str, Any]: ...
 
 
 class SlackClientWrapper:
     """Wrapper for Slack WebClient to enable dependency injection and testing."""
 
     def __init__(self, token: Optional[str] = None):
-        self.client = WebClient(token=token or os.getenv('SLACK_BOT_TOKEN', ''))
+        self.client = WebClient(token=token or os.getenv("SLACK_BOT_TOKEN", ""))
 
     def chat_postMessage(self, *, channel: str, text: str) -> Dict[str, Any]:
         """Send a message to a Slack channel or user."""
@@ -101,16 +109,12 @@ class SlackClientWrapper:
         except SlackApiError as e:
             return {
                 "ok": False,
-                "error": e.response['error'],
-                "response_metadata": e.response.get('response_metadata', {})
+                "error": e.response["error"],
+                "response_metadata": e.response.get("response_metadata", {}),
             }
 
 
-def send_slack_direct_message(
-    tool_context: ToolContext,
-    slack_user_id: str,
-    message: str
-) -> Dict[str, Any]:
+def send_slack_direct_message(tool_context: ToolContext, slack_user_id: str, message: str) -> Dict[str, Any]:
     """
     Sends a direct message to a specific Slack user by their user ID.
 
@@ -127,23 +131,23 @@ def send_slack_direct_message(
         return {
             "status": "error",
             "message": "Slack user ID is required.",
-            "error_code": "MISSING_USER_ID"
+            "error_code": "MISSING_USER_ID",
         }
 
     if not message or not message.strip():
         return {
             "status": "error",
             "message": "Message content is required.",
-            "error_code": "MISSING_MESSAGE"
+            "error_code": "MISSING_MESSAGE",
         }
 
     # Validate user ID format (Slack user IDs start with 'U' followed by alphanumeric characters)
     user_id = slack_user_id.strip()
-    if not user_id.startswith('U') or len(user_id) < 9:
+    if not user_id.startswith("U") or len(user_id) < 9:
         return {
             "status": "error",
             "message": "Invalid Slack user ID format. User IDs should start with 'U' followed by alphanumeric characters.",
-            "error_code": "INVALID_USER_ID_FORMAT"
+            "error_code": "INVALID_USER_ID_FORMAT",
         }
 
     # Create default Slack client
@@ -151,10 +155,7 @@ def send_slack_direct_message(
 
     try:
         # Send direct message using Slack SDK
-        response = client.chat_postMessage(
-            channel=user_id,
-            text=message.strip()
-        )
+        response = client.chat_postMessage(channel=user_id, text=message.strip())
 
         return {
             "status": "success",
@@ -162,7 +163,7 @@ def send_slack_direct_message(
             "user_id": user_id,
             "message_content": message.strip(),
             "slack_sent": True,
-            "slack_response": response
+            "slack_response": response,
         }
 
     except SlackApiError as e:
@@ -171,14 +172,14 @@ def send_slack_direct_message(
             "message": f"Slack API error: {e.response['error']}",
             "error_code": "SLACK_API_ERROR",
             "user_id": user_id,
-            "slack_error": e.response.get('error')
+            "slack_error": e.response.get("error"),
         }
     except Exception as e:
         return {
             "status": "error",
             "message": f"Failed to send Slack direct message: {str(e)}",
             "error_code": "SLACK_SEND_FAILED",
-            "user_id": user_id
+            "user_id": user_id,
         }
 
 
