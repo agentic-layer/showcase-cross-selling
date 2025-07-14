@@ -1,8 +1,8 @@
 #
 # GitHub Action: `build-and-check.yml`
 #
-# This workflow is triggered on pushes to any feature branch (`feature/**`),
-# excluding `main` and `master`. Its primary purpose is to perform checks
+# This workflow is triggered on pull requests and pushes to main.
+# Its primary purpose is to perform checks
 # and build Docker images for services within the repository.
 #
 # The workflow consists of three main jobs:
@@ -15,10 +15,8 @@
 name: build-and-check.yml
 on:
   push:
-    branches:
-      - 'feature/**'
-      - '!main'
-      - '!master'
+    branches: [ main ]
+  pull_request:
 
 env:
   # GCP configuration
@@ -94,6 +92,7 @@ jobs:
         run: |
           # Set tag to latest, for unique tags use 
           # IMAGE_TAG=$(git describe --tags --always ${{ github.ref_type != 'tag' && '--long' || '' }})
+          IMAGE_TAG=latest            
           echo "image-tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
           echo "Generated Tag: $IMAGE_TAG"            
 
