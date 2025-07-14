@@ -43,7 +43,7 @@ jobs:
           python-version-file: "pyproject.toml"
 
       - name: Install Dependencies
-        run: uv sync --all-extras --dev
+        run: uv sync --all-extras --dev --all-packages
 
   discover-services:
     runs-on: ubuntu-latest
