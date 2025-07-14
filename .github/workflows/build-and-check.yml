@@ -1,0 +1,106 @@
+#
+# GitHub Action: `build-and-check.yml`
+#
+# This workflow is triggered on pull requests and pushes to main.
+# Its primary purpose is to perform checks and build Docker images for services within the repository.
+#
+# The workflow consists of three main jobs:
+#   1. `check-backend`: Sets up the Python environment and installs dependencies.
+#   2. `build-images`: Dynamically creates a matrix of build jobs, one for each
+#      service, defined in the strategy matrix. Each job builds a Docker image and tags it with "latest"
+#
+name: build-and-check.yml
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+env:
+  # GCP configuration
+  GCP_LOCATION: 'europe-west3'
+  GCP_PROJECT_ID: 'qaware-paal'
+  GCP_REPOSITORY: 'agentic-layer-private'
+
+jobs:
+  check-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: 'actions/checkout@v4'
+
+      - name: Install uv
+        uses: 'astral-sh/setup-uv@v5'
+        with:
+          version: "0.6.4"
+          enable-cache: true
+
+      - name: Setup Python
+        uses: 'actions/setup-python@v5'
+        with:
+          python-version-file: "pyproject.toml"
+
+      - name: Install Dependencies
+        run: uv sync --all-extras --dev --all-packages
+
+  build-images:
+    runs-on: ubuntu-latest
+    permissions:
+           contents: 'read'
+           id-token: 'write'
+
+    strategy:
+      fail-fast: false # Ensures that if one build fails, the others will still run
+      matrix:
+        include:
+          # Agent builds
+          - image_name: "communications_agent"
+            dockerfile: "agents/Dockerfile"
+            build_arg_key: "AGENT_NAME"
+          - image_name: "cross_selling_agent"
+            dockerfile: "agents/Dockerfile"
+            build_arg_key: "AGENT_NAME"
+          - image_name: "insurance_host_agent"
+            dockerfile: "agents/Dockerfile"
+            build_arg_key: "AGENT_NAME"
+          # MCP server builds
+          - image_name: "customer_crm"
+            dockerfile: "mcp-servers/Dockerfile"
+            build_arg_key: "MCP_SERVER_NAME"
+          - image_name: "insurance_products"
+            dockerfile: "mcp-servers/Dockerfile"
+            build_arg_key: "MCP_SERVER_NAME"
+
+    steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v4'
+        with:
+          fetch-depth: 0 # required to fetch all history for all branches and tags
+
+      - name: 'Extract Image Name'
+        id: 'extract_name'
+        run: |
+          IMAGE_NAME=$(basename ${{ matrix.image_name }})            
+          echo "image-name=${IMAGE_NAME}" >> $GITHUB_OUTPUT
+          echo "Extracted Image Name: $IMAGE_NAME"
+
+      - name: 'Generate Image Tag'
+        id: 'generate_tag'
+        run: |
+          # Set tag to latest, for unique tags use 
+          # IMAGE_TAG=$(git describe --tags --always ${{ github.ref_type != 'tag' && '--long' || '' }})
+          IMAGE_TAG=latest            
+          echo "image-tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
+          echo "Generated Tag: $IMAGE_TAG"            
+
+      - name: 'Build and Tag Docker Image'
+        id: 'build_image'
+        run: |
+         IMAGE_FULL_NAME=${{ env.GCP_LOCATION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.GCP_REPOSITORY }}/${{ steps.extract_name.outputs.image-name }}:${{ steps.generate_tag.outputs.image-tag }}
+         echo "image-full-name=$IMAGE_FULL_NAME" >> $GITHUB_OUTPUT
+         echo "Building Docker image: $IMAGE_FULL_NAME"
+          
+         # Build the image and tag it, currently using the latest tag
+         docker build . \
+           --file ${{ matrix.dockerfile }} \
+           --tag $IMAGE_FULL_NAME \
+           --build-arg ${{ matrix.build_arg_key }}=${{ matrix.image_name }}
