@@ -1,0 +1,14 @@
+[project]
+name = "base"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "google-adk[eval]>=1.6.1",
+    "a2a-sdk>=0.2.10",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

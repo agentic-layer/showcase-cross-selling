@@ -1,65 +1,161 @@
-# agentic-playground
+# Insurance Cross-Selling Use Case
 
-## Requirements
+An agentic system for intelligent insurance cross-selling using Google's Agent Development Kit (ADK), Model Context Protocol (MCP) servers, and agent-to-agent communication.
 
-* Google ADK: https://google.github.io/adk-docs/get-started/quickstart/#set-up-the-model
+## Overview
+
+This project demonstrates a multi-agent system that orchestrates insurance cross-selling opportunities by analyzing customer data, identifying suitable products, and coordinating customer communications. The system is built using modern agentic architecture principles with clear separation of concerns.
+
+## Architecture
+
+### Components
+
+The system consists of several specialized agents and MCP servers:
+
+#### 🤖 **Agents**
+- **[Insurance Host Agent](agents/insurance_host_agent/README.md)**: Main orchestration agent that coordinates customer interactions
+- **[Cross-Selling Agent](agents/cross_selling_agent/README.md)**: Identifies and presents cross-selling opportunities
+- **[Communications Agent](agents/communications_agent/README.md)**: Handles external communications (Slack, email)
+- **[Base Agent](agents/base/README.md)**: Shared utilities and execution framework
+
+#### 🔌 **MCP Servers**
+- **[Customer CRM](mcp-servers/customer_crm/README.md)**: Customer relationship management data and services
+- **[Insurance Products](mcp-servers/insurance_products/README.md)**: Insurance product catalog and information
+
+## Prerequisites
+
+- **Python 3.13+**: Required for all components
+- **Google Cloud Account**: For ADK and Vertex AI integration
+- **Slack Bot Token**: For communications agent (optional)
+- **uv**: Package manager for Python projects
 
 ## Setup
 
-```shell
-# Install brew bundle
+### 1. Install Dependencies
+
+```bash
+# Install system dependencies
 brew bundle
 
+# Install Python dependencies
+uv sync
+```
+
+### 2. Google Cloud Authentication
+
+```bash
 # Authenticate with Google Cloud
 gcloud auth application-default login
 ```
 
-Add .env file with the following content to `adk-agents` directory:
+### 3. Environment Configuration
+
+Create a `.env` file in the project root:
 
 ```dotenv
+# Google Cloud Configuration
 GOOGLE_GENAI_USE_VERTEXAI=TRUE
 GOOGLE_CLOUD_PROJECT=your-project-id
-# Note: Some models are only available in certain regions, like `us-central1`.
 GOOGLE_CLOUD_LOCATION=us-central1
-# Required the communications agent's Slack capabilities:
-SLACK_BOT_TOKEN=...
+
+# Slack Integration (optional)
+SLACK_BOT_TOKEN=xoxb-your-slack-bot-token
 ```
 
-## ADK Agents
+## Development
 
-See [adk-agents](adk-agents/README.md).
+### Code Quality
 
-## MCP Server
+The project includes comprehensive code quality tools:
 
-See [mcp-server](mcp-server/README.md).
+```bash
+# Run all checks
+uv run poe check
 
-## Evaluation
-
-Run DeepEval tests (just example code currently):
-
-```shell
-export OPENAI_API_KEY=...
-deepeval test run deepeval/test_chatbot.py
+# Individual checks
+uv run poe mypy          # Type checking
+uv run poe ruff          # Linting and formatting
+uv run poe bandit        # Security analysis
+uv run poe lint-imports  # Import linting
+uv run poe test          # Run tests
 ```
 
-## k8s platform
+### Workspace Structure
 
-```shell
-# create the Kubernetes cluster in GCP
-task gke-cluster-create
+The project uses uv workspace for dependency management:
 
-# bootstrap AI platform components and services using Flux2
-# make sure you have set a valid GITHUB_TOKEN environment variable
-task flux-bootstrap
+```
+├── agents/                    # Agent implementations
+│   ├── base/                 # Shared agent utilities
+│   ├── communications_agent/ # Communication handling
+│   ├── cross_selling_agent/  # Cross-selling logic
+│   └── insurance_host_agent/ # Main orchestration
+├── mcp-servers/              # MCP server implementations
+│   ├── customer_crm/        # Customer data server
+│   └── insurance_products/  # Product catalog server
+├── pyproject.toml           # Workspace configuration
+└── uv.lock                  # Dependency lock file
+```
 
-# required to configure Config Connector with Google Cloud ProjectID
-kubectl annotate namespace default cnrm.cloud.google.com/project-id=qaware-paal
+### Adding a New Agent
 
-# Create secret
-task create-secrets
+To add a new agent to the project, follow these steps:
 
-# the Kube Prometheus Stack is accessible via
-kubectl port-forward -n monitoring pod/kube-prometheus-stack-grafana-7c5cd8bd69-lpm5z 3000:3000
-# Login: admin:prom-operator
-open http://localhost:3000
+#### 1. Create the Agent Package
+
+```bash
+# Create a new agent package
+uv init --package agents/<NEW_AGENT_NAME>
+
+# Example: Creating a fraud detection agent
+uv init --package agents/any_insurance_agent
+```
+
+#### 2. Configure Dependencies
+
+Edit the new agent's `pyproject.toml` file to add the base dependency:
+
+```toml
+[project]
+name = "any-insurance-agent"
+version = "0.1.0"
+description = "An agent used for any insurance use case"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "base",
+    # Add other specific dependencies here
+]
+
+[tool.uv.sources]
+base = { workspace = true }
+
+[project.scripts]
+any_insurance_agent = "any_insurance_agent.__main__:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+```
+
+#### 3. Install and Test
+
+```bash
+# Install dependencies
+uv sync
+
+# Test the new agent
+uv run --package <NEW_AGENT_NAME> <NEW_AGENT_NAME>
+```
+
+## Deployment
+
+### Docker Compose
+
+```bash
+# Start all services
+docker-compose up
+
+# View logs
+docker-compose logs -f
 ```

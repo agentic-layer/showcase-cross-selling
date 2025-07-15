@@ -1,0 +1,16 @@
+[project]
+name = "customer-crm"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastmcp>=2.10.1",
+]
+
+[project.scripts]
+customer_crm = "customer_crm.__main__:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

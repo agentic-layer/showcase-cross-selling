@@ -31,7 +31,6 @@ Navigate to `http://localhost:8080` to access the ADK Web UI with agent selectio
 ### Running MCP Server
 ```shell
 cd mcp-server
-uv run mcp dev bank_products/main.py
 ```
 
 ## Architecture
