@@ -1,20 +1,72 @@
 [project]
-name = "agentic-playground"
+name = "cross-selling-use-case"
 version = "0.1.0"
-description = ""
+description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = [
-    "google-adk[eval]>=1.2.1",
-    "fastmcp>=2.10.1",
-    "a2a-sdk>=0.2.10",
-    "slack-sdk>=3.33.0",
-]
+dependencies = []
 
 [dependency-groups]
 dev = [
-    "deepeval>=3.0.5",
-    "pytest>=8.4.0",
-    "pytest-asyncio>=1.0.0",
-    "pytest-dotenv>=0.5.2",
+    "poethepoet>=0.31.1",
+    "mypy>=1.9.0",
+    "ruff>=0.11.2",
+    "pytest>=8.1.1",
+    "bandit[toml]>=1.7.8",
+    "import-linter>=2.0"
 ]
+
+[tool.uv.workspace]
+members = [
+    "agents/base",
+    "agents/insurance_host_agent",
+    "agents/communications_agent",
+    "agents/cross_selling_agent",
+    "mcp-servers/customer_crm",
+    "mcp-servers/insurance_products",
+]
+
+[tool.poe.tasks]
+test = "pytest --strict-config"
+test-watch = "ptw ."
+
+format = "ruff format"
+lint = "ruff check --fix"
+ruff = ["format", "lint"]
+
+bandit = "bandit -c pyproject.toml -r ."
+mypy = "mypy ."
+lint-imports = "lint-imports"
+
+check = ["mypy", "bandit", "ruff", "lint-imports", "test"]
+
+[tool.importlinter]
+root_packages = [
+    "base",
+    "communications_agent",
+    "cross_selling_agent",
+    "customer_crm",
+    "insurance_host_agent",
+    "insurance_products"
+]
+
+[tool.ruff]
+# Allow lines to be as long as 120.
+line-length = 120
+
+
+[tool.ruff.lint]
+# https://docs.astral.sh/ruff/rules/
+# I001 --> enable import sorting rules
+# Q --> enable flake8-quotes rules for consistent quote style
+# N --> pep8-naming for proper naming conventions
+# PT --> flake8-pytest-style for pytest best practices
+# TID251 --> banned relative imports
+# DTZ --> datetime timezone awareness
+extend-select = ["Q", "N", "I001", "PT", "TID251", "DTZ"]
+
+[tool.bandit]
+exclude_dirs = [".cache", ".venv"]
+
+[tool.bandit.assert_used]
+skips = ["*_test.py", "*test_*.py"]
