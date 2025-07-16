@@ -50,7 +50,7 @@ jobs:
             build_arg_key: "MCP_SERVER_NAME"
 
     steps:
-      - name: 'Checkout'
+      - name: 'Checkout' #Needed to access git describe in the image tag generation step
         uses: 'actions/checkout@v4'
         with:
           fetch-depth: 0 # required to fetch all history for all branches and tags
@@ -66,13 +66,6 @@ jobs:
       - name: 'Configure Docker for Artifact Registry'
         run: gcloud auth configure-docker ${{ env.GCP_LOCATION }}-docker.pkg.dev
 
-      - name: 'Extract Image Name'
-        id: 'extract_name'
-        run: |
-          IMAGE_NAME=$(basename ${{ matrix.image_name }})            
-          echo "image-name=${IMAGE_NAME}" >> $GITHUB_OUTPUT
-          echo "Extracted Image Name: $IMAGE_NAME"
-
       - name: 'Generate Image Tag'
         id: 'generate_tag'
         run: |
@@ -82,20 +75,12 @@ jobs:
           echo "image-tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
           echo "Generated Tag: $IMAGE_TAG"
 
-      - name: 'Build and Tag Docker Image'
-        id: 'build_image'
-        run: |
-          IMAGE_FULL_NAME=${{ env.GCP_LOCATION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.GCP_REPOSITORY }}/${{ steps.extract_name.outputs.image-name }}:${{ steps.generate_tag.outputs.image-tag }}
-          echo "image-full-name=$IMAGE_FULL_NAME" >> $GITHUB_OUTPUT
-          echo "Building Docker image: $IMAGE_FULL_NAME"
-          
-          # Build the image and tag it, currently using the latest tag
-          docker build . \
-            --file ${{ matrix.dockerfile }} \
-            --tag $IMAGE_FULL_NAME \
-            --build-arg ${{ matrix.build_arg_key }}=${{ matrix.image_name }}
-
-      - name: 'Push Image to Artifact Registry'
-        run: |
-          # Push the newly tagged image
-          docker push ${{ steps.build_image.outputs.image-full-name }}
+      - name: 'Build and Push Docker Image'
+        uses: 'docker/build-push-action@v6'
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: ${{ env.GCP_LOCATION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.GCP_REPOSITORY }}/${{ matrix.image_name }}:${{ steps.generate_tag.outputs.image-tag }}
+          build-args: |
+            ${{ matrix.build_arg_key }}=${{ matrix.image_name }}
