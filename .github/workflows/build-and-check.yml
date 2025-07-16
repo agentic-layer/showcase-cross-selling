@@ -4,7 +4,7 @@
 # This workflow is triggered on pull requests and pushes to main.
 # Its primary purpose is to perform checks and build Docker images for services within the repository.
 #
-# The workflow consists of three main jobs:
+# The workflow consists of two main jobs:
 #   1. `check-backend`: Sets up the Python environment and installs dependencies.
 #   2. `build-images`: Dynamically creates a matrix of build jobs, one for each
 #      service, defined in the strategy matrix. Each job builds a Docker image and tags it with "latest"

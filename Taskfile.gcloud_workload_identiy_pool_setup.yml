@@ -1,6 +1,29 @@
 # https://taskfile.dev
 
-# execute using task -t Taskfile.gcloud_wip_setup.yml $TASK
+# GCP Workload Identity Pool Setup for GitHub Actions
+# ===================================================
+# 
+# This Taskfile automates the setup of Google Cloud Platform (GCP) Workload Identity Pool
+# for GitHub Actions authentication. This enables GitHub Actions workflows to authenticate
+# with GCP services without storing long-lived service account keys.
+#
+# Prerequisites:
+# - gcloud CLI installed and authenticated
+# - Appropriate GCP project permissions (IAM Admin, Service Account Admin)
+# - GitHub repository configured with the correct repository name
+#
+# Usage:
+#   task -t Taskfile.gcloud_workload_identiy_pool_setup.yml <task-name>
+#
+# Example workflow:
+#   1. task -t Taskfile.gcloud_workload_identiy_pool_setup.yml create-workload-identity-pool
+#   2. task -t Taskfile.gcloud_workload_identiy_pool_setup.yml create-workload-identity-provider
+#   3. task -t Taskfile.gcloud_workload_identiy_pool_setup.yml auth-workload-provider
+#
+# Configuration:
+# - Modify the env variables below to match your project settings
+# - The FULL_REPO_NAME should match your GitHub repository (owner/repo-name)
+# - The PROJECT_ID should match your GCP project ID
 version: '3'
 
 dotenv: ['.env', '{{.HOME}}/.env']
@@ -14,7 +37,8 @@ env:
 tasks:
 
   set-gcloud-account-to-project-account:
-    gcloud config set account {{.PROJECT_ID}}
+    desc: Set gcloud CLI to use the project service account
+    cmd: gcloud config set account {{.PROJECT_ID}}
 
   create-workload-identity-pool:
     desc: Create a GCP Workload Identity Pool for github actions
