@@ -174,6 +174,84 @@ def get_insurance_products() -> dict:
             ],
             "target_segments": ["business_owners", "self_employed", "professionals"],
         },
+        # New Products
+        "personal_liability_insurance": {
+            "product_id": "LIABILITY001",
+            "name": "PrivatSchutz Sorglos",
+            "description": "Essential personal liability insurance covering damages to third parties.",
+            "min_coverage": 5000000,
+            "max_coverage": 50000000,
+            "average_premium_range": {"min": 5, "max": 15},  # monthly
+            "features": ["Coverage for personal injury and property damage", "Loss of keys coverage",
+                         "Worldwide coverage"],
+            "target_segments": ["all_drivers", "families", "young_professionals", "homeowners", "students"],
+        },
+        "legal_protection_insurance": {
+            "product_id": "LEGAL001",
+            "name": "RechtSicher Privat",
+            "description": "Comprehensive legal protection for private, professional, and traffic-related disputes.",
+            "coverage_areas": ["Private life", "Work", "Traffic", "Housing"],
+            "average_premium_range": {"min": 15, "max": 40},  # monthly
+            "features": ["Free initial legal consultation", "Mediation services", "Choice of own lawyer"],
+            "target_segments": ["families", "professionals", "all_drivers", "homeowners"],
+        },
+        "pet_insurance": {
+            "product_id": "PET001",
+            "name": "TierGesundheit Premium",
+            "description": "Health insurance for your pets, covering vet bills for surgeries and treatments.",
+            "pet_types_covered": ["dog", "cat"],
+            "coverage_options": ["Surgery only", "Full coverage including outpatient care"],
+            "average_premium_range": {"min": 20, "max": 80},  # monthly
+            "features": ["Direct billing with vets", "Preventive care allowance", "Coverage for hereditary conditions"],
+            "target_segments": ["families", "pet_owners"],
+        },
+        "motorcycle_insurance": {
+            "product_id": "MOTO001",
+            "name": "ZweiradSicher",
+            "description": "Specialized insurance for motorcycles, scooters, and mopeds.",
+            "coverage_types": ["Liability", "Partial cover", "Fully comprehensive"],
+            "discount_factors": ["Garage parking", "Seasonal license plate", "Experienced rider discount"],
+            "average_premium_range": {"min": 20, "max": 150},
+            "target_segments": ["all_drivers", "young_professionals"],
+        },
+        "electronics_insurance": {
+            "product_id": "ELEC001",
+            "name": "GadgetGarant",
+            "description": "Protection for your valuable electronics like smartphones, laptops, and cameras.",
+            "covered_perils": ["Accidental damage", "Liquid damage", "Theft", "Short circuit"],
+            "device_age_max": 24,  # in months
+            "premium_factors": ["Device value", "Coverage scope"],
+            "target_segments": ["students", "young_professionals", "families", "frequent_travelers"],
+        },
+        "valuables_insurance": {
+            "product_id": "VALUABLES001",
+            "name": "WertgegenstandTresor",
+            "description": "Specialized insurance for high-value items like jewelry, art, and musical instruments.",
+            "covered_items": ["Jewelry & Watches", "Art & Antiques", "Musical Instruments", "Designer Handbags"],
+            "coverage_basis": "Agreed value",
+            "features": ["Worldwide all-risk coverage", "No deductible option", "Coverage during transit"],
+            "target_segments": ["high_income", "premium", "professionals"],
+        },
+        "rental_deposit_insurance": {
+            "product_id": "RENTAL001",
+            "name": "Kautionsfrei Wohnen",
+            "description": "An alternative to a cash rental deposit (Mietkaution), providing a guarantee to your landlord.",
+            "annual_premium_rate": {"percentage_of_deposit": {"min": 3.5, "max": 5.0}},
+            "max_deposit_amount": 15000,
+            "features": ["Frees up cash", "Quick and easy online application", "Accepted by most landlords"],
+            "target_segments": ["students", "young_professionals", "families"],
+        },
+        "personal_cyber_insurance": {
+            "product_id": "CYBER001",
+            "name": "CyberSafe Home",
+            "description": "Protection against online risks such as identity theft, cyberbullying, and online shopping fraud.",
+            "coverage_types": ["Data recovery costs", "Online account fraud", "Identity theft recovery",
+                               "Legal costs for reputation damage"],
+            "average_premium_range": {"min": 8, "max": 25},  # monthly
+            "features": ["24/7 support hotline", "Psychological support after cyberbullying",
+                         "Proactive security advice"],
+            "target_segments": ["families", "high_income", "professionals", "students"],
+        }
     }
 
     return _create_success_response(
@@ -259,7 +337,7 @@ def get_products_by_segment(segment: str) -> dict:
 
 
 def main():
-    mcp.run(transport="streamable-http")
+    mcp.run(transport="streamable-http", host="0.0.0.0")
 
 
 if __name__ == "__main__":
