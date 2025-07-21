@@ -25,7 +25,7 @@ def get_customer_crm_data(customer_id: str) -> dict:
     Retrieves a comprehensive 360-degree view of a customer from the CRM system.
 
     This tool fetches a complete profile for a given customer, including their
-    personal information, any existing insurance policies, their complete communication
+    personal information such as email address, any existing insurance policies, their complete communication
     history with the company, and internal metrics like risk profile and lifetime value.
     It serves as a foundational step for most customer-related inquiries.
 
