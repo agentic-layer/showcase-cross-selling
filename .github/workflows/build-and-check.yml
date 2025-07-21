@@ -76,13 +76,6 @@ jobs:
         with:
           fetch-depth: 0 # required to fetch all history for all branches and tags
 
-      - name: 'Extract Image Name'
-        id: 'extract_name'
-        run: |
-          IMAGE_NAME=$(basename ${{ matrix.image_name }})            
-          echo "image-name=${IMAGE_NAME}" >> $GITHUB_OUTPUT
-          echo "Extracted Image Name: $IMAGE_NAME"
-
       - name: 'Generate Image Tag'
         id: 'generate_tag'
         run: |
