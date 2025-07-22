@@ -101,7 +101,7 @@ class SlackClientWrapper:
     def __init__(self, token: Optional[str] = None):
         self.client = WebClient(token=token or os.getenv("SLACK_BOT_TOKEN", ""))
 
-    def chat_postMessage(self, *, channel: str, text: str) -> Dict[str, Any]:
+    def chat_postMessage(self, *, channel: str, text: str) -> Dict[str, Any] | bytes:
         """Send a message to a Slack channel or user."""
         try:
             response = self.client.chat_postMessage(channel=channel, text=text)

@@ -1,4 +1,6 @@
 # cust001 & 002 use extended formatting - 003 to 032 have their formatting collapsed
+from mypy.types_utils import AnyType
+
 _mock_database = {
     "cust001": {
         "customer_id": "cust001",
@@ -260,11 +262,11 @@ _mock_database = {
     },
 }
 
-def get_all_customers():
+def get_all_customers() -> dict:
     return _mock_database
 
-def get_customer(customer_id: str):
+def get_customer(customer_id: str) -> object | None:
     return _mock_database.get(customer_id)
 
-def get_database_size():
+def get_database_size() -> int:
     return len(_mock_database)

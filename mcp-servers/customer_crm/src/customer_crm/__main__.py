@@ -2,7 +2,7 @@ from fastmcp import FastMCP
 from . import mock_database
 
 # Create an MCP server for customer CRM data
-mcp = FastMCP(name="Customer CRM")
+mcp: FastMCP = FastMCP(name="Customer CRM")
 
 
 def _create_error_response(message: str, error_code: str, **additional_data) -> dict:

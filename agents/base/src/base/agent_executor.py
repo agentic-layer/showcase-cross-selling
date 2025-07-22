@@ -1,10 +1,11 @@
 from a2a.server.agent_execution import AgentExecutor, RequestContext
 from a2a.server.events import EventQueue
 from a2a.server.tasks import TaskUpdater
+from a2a.utils.task import Task
 from a2a.types import (
     Part,
     TaskState,
-    TextPart,
+    TextPart, Message,
 )
 from a2a.utils import new_agent_text_message, new_task
 from google.adk.artifacts import InMemoryArtifactService
@@ -54,7 +55,13 @@ class ADKAgentExecutor(AgentExecutor):
     ) -> None:
         print("Starting communications src...")
         query = context.get_user_input()
-        task = context.current_task or new_task(context.message)
+        if context.current_task is not None:
+            task = context.current_task
+        elif context.message is not None:
+            task = new_task(context.message)
+        else:
+            raise TypeError
+
         await event_queue.enqueue_event(task)
 
         updater = TaskUpdater(event_queue, task.id, task.contextId)

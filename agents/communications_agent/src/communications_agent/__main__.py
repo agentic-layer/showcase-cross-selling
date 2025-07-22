@@ -11,7 +11,7 @@ from communications_agent.agent import root_agent
 def main():
     # Define Agent Skills using A2A framework
 
-    text_draft_skill = AgentSkill(
+    text_draft_skill: AgentSkill = AgentSkill(
         id="draft_text",
         name="Text Drafting",
         description="Draft text messages based on user input. Supports various formats including plain text, markdown, "
