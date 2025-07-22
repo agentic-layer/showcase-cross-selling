@@ -113,7 +113,10 @@ uv init --package agents/any_insurance_agent
 
 #### 2. Configure Dependencies
 
-Edit the new agent's `pyproject.toml` file to add the base dependency:
+Edit the new agent's `pyproject.toml` file as follows:
+- Add the base dependency
+- Point the project.script to the main function of the new agent
+- Name the project.script the same as the agent package name
 
 ```toml
 [project]

@@ -6,8 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This repository contains an agentic playground with Google ADK (Agent Development Kit) agents and MCP (Model Context Protocol) servers. The main components are:
 
-- **ADK Agents**: Located in `adk-agents/`, these are Google ADK-based agents including a banking hotline agent
-- **MCP Server**: Located in `mcp-server/`, contains MCP servers, like one that provides banking product data via MCP protocol
+- **ADK Agents**: Located in `agents/`, these are Google ADK-based agents including a banking hotline agent
+- **MCP Server**: Located in `mcp-servers/`, contains MCP servers, like one that provides banking product data via MCP protocol
 
 ## Development Setup
 
@@ -35,17 +35,51 @@ cd mcp-server
 
 ## Architecture
 
-### ADK Agents Structure
-- Each agent is a Python module in `adk-agents/`
+### Agents Structure
+- Each agent is a Python module in `agents/`
 - Agents use Google ADK framework with `Agent` class from `google.adk.agents`
 - Tools can be Python functions or MCP toolsets via `MCPToolset`
-- Example agent: `bank_hotline_agent/agent.py` defines a German-language banking assistant
+- Current agents include:
+  - `communications_agent/`: Handles drafting professional communications
+  - `cross_selling_agent/`: Identifies cross-selling opportunities from CRM data
+  - `insurance_host_agent/`: Orchestrates customer support for insurance brokers (German language)
+  - `stats_analysis_agent/`: Provides statistical analysis capabilities
+- Each agent follows the structure: `agent_name/src/agent_name/agent.py`
+- For detailed instructions on creating new agents, see the "Adding a New Agent" section in [README.md](./README.md)
 
 ### MCP Server Structure
 - MCP servers provide external tools/resources to agents
 - Built using FastMCP framework (`mcp.server.fastmcp`)
 - Resources are decorated functions that agents can call
 - Example: `bank_products/main.py` provides banking product information
+
+### Agents Network Architecture
+
+The agents operate as a distributed network using the Agent-to-Agent (A2A) protocol:
+
+#### Network Structure
+- **Host Agent (`insurance_host_agent`)**: The central orchestrator that routes user requests to appropriate specialized agents
+- **Specialized Agents**: Each agent exposes specific capabilities and skills through A2A cards
+- **Communication Protocol**: Agents communicate via HTTP using A2A message format
+
+#### Agent Deployment
+Each agent must:
+1. **Expose Agent Cards**: Define capabilities, skills, and metadata via A2A `AgentCard`
+2. **Run A2A Server**: Start an `A2AStarletteApplication` server using `uvicorn`
+3. **Handle Requests**: Process incoming tasks through `DefaultRequestHandler` with `ADKAgentExecutor`
+4. **Network Accessibility**: Listen on `0.0.0.0:8000` for inter-agent communication
+
+#### Orchestration Flow
+1. User interacts with `insurance_host_agent` (the orchestrator)
+2. Host agent analyzes the request and determines which specialized agent(s) to call
+3. Host agent routes requests to appropriate agents via HTTP A2A protocol
+4. Specialized agents process tasks and return results to the host agent
+5. Host agent consolidates responses and presents final output to the user
+
+#### Example Agent URLs
+- `http://communications-agent:8000/` - Professional communication drafting
+- `http://cross-selling-agent:8000/` - CRM analysis and cross-selling opportunities
+- `http://insurance-host-agent:8000/` - Main orchestrator endpoint
 
 ### Integration Pattern
 Agents can integrate with MCP servers using `MCPToolset` with `StdioServerParameters` to connect via subprocess communication.
