@@ -1,8 +1,7 @@
-import os
 from google.adk import agents
-from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset
-from google.adk.tools.mcp_tool import StreamableHTTPConnectionParams
 from google.adk.planners import BuiltInPlanner
+from google.adk.tools.mcp_tool import StreamableHTTPConnectionParams
+from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset
 from google.genai import types
 
 # Create MCP toolset for insurance products
@@ -44,9 +43,7 @@ root_agent = agents.Agent(
                 Remember: You are an expert advisor helping customers understand their insurance options, not a sales agent.
                 """,
     model="gemini-2.5-flash-lite",
-    tools=[
-        insurance_products_toolset
-    ],
+    tools=[insurance_products_toolset],
     planner=BuiltInPlanner(
         thinking_config=types.ThinkingConfig(
             include_thoughts=True,

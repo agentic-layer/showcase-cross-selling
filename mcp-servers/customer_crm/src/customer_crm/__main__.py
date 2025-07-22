@@ -1,8 +1,9 @@
 from fastmcp import FastMCP
+
 from . import mock_database
 
 # Create an MCP server for customer CRM data
-mcp = FastMCP(name="Customer CRM")
+mcp: FastMCP = FastMCP(name="Customer CRM")
 
 
 def _create_error_response(message: str, error_code: str, **additional_data) -> dict:
@@ -17,6 +18,7 @@ def _create_success_response(message: str, **additional_data) -> dict:
     response = {"status": "success", "message": message}
     response.update(additional_data)
     return response
+
 
 # used to be "crm://customer/{customer_id}"
 @mcp.tool()
@@ -134,10 +136,11 @@ def get_customer_crm_data(customer_id: str) -> dict:
         customer_data=mock_customer_data,
     )
 
+
 @mcp.tool()
 def get_all_customer_data() -> dict:
     return _create_success_response(
-        f"All Customer CRM data retrieved",
+        "All Customer CRM data retrieved",
         customer_data=mock_database.get_all_customers(),
     )
 

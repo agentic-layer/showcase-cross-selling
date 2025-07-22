@@ -2,7 +2,7 @@ from a2a.types import AgentCapabilities, AgentCard, AgentSkill
 
 from communications_agent.agent import root_agent
 
-text_draft_skill = AgentSkill(
+text_draft_skill: AgentSkill = AgentSkill(
     id="draft_text",
     name="Text Drafting",
     description="Draft text messages based on user input. Supports various formats including plain text, markdown, "
@@ -13,7 +13,7 @@ text_draft_skill = AgentSkill(
     ],
 )
 
-email_skill = AgentSkill(
+email_skill: AgentSkill = AgentSkill(
     id="send_email",
     name="Email Communication",
     description="Send professional emails to specified recipients with subject and body content. Supports custom "
@@ -24,7 +24,7 @@ email_skill = AgentSkill(
     ],
 )
 
-slack_skill = AgentSkill(
+slack_skill: AgentSkill = AgentSkill(
     id="send_slack_message",
     name="Slack Messaging",
     description="Send messages to Slack channels or direct messages using webhook integration. Supports public channels, private channels, and direct messages with automatic formatting.",

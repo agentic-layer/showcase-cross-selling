@@ -13,7 +13,6 @@ from google.adk.memory.in_memory_memory_service import InMemoryMemoryService
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai import types
-
 from opentelemetry.trace import Span
 
 
@@ -23,6 +22,7 @@ def _add_conversation_id_to_span(span: Span, args, kwargs, result, exception):
         metadata = getattr(context.message, "metadata", {})
         if conversation_id := metadata.get("conversation_id"):
             span.set_attribute("conversation_id", conversation_id)
+
 
 class A2AAgentExecutor(AgentExecutor):
     def __init__(
@@ -64,9 +64,14 @@ class A2AAgentExecutor(AgentExecutor):
         context: RequestContext,
         event_queue: EventQueue,
     ) -> None:
-
         query = context.get_user_input()
-        task = context.current_task or new_task(context.message)
+        if context.current_task is not None:
+            task = context.current_task
+        elif context.message is not None:
+            task = new_task(context.message)
+        else:
+            raise TypeError
+
         await event_queue.enqueue_event(task)
 
         updater = TaskUpdater(event_queue, task.id, task.contextId)

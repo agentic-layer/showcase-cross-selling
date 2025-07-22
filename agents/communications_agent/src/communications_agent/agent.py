@@ -4,7 +4,6 @@ from email.mime.text import MIMEText
 from typing import Any, Dict, Optional, Protocol
 
 from google.adk.agents import Agent
-from google.adk.tools import ToolContext
 from google.adk.planners import BuiltInPlanner
 from google.genai import types
 from slack_sdk import WebClient
@@ -13,7 +12,6 @@ from slack_sdk.errors import SlackApiError
 
 # Todo add invoke method
 def send_email(
-    tool_context: ToolContext,
     to_email: str,
     subject: str,
     body: str,
@@ -23,7 +21,6 @@ def send_email(
     Sends an email to the specified recipient.
 
     Args:
-        tool_context: Context to manage session state
         to_email: Recipient email address
         subject: Email subject line
         body: Email body content
@@ -94,7 +91,7 @@ def send_email(
 class SlackClientProtocol(Protocol):
     """Protocol for Slack client dependency injection."""
 
-    def chat_postMessage(self, *, channel: str, text: str) -> Dict[str, Any]: ...
+    def chat_post_message(self, *, channel: str, text: str) -> Dict[str, Any]: ...
 
 
 class SlackClientWrapper:
@@ -103,7 +100,7 @@ class SlackClientWrapper:
     def __init__(self, token: Optional[str] = None):
         self.client = WebClient(token=token or os.getenv("SLACK_BOT_TOKEN", ""))
 
-    def chat_postMessage(self, *, channel: str, text: str) -> Dict[str, Any]:
+    def chat_post_message(self, *, channel: str, text: str) -> Dict[str, Any] | bytes:
         """Send a message to a Slack channel or user."""
         try:
             response = self.client.chat_postMessage(channel=channel, text=text)
@@ -116,12 +113,11 @@ class SlackClientWrapper:
             }
 
 
-def send_slack_direct_message(tool_context: ToolContext, slack_user_id: str, message: str) -> Dict[str, Any]:
+def send_slack_direct_message(slack_user_id: str, message: str) -> Dict[str, Any]:
     """
     Sends a direct message to a specific Slack user by their user ID.
 
     Args:
-        tool_context: Context to manage session state
         slack_user_id: Slack user ID (e.g., "U1234567890")
         message: Message content to send
 
@@ -157,7 +153,7 @@ def send_slack_direct_message(tool_context: ToolContext, slack_user_id: str, mes
 
     try:
         # Send direct message using Slack SDK
-        response = client.chat_postMessage(channel=user_id, text=message.strip())
+        response = client.chat_post_message(channel=user_id, text=message.strip())
 
         return {
             "status": "success",

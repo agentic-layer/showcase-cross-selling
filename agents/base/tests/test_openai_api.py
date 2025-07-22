@@ -1,13 +1,20 @@
+from unittest.mock import AsyncMock, Mock
+
 import pytest
-from unittest.mock import Mock, AsyncMock
+from base.openai_api.models import (
+    ChatCompletionResponse,
+    ChatCompletionStreamResponse,
+    ChatMessage,
+    Choice,
+    ChoiceDelta,
+    DeltaMessage,
+    Role,
+)
+from base.openai_api.openai_api import OpenAICompatibleAPI
+from google.adk import Agent
 from openai import OpenAI
 from openai.types.chat.chat_completion_user_message_param import ChatCompletionUserMessageParam
-
 from starlette.testclient import TestClient
-from google.adk import Agent
-
-from base.openai_api.openai_api import OpenAICompatibleAPI
-from base.openai_api.models import ChatCompletionResponse, Choice, ChatMessage, Role, ChatCompletionStreamResponse, ChoiceDelta, DeltaMessage
 
 
 @pytest.fixture
@@ -17,7 +24,7 @@ def dummy_agent() -> Agent:
         model="gemini-2.0-flash-exp",
         name="Host_Agent",
         instruction="You are a test insurance agent.",
-        description="Test agent for insurance host testing."
+        description="Test agent for insurance host testing.",
     )
 
 
@@ -37,26 +44,26 @@ def mock_chat_completion_service():
                 index=0,
                 message=ChatMessage(
                     role=Role.ASSISTANT,
-                    content="Hallo! Gerne helfe ich Ihnen bei Ihren Versicherungsfragen. Als Ihr Broker Success Partner kann ich Sie über unsere verschiedenen Versicherungsprodukte informieren."
+                    content="Hallo! Gerne helfe ich Ihnen bei Ihren Versicherungsfragen. Als Ihr Broker Success Partner kann ich Sie über unsere verschiedenen Versicherungsprodukte informieren.",
                 ),
-                finish_reason="stop"
+                finish_reason="stop",
             )
-        ]
+        ],
     )
 
     mock_service.create_chat_completion = AsyncMock(return_value=mock_response)
-    
+
     # Mock streaming response
     async def mock_stream_generator(request, user):
         """Generate mock streaming responses."""
         completion_id = "test-stream-id"
         created = 1234567890
-        
+
         # Send initial chunk with role
         initial_chunk = ChatCompletionStreamResponse(
             id=completion_id,
             created=created,
-            model='Host_Agent',
+            model="Host_Agent",
             choices=[
                 ChoiceDelta(
                     index=0,
@@ -66,7 +73,7 @@ def mock_chat_completion_service():
             ],
         )
         yield initial_chunk.model_dump_json()
-        
+
         # Send content chunks
         chunks = [
             "Hallo! ",
@@ -75,39 +82,27 @@ def mock_chat_completion_service():
             "Als Ihr Broker Success Partner ",
             "kann ich Sie über unsere ",
             "verschiedenen Versicherungsprodukte ",
-            "informieren."
+            "informieren.",
         ]
-        
+
         for chunk in chunks:
             stream_response = ChatCompletionStreamResponse(
                 id=completion_id,
                 created=created,
-                model='Host_Agent',
-                choices=[
-                    ChoiceDelta(
-                        index=0,
-                        delta=DeltaMessage(content=chunk),
-                        finish_reason=None
-                    )
-                ]
+                model="Host_Agent",
+                choices=[ChoiceDelta(index=0, delta=DeltaMessage(content=chunk), finish_reason=None)],
             )
             yield stream_response.model_dump_json()
-            
+
         # Send final chunk
         final_chunk = ChatCompletionStreamResponse(
             id=completion_id,
             created=created,
-            model='Host_Agent',
-            choices=[
-                ChoiceDelta(
-                    index=0,
-                    delta=DeltaMessage(),
-                    finish_reason="stop"
-                )
-            ]
+            model="Host_Agent",
+            choices=[ChoiceDelta(index=0, delta=DeltaMessage(), finish_reason="stop")],
         )
         yield final_chunk.model_dump_json()
-    
+
     mock_service.stream_chat_completion = mock_stream_generator
 
     return mock_service
@@ -126,7 +121,7 @@ def client(dummy_agent: Agent, mock_chat_completion_service) -> TestClient:
 @pytest.fixture
 def openai_client(client: TestClient) -> OpenAI:
     return OpenAI(
-        base_url="http://testserver/v1/Host_Agent",
+        base_url="http://testserver/v1",
         http_client=client,
         api_key="dummy-key",
     )
@@ -140,12 +135,11 @@ def test_openai_api_chat_completion(openai_client: OpenAI):
         model="insurance-host-agent",
         messages=[
             ChatCompletionUserMessageParam(
-                role = "user",
-                content = "Hallo, ich bin ein neuer Kunde und möchte mich über Versicherungen informieren."
+                role="user", content="Hallo, ich bin ein neuer Kunde und möchte mich über Versicherungen informieren."
             )
-        ]
+        ],
     )
-    
+
     # Verify response structure
     assert response.choices is not None
     assert len(response.choices) > 0
@@ -157,25 +151,24 @@ def test_openai_api_chat_completion(openai_client: OpenAI):
 
 def test_openai_api_streaming_chat_completion(openai_client: OpenAI):
     """Test streaming chat completion with the insurance host agent API."""
-    
+
     # Test streaming chat completion
     stream = openai_client.chat.completions.create(
         model="Host_Agent",
         messages=[
             ChatCompletionUserMessageParam(
-                role="user",
-                content="Was sind die wichtigsten Versicherungsarten für Familien?"
+                role="user", content="Was sind die wichtigsten Versicherungsarten für Familien?"
             )
         ],
-        stream=True
+        stream=True,
     )
-    
+
     # Collect streaming chunks
     chunks = []
     for chunk in stream:
         if chunk.choices and chunk.choices[0].delta.content:
             chunks.append(chunk.choices[0].delta.content)
-    
+
     # Verify we received streaming data
     assert len(chunks) > 0
     full_response = "".join(chunks)
