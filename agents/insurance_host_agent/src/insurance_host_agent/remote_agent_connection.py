@@ -29,7 +29,7 @@ class RemoteAgentConnections:
         self.card = agent_card
         self.conversation_name = None
         self.conversation = None
-        self.pending_tasks = set()
+        self.pending_tasks: set[Task] = set()
 
     def get_agent(self) -> AgentCard:
         return self.card

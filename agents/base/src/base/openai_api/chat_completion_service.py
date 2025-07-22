@@ -1,19 +1,28 @@
-import uuid
 import time
+import uuid
 from typing import AsyncGenerator, List
 
-from base.openai_api.models import ChatCompletionRequest, ChatCompletionResponse, Choice, ChatMessage, Role, Usage, \
-    ChatCompletionStreamResponse, ChoiceDelta, DeltaMessage
-from google.genai import types
 from google.adk.agents import Agent
 from google.adk.artifacts import InMemoryArtifactService
 from google.adk.memory.in_memory_memory_service import InMemoryMemoryService
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
+from google.genai import types
+
+from base.openai_api.models import (
+    ChatCompletionRequest,
+    ChatCompletionResponse,
+    ChatCompletionStreamResponse,
+    ChatMessage,
+    Choice,
+    ChoiceDelta,
+    DeltaMessage,
+    Role,
+    Usage,
+)
 
 
 class ChatCompletionService:
-
     def __init__(self, agent: Agent):
         self.runner = Runner(
             app_name=agent.name,
@@ -23,9 +32,7 @@ class ChatCompletionService:
             memory_service=InMemoryMemoryService(),
         )
 
-    async def create_chat_completion(
-            self, request: ChatCompletionRequest, user: str
-    ) -> ChatCompletionResponse:
+    async def create_chat_completion(self, request: ChatCompletionRequest, user: str) -> ChatCompletionResponse:
         """Create a non-streaming chat completion."""
         completion_id = await self._create_completion_id()
         created = int(time.time())
@@ -45,12 +52,11 @@ class ChatCompletionService:
         response_text = ""
         prompt_tokens = 0
         completion_tokens = 0
-        async for event in self.runner.run_async(
-                user_id=user, session_id=session.id, new_message=content
-        ):
+        async for event in self.runner.run_async(user_id=user, session_id=session.id, new_message=content):
             if event.is_final_response() and event.content and event.content.parts:
-                prompt_tokens = event.usage_metadata.prompt_token_count
-                completion_tokens = event.usage_metadata.candidates_token_count
+                if event.usage_metadata:
+                    prompt_tokens = event.usage_metadata.prompt_token_count or 0
+                    completion_tokens = event.usage_metadata.candidates_token_count or 0
                 for part in event.content.parts:
                     if hasattr(part, "text") and part.text:
                         response_text += part.text
@@ -73,9 +79,7 @@ class ChatCompletionService:
             ),
         )
 
-    async def stream_chat_completion(
-            self, request: ChatCompletionRequest, user: str
-    ) -> AsyncGenerator[str, None]:
+    async def stream_chat_completion(self, request: ChatCompletionRequest, user: str) -> AsyncGenerator[str, None]:
         """Create a non-streaming chat completion."""
         completion_id = await self._create_completion_id()
         created = int(time.time())
@@ -110,9 +114,7 @@ class ChatCompletionService:
             yield initial_chunk.model_dump_json()
 
             # Stream agent response
-            async for event in self.runner.run_async(
-                    user_id=user, session_id=session.id, new_message=content
-            ):
+            async for event in self.runner.run_async(user_id=user, session_id=session.id, new_message=content):
                 if event.content and event.content.parts:
                     for part in event.content.parts:
                         if hasattr(part, "text") and part.text:
@@ -166,7 +168,6 @@ class ChatCompletionService:
     async def _create_completion_id(self):
         completion_id = f"chatcmpl-{uuid.uuid4().hex}"
         return completion_id
-
 
     def _messages_to_query(self, messages: List[ChatMessage]) -> str:
         """Convert chat messages to a single query string."""

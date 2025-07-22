@@ -1,9 +1,9 @@
 from a2a.server.apps import A2AStarletteApplication
 from a2a.server.request_handlers import DefaultRequestHandler
 from a2a.server.tasks import InMemoryTaskStore
-
 from base.a2a.agent_executor import A2AAgentExecutor
 from base.instrument_starlette_application import instrument_starlette_application
+
 from insurance_host_agent.a2a.card import agent_card
 from insurance_host_agent.agent import root_agent
 

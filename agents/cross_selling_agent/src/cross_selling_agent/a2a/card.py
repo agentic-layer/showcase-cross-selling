@@ -3,7 +3,7 @@ from a2a.types import AgentCapabilities, AgentCard, AgentSkill
 from cross_selling_agent.agent import root_agent
 
 # Define Agent Skills using A2A framework
-customer_analysis_skill = AgentSkill(
+customer_analysis_skill: AgentSkill = AgentSkill(
     id="analyze_customer_profile",
     name="Customer Profile Analysis",
     description="Analyze customer CRM data to identify demographics, existing policies, financial capacity, and "
@@ -18,7 +18,7 @@ customer_analysis_skill = AgentSkill(
     ],
 )
 
-customer_email_retrieval_skill = AgentSkill(
+customer_email_retrieval_skill: AgentSkill = AgentSkill(
     id="get_customer_email",
     name="Customer Email Retrieval",
     description="Retrieve customer email address from CRM system. Required input is a customer ID formated as ^cust\\d{3}$.",
@@ -30,7 +30,7 @@ customer_email_retrieval_skill = AgentSkill(
     ],
 )
 
-customer_slackID_retrieval_skill = AgentSkill(
+customer_slack_id_retrieval_skill: AgentSkill = AgentSkill(
     id="get_customer_slackID",
     name="Customer Slack ID Retrieval",
     description="Retrieve customer Slack ID from CRM system. Required input is a customer ID formated as ^cust\\d{3}$.",
@@ -42,7 +42,7 @@ customer_slackID_retrieval_skill = AgentSkill(
     ],
 )
 
-customer_data_retrieval_skill = AgentSkill(
+customer_data_retrieval_skill: AgentSkill = AgentSkill(
     id="get_customer_crm_data",
     name="Customer CRM Data Retrieval",
     description="Retrieve comprehensive customer data from CRM system including demographics, customer email address, "
@@ -60,7 +60,7 @@ customer_data_retrieval_skill = AgentSkill(
     ],
 )
 
-product_matching_skill = AgentSkill(
+product_matching_skill: AgentSkill = AgentSkill(
     id="match_insurance_products",
     name="Insurance Product Matching",
     description="Access comprehensive insurance product catalog and match products to customer profiles. "
@@ -81,7 +81,7 @@ product_matching_skill = AgentSkill(
     ],
 )
 
-cross_sell_analysis_skill = AgentSkill(
+cross_sell_analysis_skill: AgentSkill = AgentSkill(
     id="cross_selling_analysis",
     name="Cross-Selling Opportunity Analysis",
     description="Perform comprehensive cross-selling analysis by combining customer data with product catalog. "
@@ -109,7 +109,7 @@ agent_skills: list[AgentSkill] = [
     cross_sell_analysis_skill,
     customer_data_retrieval_skill,
     customer_email_retrieval_skill,
-    customer_slackID_retrieval_skill,
+    customer_slack_id_retrieval_skill,
 ]
 
 agent_card = AgentCard(

@@ -1,8 +1,8 @@
-from a2a.types import AgentCard, AgentCapabilities, AgentSkill
+from a2a.types import AgentCapabilities, AgentCard, AgentSkill
 
 from insurance_host_agent.agent import root_agent
 
-orchestration_skill = AgentSkill(
+orchestration_skill: AgentSkill = AgentSkill(
     id="orchestrate_customer_support",
     name="Customer Support Orchestration",
     description="Orchestrate customer support requests by coordinating with specialized agents (cross-selling and communications agents). Acts as the central hub for routing tasks to appropriate agents based on customer needs.",
@@ -15,7 +15,7 @@ orchestration_skill = AgentSkill(
     ],
 )
 
-delegation_skill = AgentSkill(
+delegation_skill: AgentSkill = AgentSkill(
     id="delegate_to_specialists",
     name="Specialist Agent Delegation",
     description="Delegate specific tasks to specialized agents including cross-selling analysis and customer communications. Ensures proper task routing and coordination between different agent capabilities.",
@@ -28,7 +28,7 @@ delegation_skill = AgentSkill(
     ],
 )
 
-customer_service_skill = AgentSkill(
+customer_service_skill: AgentSkill = AgentSkill(
     id="customer_service_support",
     name="Insurance Customer Service",
     description="Provide comprehensive customer service support for insurance-related inquiries. Handles customer interactions in German and ensures professional, helpful responses while identifying opportunities for additional services.",

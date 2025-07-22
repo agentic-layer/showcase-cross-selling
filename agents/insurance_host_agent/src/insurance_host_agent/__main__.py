@@ -6,7 +6,6 @@ from insurance_host_agent.api.api import api
 
 
 def main():
-
     app = FastAPI(
         title="Insurance Host Agent API",
         description="API for the Insurance Host Agent",
@@ -17,6 +16,7 @@ def main():
     app.mount("/api", api, name="api")
 
     uvicorn.run(app, host="0.0.0.0")
+
 
 if __name__ == "__main__":
     main()
