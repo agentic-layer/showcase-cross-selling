@@ -99,7 +99,7 @@ services:
   insurance-host-agent:
     build:
       context: .
-      dockerfile: agents/Dockerfile
+      dockerfile: agents/insurance_host_agent/Dockerfile
       args:
         AGENT_NAME: insurance_host_agent
     ports:
