@@ -10,14 +10,14 @@ insurance_company_name = "SecureLife Insurance"
 # Create MCP toolset for customer CRM data
 customer_crm_toolset = MCPToolset(
     connection_params=StreamableHTTPConnectionParams(
-        url=os.getenv("MCP_CUSTOMER_CRM_URL", "http://localhost:8002/mcp"),
+        url="http://mcp-customer-crm:8000/mcp",
     ),
 )
 
 # Create MCP toolset for insurance products
 insurance_products_toolset = MCPToolset(
     connection_params=StreamableHTTPConnectionParams(
-        url=os.getenv("MCP_INSURANCE_PRODUCTS_URL", "http://localhost:8003/mcp"),
+        url="http://mcp-insurance-products:8000/mcp",
     ),
 )
 

@@ -267,7 +267,14 @@ def get_initialized_host_agent_sync():
         return hosting_agent_instance.create_agent()
 
     try:
-        return asyncio.run(_async_main())
+        loop = asyncio.get_event_loop()
+        if loop.is_running():
+            import concurrent.futures
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future = executor.submit(asyncio.run, _async_main())
+                return future.result()
+        else:
+            return loop.run_until_complete(_async_main())
     except RuntimeError as e:
         if "asyncio.run() cannot be called from a running event loop" in str(e):
             print(
