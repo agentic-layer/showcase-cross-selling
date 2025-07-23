@@ -8,7 +8,7 @@ from base.agent_executor import ADKAgentExecutor
 from stats_analysis_agent.agent import root_agent
 
 
-def main():
+def main() -> None:
     # Define Agent Skills using A2A framework
 
     cancellation_or_non_renewal_pattern_skill = AgentSkill(
@@ -152,8 +152,7 @@ def main():
     )
 
     # Agent Skills List
-    agent_skills: list[AgentSkill] = [product_data_retrieval_skill,
-                                      cancellation_or_non_renewal_pattern_skill,
+    agent_skills: list[AgentSkill] = [cancellation_or_non_renewal_pattern_skill,
                                       customer_analysis_skill,
                                       customer_segmentation_skill,
                                       customer_behavior_analysis_skill,

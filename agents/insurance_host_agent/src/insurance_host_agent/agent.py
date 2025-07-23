@@ -37,7 +37,7 @@ class HostAgent:
 
     def __init__(
         self,
-    ):
+    ) -> None:
         self.remote_agent_connections: dict[str, RemoteAgentConnections] = {}
         self.cards: dict[str, AgentCard] = {}
         self.agents: str = ""

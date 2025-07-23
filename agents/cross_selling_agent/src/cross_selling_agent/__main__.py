@@ -9,7 +9,7 @@ from cross_selling_agent.agent import root_agent
 from base.agent_executor import ADKAgentExecutor
 
 
-def main():
+def main() -> None:
     # Define Agent Skills using A2A framework
     customer_analysis_skill = AgentSkill(
         id="analyze_customer_profile",

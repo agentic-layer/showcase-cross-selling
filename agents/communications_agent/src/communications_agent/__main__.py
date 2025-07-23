@@ -8,7 +8,7 @@ from base.agent_executor import ADKAgentExecutor
 from communications_agent.agent import root_agent
 
 
-def main():
+def main()  -> None:
     # Define Agent Skills using A2A framework
 
     text_draft_skill: AgentSkill = AgentSkill(

@@ -1,4 +1,6 @@
 # Agent card (metadata)
+from typing import NoReturn
+
 import uvicorn
 from a2a.server.apps import A2AStarletteApplication
 from a2a.server.request_handlers import DefaultRequestHandler
@@ -9,7 +11,7 @@ from insurance_host_agent.agent import root_agent
 from base.agent_executor import ADKAgentExecutor
 
 
-def main():
+def main() -> None:
     # Define Agent Skills using A2A framework
     orchestration_skill = AgentSkill(
         id="orchestrate_customer_support",
