@@ -12,7 +12,7 @@ dependencies = [
 base = { workspace = true }
 
 [project.scripts]
-insurance_host_agent = "insurance_host_agent:main"
+insurance_host_agent = "insurance_host_agent.__main__:main"
 
 [build-system]
 requires = ["hatchling"]
