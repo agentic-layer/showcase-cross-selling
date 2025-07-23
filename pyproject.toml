@@ -22,6 +22,7 @@ members = [
     "agents/insurance_host_agent",
     "agents/communications_agent",
     "agents/cross_selling_agent",
+    "agents/service_expert",
     "mcp-servers/customer_crm",
     "mcp-servers/insurance_products",
     "agents/stats_analysis_agent",
