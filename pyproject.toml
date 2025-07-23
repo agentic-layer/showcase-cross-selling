@@ -26,6 +26,7 @@ members = [
     "mcp-servers/customer_crm",
     "mcp-servers/insurance_products",
     "agents/stats_analysis_agent",
+    "agents/service_expert",
 ]
 
 [tool.poe.tasks]
@@ -49,7 +50,7 @@ root_packages = [
     "cross_selling_agent",
     "customer_crm",
     "insurance_host_agent",
-    "insurance_products"
+    "insurance_products",
 ]
 
 [tool.ruff]

@@ -11,6 +11,7 @@ members = [
     "customer-crm",
     "insurance-host-agent",
     "insurance-products",
+    "service-expert",
     "stats-analysis-agent",
 ]
 
@@ -2180,6 +2181,17 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/e5/d3/7ba42647d6709251cdf97043d0c107e0317e152fa2f76873b656b509ff55/scipy-1.16.0-cp313-cp313t-musllinux_1_2_x86_64.whl", hash = "sha256:aad603e9339ddb676409b104c48a027e9916ce0d2838830691f39552b38a352e", size = 37950262, upload-time = "2025-06-22T16:21:36.976Z" },
     { url = "https://files.pythonhosted.org/packages/eb/c4/231cac7a8385394ebbbb4f1ca662203e9d8c332825ab4f36ffc3ead09a42/scipy-1.16.0-cp313-cp313t-win_amd64.whl", hash = "sha256:f56296fefca67ba605fd74d12f7bd23636267731a72cb3947963e76b8c0a25db", size = 38515076, upload-time = "2025-06-22T16:21:45.694Z" },
 ]
+
+[[package]]
+name = "service-expert"
+version = "0.1.0"
+source = { editable = "agents/service_expert" }
+dependencies = [
+    { name = "base" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "base", editable = "agents/base" }]
 
 [[package]]
 name = "setuptools"

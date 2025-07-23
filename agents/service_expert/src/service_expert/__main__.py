@@ -1,11 +1,12 @@
-import asyncio
 import uvicorn
-from a2a_sdk.app import A2AStarletteApplication
-from a2a_sdk.models import AgentCard, AgentSkill
-from a2a_sdk.handler import DefaultRequestHandler
-from base import ADKAgentExecutor
+from a2a.server.apps import A2AStarletteApplication
+from a2a.server.request_handlers import DefaultRequestHandler
+from a2a.server.tasks import InMemoryTaskStore
+from a2a.types import AgentCapabilities, AgentCard, AgentSkill
 
-from .agent import ServiceExpertAgent
+from base.agent_executor import ADKAgentExecutor
+
+from .agent import root_agent
 
 
 def main():
@@ -60,22 +61,23 @@ def main():
         name="Service Expert",
         description="Insurance Service Expert providing comprehensive product information and guidance",
         url="http://service-expert:8000/",
-        capabilities=[
-            "Retrieve detailed insurance product information",
-            "Compare different insurance products and plans",
-            "Explain coverage details and policy terms",
-            "Provide product recommendations for cross-selling",
-            "Ensure regulatory compliance in product information"
-        ],
+        defaultInputModes=["text", "text/plain"],
+        defaultOutputModes=["text", "text/plain"],
+        version="1.0.0",
+        capabilities=AgentCapabilities(streaming=True),
         skills=skills
     )
 
-    agent = ServiceExpertAgent()
-    executor = ADKAgentExecutor(agent)
-    request_handler = DefaultRequestHandler(agent_card, executor)
-    app = A2AStarletteApplication(request_handler)
+    request_handler = DefaultRequestHandler(
+        agent_executor=ADKAgentExecutor(
+            agent=root_agent,
+        ),
+        task_store=InMemoryTaskStore(),
+    )
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    server = A2AStarletteApplication(agent_card=agent_card, http_handler=request_handler)
+
+    uvicorn.run(server.build(), host="0.0.0.0")
 
 
 if __name__ == "__main__":
