@@ -259,6 +259,7 @@ def get_initialized_host_agent_sync():
         subagent_urls = [
             "http://communications-agent:8000",  # Communications src
             "http://cross-selling-agent:8000",  # X selling src
+            "http://service-expert:8000",  # X selling src
         ]
 
         print("initializing host src")

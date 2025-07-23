@@ -41,6 +41,9 @@ jobs:
           - image_name: "insurance_host_agent"
             dockerfile: "agents/insurance_host_agent/Dockerfile"
             build_arg_key: "AGENT_NAME"
+          - image_name: "service_expert"
+            dockerfile: "agents/Dockerfile"
+            build_arg_key: "AGENT_NAME"
           # MCP server builds
           - image_name: "customer_crm"
             dockerfile: "mcp-servers/Dockerfile"
