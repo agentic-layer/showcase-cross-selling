@@ -1,0 +1,12 @@
+apiVersion: 1
+
+datasources:
+  - name: Tempo
+    type: tempo
+    uid: tempo-main
+    url: http://tempo:3200
+    access: proxy
+    isDefault: true
+    jsonData:
+      serviceMap:
+        datasourceUid: tempo-main

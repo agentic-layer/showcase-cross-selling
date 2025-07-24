@@ -29,6 +29,9 @@ from google.genai import types
 
 from insurance_host_agent.remote_agent_connection import RemoteAgentConnections
 
+from opentelemetry import trace
+from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
+
 load_dotenv()
 
 
@@ -216,39 +219,45 @@ class HostAgent:
         if not client:
             raise ValueError(f"Client not available for {agent_name}")
 
-        # Simplified task and context ID management
-        state = tool_context.state
-        task_id = state.get("task_id", str(uuid.uuid4()))
-        context_id = state.get("context_id", str(uuid.uuid4()))
-        message_id = str(uuid.uuid4())
+        carrier = {}
+        TraceContextTextMapPropagator().inject(carrier)
 
-        payload: Message = Message(
-            role=Role("user"),
-            parts=[Part(root=TextPart(text=task))],
-            messageId=message_id,
-            contextId=context_id,
-            taskId=task_id,
-        )
+        with trace.get_tracer(__name__).start_as_current_span(f"{self._agent.name}") as span:
 
-        message_request = SendMessageRequest(id=message_id, params=MessageSendParams(message=payload))
-        send_response: SendMessageResponse = await client.send_message(message_request)
-        print("send_response", send_response)
+            # Simplified task and context ID management
+            state = tool_context.state
+            task_id = state.get("task_id", str(uuid.uuid4()))
+            context_id = state.get("context_id", str(uuid.uuid4()))
+            message_id = str(uuid.uuid4())
 
-        if not isinstance(send_response.root, SendMessageSuccessResponse) or not isinstance(
-            send_response.root.result, Task
-        ):
-            print("Received a non-success or non-task response. Cannot proceed.")
-            return
+            payload: Message = Message(
+                role=Role("user"),
+                parts=[Part(root=TextPart(text=task))],
+                messageId=message_id,
+                contextId=context_id,
+                taskId=task_id,
+                metadata=carrier,
+            )
 
-        response_content = send_response.root.model_dump_json(exclude_none=True)
-        json_content = json.loads(response_content)
+            message_request = SendMessageRequest(id=message_id, params=MessageSendParams(message=payload))
+            send_response: SendMessageResponse = await client.send_message(message_request)
+            print("send_response", send_response)
 
-        resp = []
-        if json_content.get("result", {}).get("artifacts"):
-            for artifact in json_content["result"]["artifacts"]:
-                if artifact.get("parts"):
-                    resp.extend(artifact["parts"])
-        return resp
+            if not isinstance(send_response.root, SendMessageSuccessResponse) or not isinstance(
+                send_response.root.result, Task
+            ):
+                print("Received a non-success or non-task response. Cannot proceed.")
+                return
+
+            response_content = send_response.root.model_dump_json(exclude_none=True)
+            json_content = json.loads(response_content)
+
+            resp = []
+            if json_content.get("result", {}).get("artifacts"):
+                for artifact in json_content["result"]["artifacts"]:
+                    if artifact.get("parts"):
+                        resp.extend(artifact["parts"])
+            return resp
 
 
 def get_initialized_host_agent_sync():

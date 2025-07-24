@@ -13,6 +13,9 @@ from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai import types
 
+from opentelemetry import trace
+from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
+
 
 class ADKAgentExecutor(AgentExecutor):
     def __init__(
@@ -53,54 +56,62 @@ class ADKAgentExecutor(AgentExecutor):
         event_queue: EventQueue,
     ) -> None:
         print("Starting communications src...")
-        query = context.get_user_input()
-        task = context.current_task or new_task(context.message)
-        await event_queue.enqueue_event(task)
+        message = context.message
+        carrier = getattr(message, "metadata", {})
+        parent_context = TraceContextTextMapPropagator().extract(carrier=carrier)
 
-        updater = TaskUpdater(event_queue, task.id, task.contextId)
-        if context.call_context:
-            user_id = context.call_context.user.user_name
-        else:
-            user_id = "a2a_user"
+        with trace.get_tracer(__name__).start_as_current_span(
+            f"{self.agent.name}", context=parent_context
+        ) as span:
 
-        try:
-            # Update status with custom message
-            await updater.update_status(
-                TaskState.working,
-                new_agent_text_message(self.status_message, task.contextId, task.id),
-            )
+            query = context.get_user_input()
+            task = context.current_task or new_task(context.message)
+            await event_queue.enqueue_event(task)
 
-            # Process with ADK src
-            session = await self.runner.session_service.create_session(
-                app_name=self.agent.name,
-                user_id=user_id,
-                state={},
-                session_id=task.contextId,
-            )
+            updater = TaskUpdater(event_queue, task.id, task.contextId)
+            if context.call_context:
+                user_id = context.call_context.user.user_name
+            else:
+                user_id = "a2a_user"
 
-            content = types.Content(role="user", parts=[types.Part.from_text(text=query)])
+            try:
+                # Update status with custom message
+                await updater.update_status(
+                    TaskState.working,
+                    new_agent_text_message(self.status_message, task.contextId, task.id),
+                )
 
-            response_text = ""
-            async for event in self.runner.run_async(user_id=user_id, session_id=session.id, new_message=content):
-                if event.is_final_response() and event.content and event.content.parts:
-                    for part in event.content.parts:
-                        if hasattr(part, "text") and part.text:
-                            response_text += part.text + "\n"
-                        elif hasattr(part, "function_call"):
-                            # Log or handle function calls if needed
-                            pass  # Function calls are handled internally by ADK
+                # Process with ADK src
+                session = await self.runner.session_service.create_session(
+                    app_name=self.agent.name,
+                    user_id=user_id,
+                    state={},
+                    session_id=task.contextId,
+                )
 
-            # Add response as artifact with custom name
-            await updater.add_artifact(
-                [Part(root=TextPart(text=response_text))],
-                name=self.artifact_name,
-            )
+                content = types.Content(role="user", parts=[types.Part.from_text(text=query)])
 
-            await updater.complete()
+                response_text = ""
+                async for event in self.runner.run_async(user_id=user_id, session_id=session.id, new_message=content):
+                    if event.is_final_response() and event.content and event.content.parts:
+                        for part in event.content.parts:
+                            if hasattr(part, "text") and part.text:
+                                response_text += part.text + "\n"
+                            elif hasattr(part, "function_call"):
+                                # Log or handle function calls if needed
+                                pass  # Function calls are handled internally by ADK
 
-        except Exception as e:
-            await updater.update_status(
-                TaskState.failed,
-                new_agent_text_message(f"Error: {e!s}", task.contextId, task.id),
-                final=True,
-            )
+                # Add response as artifact with custom name
+                await updater.add_artifact(
+                    [Part(root=TextPart(text=response_text))],
+                    name=self.artifact_name,
+                )
+
+                await updater.complete()
+
+            except Exception as e:
+                await updater.update_status(
+                    TaskState.failed,
+                    new_agent_text_message(f"Error: {e!s}", task.contextId, task.id),
+                    final=True,
+                )

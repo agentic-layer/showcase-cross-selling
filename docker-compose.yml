@@ -11,6 +11,8 @@ services:
       - "10002:8000"
     env_file: agents/.env
     environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4318
+      OTEL_SERVICE_NAME: communications-agent
       GOOGLE_APPLICATION_CREDENTIALS: /tmp/keys/keyfile.json
     volumes:
       - $HOME/.config/gcloud/application_default_credentials.json:/tmp/keys/keyfile.json:ro
@@ -28,6 +30,8 @@ services:
       - "10003:8000"
     env_file: agents/.env
     environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4318
+      OTEL_SERVICE_NAME: cross-selling-agent
       MCP_CUSTOMER_CRM_URL: http://mcp-customer-crm:8002/mcp
       MCP_INSURANCE_PRODUCTS_URL: http://mcp-insurance-products:8003/mcp
       GOOGLE_APPLICATION_CREDENTIALS: /tmp/keys/keyfile.json
@@ -52,6 +56,8 @@ services:
       - "10101:8001"
     env_file: agents/.env
     environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4318
+      OTEL_SERVICE_NAME: stats-analysis-agent
       MCP_CUSTOMER_CRM_URL: http://mcp-customer-crm:8000/mcp
       MCP_INSURANCE_PRODUCTS_URL: http://mcp-insurance-products:8000/mcp
       GOOGLE_APPLICATION_CREDENTIALS: /tmp/keys/keyfile.json
@@ -107,6 +113,8 @@ services:
       - "8001:8001"
     env_file: agents/.env
     environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4318
+      OTEL_SERVICE_NAME: insurance-host-agent
       GOOGLE_APPLICATION_CREDENTIALS: /tmp/keys/keyfile.json
     volumes:
       - $HOME/.config/gcloud/application_default_credentials.json:/tmp/keys/keyfile.json:ro
@@ -117,6 +125,32 @@ services:
       - communications-agent
       - cross-selling-agent
     restart: unless-stopped
+
+  # Grafana and Grafana Tempo
+  tempo:
+    image: grafana/tempo:latest
+    command: [ "-config.file=/etc/tempo.yaml" ]
+    volumes:
+      - ./tempo-config.yaml:/etc/tempo.yaml
+    ports:
+      - "3200:3200"      # Tempo UI
+      - "4318:4318"      # OTLP HTTP receiver
+    networks:
+      - agentic-network
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"      # Grafana UI
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+    networks:
+      - agentic-network
+    depends_on:
+      - tempo
+    volumes:
+      - ./datasource.yaml:/etc/grafana/provisioning/datasources/datasource.yaml
 
 networks:
   agentic-network:
