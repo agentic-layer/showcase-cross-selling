@@ -27,6 +27,7 @@ members = [
     "mcp-servers/insurance_products",
     "agents/stats_analysis_agent",
     "agents/service_expert",
+    "agents/test_agent",
 ]
 
 [tool.poe.tasks]
