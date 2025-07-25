@@ -7,6 +7,10 @@ requires-python = ">=3.12"
 dependencies = [
     "google-adk[eval]>=1.6.1",
     "a2a-sdk>=0.2.10",
+    "fastapi>=0.100.0",
+    "uvicorn[standard]>=0.20.0",
+    "pydantic>=2.0.0",
+    "sse-starlette>=1.6.0",
     "opentelemetry-exporter-otlp-proto-http>=1.35.0",
     "openinference-instrumentation-google-adk>=0.1.1",
     "opentelemetry-instrumentation-starlette>=0.56b0",
