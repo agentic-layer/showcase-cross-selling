@@ -68,6 +68,9 @@ Each agent must:
 2. **Run A2A Server**: Start an `A2AStarletteApplication` server using `uvicorn`
 3. **Handle Requests**: Process incoming tasks through `DefaultRequestHandler` with `ADKAgentExecutor`
 4. **Network Accessibility**: Listen on `0.0.0.0:8000` for inter-agent communication
+5. **Register with Host Agent**: Add agent URL to the host agent's `subagent_urls` for routing
+6. **Added to docker-compose**: Ensure `./cross-selling-use-case/docker-compose.yml` includes your new agent
+7. **Added to github workflows**: Ensure `./cross-selling-use-case/.github/workflows/build-and-check.yml` and `./cross-selling-use-case/.github/workflows/build-and-publish.yml` include your new agent and its Dockerfile under strategy matrix include
 
 #### Orchestration Flow
 1. User interacts with `insurance_host_agent` (the orchestrator)
