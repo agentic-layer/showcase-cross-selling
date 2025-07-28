@@ -24,17 +24,17 @@ def _add_conversation_id_to_span(span: Span, args, kwargs, result, exception):
         if conversation_id := metadata.get("conversation_id"):
             span.set_attribute("conversation_id", conversation_id)
 
-class ADKAgentExecutor(AgentExecutor):
+class A2AAgentExecutor(AgentExecutor):
     def __init__(
         self,
         agent,
         status_message="Processing request...",
         artifact_name="response",
     ):
-        """Initialize a generic ADK src executor.
+        """Initialize a generic A2A executor.
 
         Args:
-            agent: The ADK src instance
+            agent: The ADK agent instance
             status_message: Message to display while processing
             artifact_name: Name for the response artifact
         """
@@ -64,7 +64,6 @@ class ADKAgentExecutor(AgentExecutor):
         context: RequestContext,
         event_queue: EventQueue,
     ) -> None:
-        print("Starting communications src...")
 
         query = context.get_user_input()
         task = context.current_task or new_task(context.message)

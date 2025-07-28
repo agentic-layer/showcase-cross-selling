@@ -44,33 +44,6 @@ services:
       - mcp-insurance-products
     restart: unless-stopped
 
-  # A2A Stats-Analysis Agent
-  stats-analysis-agent:
-    build:
-      context: .
-      dockerfile: agents/Dockerfile
-      args:
-        AGENT_NAME: stats_analysis_agent
-    ports:
-      - "10005:8000"
-      - "10101:8001"
-    env_file: agents/.env
-    environment:
-      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4318
-      OTEL_SERVICE_NAME: stats-analysis-agent
-      MCP_CUSTOMER_CRM_URL: http://mcp-customer-crm:8000/mcp
-      MCP_INSURANCE_PRODUCTS_URL: http://mcp-insurance-products:8000/mcp
-      GOOGLE_APPLICATION_CREDENTIALS: /tmp/keys/keyfile.json
-    command: [ "uv", "run", "adk", "web", "--host", "0.0.0.0", "--port", "8001", "agents/stats_analysis_agent/src" ]
-    volumes:
-      - $HOME/.config/gcloud/application_default_credentials.json:/tmp/keys/keyfile.json:ro
-    networks:
-      - agentic-network
-    depends_on:
-      - mcp-customer-crm
-      - mcp-insurance-products
-    restart: unless-stopped
-
   # MCP Server - Customer CRM
   mcp-customer-crm:
     build:
