@@ -1,5 +1,3 @@
-import os
-
 from google.adk.agents import Agent
 from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset
 from google.adk.tools.mcp_tool import StreamableHTTPConnectionParams
@@ -10,17 +8,16 @@ insurance_company_name = "SecureLife Insurance"
 # Create MCP toolset for customer CRM data
 customer_crm_toolset = MCPToolset(
     connection_params=StreamableHTTPConnectionParams(
-        url="http://mcp-customer-crm:8000/mcp",
+        url="http://mcp-customer-crm:8000/mcp/",
     ),
 )
 
 # Create MCP toolset for insurance products
 insurance_products_toolset = MCPToolset(
     connection_params=StreamableHTTPConnectionParams(
-        url="http://mcp-insurance-products:8000/mcp",
+        url="http://mcp-insurance-products:8000/mcp/",
     ),
 )
-
 
 root_agent = Agent(
     name="insurance_cross_sell_agent",

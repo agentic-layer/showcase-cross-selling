@@ -16,6 +16,6 @@ uv sync
 Other agents can import and use components from this package:
 
 ```python
-from base.agent_executor import ADKAgentExecutor
+from base.a2a.agent_executor import A2AAgentExecutor
 # Use shared functionality
 ```

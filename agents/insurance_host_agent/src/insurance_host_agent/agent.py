@@ -288,9 +288,8 @@ def get_initialized_host_agent_sync():
     async def _async_main():
         # Hardcoded URLs for the friend agents
         subagent_urls = [
-            "http://communications-agent:8000",  # Communications src
-            "http://cross-selling-agent:8000",  # X selling src
-            "http://service-expert:8000",  # X selling src
+            "http://communications-agent:8000/a2a",  # Communications src
+            "http://cross-selling-agent:8000/a2a",  # X selling src
         ]
 
         print("initializing host src")
