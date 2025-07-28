@@ -30,8 +30,7 @@ from google.genai import types
 
 from insurance_host_agent.remote_agent_connection import RemoteAgentConnections
 
-from opentelemetry import trace, baggage
-from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
+from opentelemetry import trace
 
 load_dotenv()
 
@@ -273,7 +272,6 @@ class HostAgent:
     def _inject_conversation_id_into_span(self, callback_context: CallbackContext) -> Optional[types.Content]:
         span = trace.get_current_span()
         conversation_id = callback_context.state.get("conversation_id", "")
-        # ctx = baggage.set_baggage("conversation_id", conversation_id)
         span.set_attribute("conversation_id", conversation_id)
         return None
 
