@@ -1,7 +1,7 @@
 import asyncio
 import json
 import uuid
-from typing import Any, AsyncIterable, List
+from typing import Any, AsyncIterable, List, Optional
 
 import httpx
 from a2a.client import A2ACardResolver
@@ -25,11 +25,12 @@ from google.adk.memory.in_memory_memory_service import InMemoryMemoryService
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.adk.tools.tool_context import ToolContext
+from google.adk.agents.callback_context import CallbackContext
 from google.genai import types
 
 from insurance_host_agent.remote_agent_connection import RemoteAgentConnections
 
-from opentelemetry import trace
+from opentelemetry import trace, baggage
 from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
 
 load_dotenv()
@@ -92,6 +93,7 @@ class HostAgent:
             tools=[
                 self.send_message,
             ],
+            before_agent_callback=[self._create_conversation_id, self._inject_conversation_id_into_span],
         )
 
     def root_instruction(self, context: ReadonlyContext) -> str:
@@ -219,45 +221,61 @@ class HostAgent:
         if not client:
             raise ValueError(f"Client not available for {agent_name}")
 
-        carrier = {}
-        TraceContextTextMapPropagator().inject(carrier)
+        # Simplified task and context ID management
+        state = tool_context.state
+        task_id = state.get("task_id", str(uuid.uuid4()))
+        context_id = state.get("context_id", str(uuid.uuid4()))
+        message_id = str(uuid.uuid4())
 
-        with trace.get_tracer(__name__).start_as_current_span(f"{self._agent.name}") as span:
+        # Make sure conversation id exists and add it to the message
+        self._create_conversation_id(tool_context)
+        conversation_id = tool_context.state.get("conversation_id", "")
+        metadata = {
+            "conversation_id": conversation_id,
+        }
 
-            # Simplified task and context ID management
-            state = tool_context.state
-            task_id = state.get("task_id", str(uuid.uuid4()))
-            context_id = state.get("context_id", str(uuid.uuid4()))
-            message_id = str(uuid.uuid4())
+        payload: Message = Message(
+            role=Role("user"),
+            parts=[Part(root=TextPart(text=task))],
+            messageId=message_id,
+            contextId=context_id,
+            taskId=task_id,
+            metadata=metadata,
+        )
 
-            payload: Message = Message(
-                role=Role("user"),
-                parts=[Part(root=TextPart(text=task))],
-                messageId=message_id,
-                contextId=context_id,
-                taskId=task_id,
-                metadata=carrier,
-            )
+        message_request = SendMessageRequest(id=message_id, params=MessageSendParams(message=payload))
+        send_response: SendMessageResponse = await client.send_message(message_request)
+        print("send_response", send_response)
 
-            message_request = SendMessageRequest(id=message_id, params=MessageSendParams(message=payload))
-            send_response: SendMessageResponse = await client.send_message(message_request)
-            print("send_response", send_response)
+        if not isinstance(send_response.root, SendMessageSuccessResponse) or not isinstance(
+            send_response.root.result, Task
+        ):
+            print("Received a non-success or non-task response. Cannot proceed.")
+            return
 
-            if not isinstance(send_response.root, SendMessageSuccessResponse) or not isinstance(
-                send_response.root.result, Task
-            ):
-                print("Received a non-success or non-task response. Cannot proceed.")
-                return
+        response_content = send_response.root.model_dump_json(exclude_none=True)
+        json_content = json.loads(response_content)
 
-            response_content = send_response.root.model_dump_json(exclude_none=True)
-            json_content = json.loads(response_content)
+        resp = []
+        if json_content.get("result", {}).get("artifacts"):
+            for artifact in json_content["result"]["artifacts"]:
+                if artifact.get("parts"):
+                    resp.extend(artifact["parts"])
+        return resp
 
-            resp = []
-            if json_content.get("result", {}).get("artifacts"):
-                for artifact in json_content["result"]["artifacts"]:
-                    if artifact.get("parts"):
-                        resp.extend(artifact["parts"])
-            return resp
+    def _create_conversation_id(self, callback_context: CallbackContext) -> Optional[types.Content]:
+        if callback_context.state.get("conversation_id"):
+            return None
+        conversation_id = str(uuid.uuid4())
+        callback_context.state["conversation_id"] = conversation_id
+        return None
+
+    def _inject_conversation_id_into_span(self, callback_context: CallbackContext) -> Optional[types.Content]:
+        span = trace.get_current_span()
+        conversation_id = callback_context.state.get("conversation_id", "")
+        # ctx = baggage.set_baggage("conversation_id", conversation_id)
+        span.set_attribute("conversation_id", conversation_id)
+        return None
 
 
 def get_initialized_host_agent_sync():
