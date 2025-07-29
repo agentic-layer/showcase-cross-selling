@@ -40,11 +40,13 @@ cd mcp-server
 - Agents use Google ADK framework with `Agent` class from `google.adk.agents`
 - Tools can be Python functions or MCP toolsets via `MCPToolset`
 - Current agents include:
+  - `base/`: Shared base components including A2A agent executor and OpenAI API integration
   - `communications_agent/`: Handles drafting professional communications
   - `cross_selling_agent/`: Identifies cross-selling opportunities from CRM data
   - `insurance_host_agent/`: Orchestrates customer support for insurance brokers (German language)
   - `stats_analysis_agent/`: Provides statistical analysis capabilities
 - Each agent follows the structure: `agent_name/src/agent_name/agent.py`
+- Each agent includes A2A (Agent-to-Agent) integration in `agent_name/src/agent_name/a2a/`
 - For detailed instructions on creating new agents, see the "Adding a New Agent" section in [README.md](./README.md)
 
 ### MCP Server Structure
@@ -64,13 +66,14 @@ The agents operate as a distributed network using the Agent-to-Agent (A2A) proto
 
 #### Agent Deployment
 Each agent must:
-1. **Expose Agent Cards**: Define capabilities, skills, and metadata via A2A `AgentCard`
-2. **Run A2A Server**: Start an `A2AStarletteApplication` server using `uvicorn`
-3. **Handle Requests**: Process incoming tasks through `DefaultRequestHandler` with `ADKAgentExecutor`
-4. **Network Accessibility**: Listen on `0.0.0.0:8000` for inter-agent communication
-5. **Register with Host Agent**: Add agent URL to the host agent's `subagent_urls` for routing
-6. **Added to docker-compose**: Ensure `./cross-selling-use-case/docker-compose.yml` includes your new agent
-7. **Added to github workflows**: Ensure `./cross-selling-use-case/.github/workflows/build-and-check.yml` and `./cross-selling-use-case/.github/workflows/build-and-publish.yml` include your new agent and its Dockerfile under strategy matrix include
+1. **Define Agent Card**: Create `AgentCard` with capabilities, skills, and metadata in `a2a/card.py`
+2. **Setup A2A Application**: Configure `A2AStarletteApplication` with `DefaultRequestHandler` and `A2AAgentExecutor` in `a2a/a2a.py`
+3. **Create Main Entry Point**: Implement `__main__.py` with FastAPI app that mounts A2A endpoint at `/a2a`
+4. **Network Accessibility**: Run with `uvicorn` on `0.0.0.0:8000` for inter-agent communication
+5. **Use Base Components**: Leverage shared `A2AAgentExecutor` from `base/` module for consistent behavior
+6. **Register with Host Agent**: Add agent URL to the host agent's `subagent_urls` for routing
+7. **Added to docker-compose**: Ensure `./cross-selling-use-case/docker-compose.yml` includes your new agent
+8. **Added to github workflows**: Ensure `./cross-selling-use-case/.github/workflows/build-and-check.yml` and `./cross-selling-use-case/.github/workflows/build-and-publish.yml` include your new agent and its Dockerfile under strategy matrix include
 
 #### Orchestration Flow
 1. User interacts with `insurance_host_agent` (the orchestrator)
