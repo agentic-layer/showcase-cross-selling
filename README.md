@@ -50,13 +50,14 @@ gcloud auth application-default login
 
 ### 3. Environment Configuration
 
-Create a `.env` file in the project root:
+Create a `.env` file in the [agents](./agents) directory with the following content:
 
 ```dotenv
 # Google Cloud Configuration
-GOOGLE_GENAI_USE_VERTEXAI=TRUE
-GOOGLE_CLOUD_PROJECT=your-project-id
-GOOGLE_CLOUD_LOCATION=us-central1
+GOOGLE_GENAI_USE_VERTEXAI=FALSE
+GOOGLE_CLOUD_PROJECT=qaware-paal
+GOOGLE_CLOUD_LOCATION=europe-west3
+GOOGLE_API_KEY=your-google-api-key
 
 # Slack Integration (optional)
 SLACK_BOT_TOKEN=xoxb-your-slack-bot-token
