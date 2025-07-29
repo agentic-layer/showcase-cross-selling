@@ -92,7 +92,10 @@ class HostAgent:
             tools=[
                 self.send_message,
             ],
-            before_agent_callback=[self._create_conversation_id, self._inject_conversation_id_into_span],
+            before_agent_callback=[
+                self._before_agent_callback_create_conversation_id,
+                self._before_agent_callback_inject_conversation_id_into_span
+            ],
         )
 
     def root_instruction(self, context: ReadonlyContext) -> str:
@@ -262,14 +265,17 @@ class HostAgent:
                     resp.extend(artifact["parts"])
         return resp
 
-    def _create_conversation_id(self, callback_context: CallbackContext) -> Optional[types.Content]:
+    def _create_conversation_id(self, callback_context: CallbackContext) -> None:
         if callback_context.state.get("conversation_id"):
             return None
         conversation_id = str(uuid.uuid4())
         callback_context.state["conversation_id"] = conversation_id
         return None
 
-    def _inject_conversation_id_into_span(self, callback_context: CallbackContext) -> Optional[types.Content]:
+    def _before_agent_callback_create_conversation_id(self, callback_context: CallbackContext) -> Optional[types.Content]:
+        return self._create_conversation_id(callback_context)
+
+    def _before_agent_callback_inject_conversation_id_into_span(self, callback_context: CallbackContext) -> Optional[types.Content]:
         span = trace.get_current_span()
         conversation_id = callback_context.state.get("conversation_id", "")
         span.set_attribute("conversation_id", conversation_id)
