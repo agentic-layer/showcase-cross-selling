@@ -1,6 +1,8 @@
 from google.adk.agents import Agent
 from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset
 from google.adk.tools.mcp_tool import StreamableHTTPConnectionParams
+from google.adk.planners import BuiltInPlanner
+from google.genai import types
 
 # Company name
 insurance_company_name = "SecureLife Insurance"
@@ -21,7 +23,7 @@ insurance_products_toolset = MCPToolset(
 
 root_agent = Agent(
     name="insurance_cross_sell_agent",
-    model="gemini-2.0-flash-exp",
+    model="gemini-2.5-flash-lite",
     description=(
         f"Insurance Cross-Selling Agent for {insurance_company_name} - Assists employees in identifying "
         "and recommending insurance products to customers based on CRM data and product analysis"
@@ -87,4 +89,10 @@ root_agent = Agent(
         customer_crm_toolset,
         insurance_products_toolset,
     ],
+    planner=BuiltInPlanner(
+        thinking_config=types.ThinkingConfig(
+            include_thoughts=True,
+            thinking_budget=1024,
+        )
+    ),
 )

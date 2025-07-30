@@ -5,6 +5,8 @@ from typing import Any, Dict, Optional, Protocol
 
 from google.adk.agents import Agent
 from google.adk.tools import ToolContext
+from google.adk.planners import BuiltInPlanner
+from google.genai import types
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 
@@ -185,7 +187,7 @@ def send_slack_direct_message(tool_context: ToolContext, slack_user_id: str, mes
 
 root_agent = Agent(
     name="communications_agent",
-    model="gemini-2.0-flash-exp",
+    model="gemini-2.5-flash-lite",
     description="Communications Agent - Handles email and Slack direct messaging for automated communications",
     instruction="""\
         You are a professional communications src that helps with sending emails and Slack direct messages.
@@ -229,4 +231,10 @@ root_agent = Agent(
         send_email,
         send_slack_direct_message,
     ],
+    planner=BuiltInPlanner(
+        thinking_config=types.ThinkingConfig(
+            include_thoughts=True,
+            thinking_budget=1024,
+        )
+    ),
 )

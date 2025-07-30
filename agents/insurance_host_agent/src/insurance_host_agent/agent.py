@@ -26,6 +26,7 @@ from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.adk.tools.tool_context import ToolContext
 from google.adk.agents.callback_context import CallbackContext
+from google.adk.planners import BuiltInPlanner
 from google.genai import types
 
 from insurance_host_agent.remote_agent_connection import RemoteAgentConnections
@@ -85,7 +86,7 @@ class HostAgent:
 
     def create_agent(self) -> Agent:
         return Agent(
-            model="gemini-2.0-flash-exp",
+            model="gemini-2.5-flash-lite",
             name="Host_Agent",
             instruction=self.root_instruction,
             description="This Host src orchestrates customer support for insurance cross selling.",
@@ -96,6 +97,12 @@ class HostAgent:
                 self._before_agent_callback_create_conversation_id,
                 self._before_agent_callback_inject_conversation_id_into_span
             ],
+            planner=BuiltInPlanner(
+                thinking_config=types.ThinkingConfig(
+                    include_thoughts=True,
+                    thinking_budget=1024,
+                )
+            ),
         )
 
     def root_instruction(self, context: ReadonlyContext) -> str:
