@@ -17,8 +17,8 @@ env:
   GCP_LOCATION: 'europe-west3'
   GCP_PROJECT_ID: 'qaware-paal'
   GCP_REPOSITORY: 'agentic-layer-private'
-  WORKLOAD_IDENTITY_PROVIDER: 'projects/387309373030/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider'
-  SERVICE_ACCOUNT: 'github-actions@qaware-paal.iam.gserviceaccount.com'
+  WORKLOAD_IDENTITY_PROVIDER: 'projects/387309373030/locations/global/workloadIdentityPools/github-actions-identity-pool/providers/github-actions-provider'
+  SERVICE_ACCOUNT: 'sa-github-actions@qaware-paal.iam.gserviceaccount.com'
 
 jobs:
   build-and-publish-image:
