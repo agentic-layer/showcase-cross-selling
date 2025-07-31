@@ -39,7 +39,7 @@ jobs:
             dockerfile: "agents/Dockerfile"
             build_arg_key: "AGENT_NAME"
           - image_name: "insurance_host_agent"
-            dockerfile: "agents/insurance_host_agent/Dockerfile"
+            dockerfile: "agents/Dockerfile"
             build_arg_key: "AGENT_NAME"
           - image_name: "service_expert"
             dockerfile: "agents/Dockerfile"

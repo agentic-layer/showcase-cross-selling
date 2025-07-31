@@ -3,7 +3,7 @@ from fastapi import FastAPI
 
 from insurance_host_agent.a2a.a2a import a2a_app
 from insurance_host_agent.api.api import api
-
+from google.adk.cli.fast_api import get_fast_api_app
 
 def main():
     app = FastAPI(
@@ -12,8 +12,11 @@ def main():
         version="1.0.0",
     )
 
+    adk_web = get_fast_api_app(agents_dir="agents/insurance_host_agent/src", web=True)
+
     app.mount("/a2a", a2a_app, name="a2a")
     app.mount("/api", api, name="api")
+    app.mount("/", adk_web, name="web")
 
     uvicorn.run(app, host="0.0.0.0")
 
