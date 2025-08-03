@@ -24,4 +24,4 @@ RUN uv sync --frozen --package ${AGENT_NAME_ENV}
 EXPOSE 8000
 
 # Run the specified agent
-CMD uv run --package ${AGENT_NAME_ENV} ${AGENT_NAME_ENV}
+CMD ["uv", "run", "--package", "${AGENT_NAME_ENV}", "${AGENT_NAME_ENV}"]

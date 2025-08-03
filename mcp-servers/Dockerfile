@@ -23,4 +23,4 @@ RUN uv sync --frozen --package ${MCP_SERVER_NAME_ENV}
 EXPOSE 8000
 
 # Run the specified mcp server
-CMD uv run --package ${MCP_SERVER_NAME_ENV} ${MCP_SERVER_NAME_ENV}
+CMD ["uv", "run", "--package", "${MCP_SERVER_NAME_ENV}", "${MCP_SERVER_NAME_ENV}"]
