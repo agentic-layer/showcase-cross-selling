@@ -158,8 +158,8 @@ uv run --package <NEW_AGENT_NAME> <NEW_AGENT_NAME>
 
 ```bash
 # Start all services
-docker-compose up
+docker compose up
 
 # View logs
-docker-compose logs -f
+docker compose logs -f
 ```
