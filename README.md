@@ -1,10 +1,13 @@
 # Insurance Cross-Selling Use Case
 
-An agentic system for intelligent insurance cross-selling using Google's Agent Development Kit (ADK), Model Context Protocol (MCP) servers, and agent-to-agent communication.
+An agentic system for intelligent insurance cross-selling using Google's Agent Development Kit (ADK), Model Context
+Protocol (MCP) servers, and agent-to-agent communication.
 
 ## Overview
 
-This project demonstrates a multi-agent system that orchestrates insurance cross-selling opportunities by analyzing customer data, identifying suitable products, and coordinating customer communications. The system is built using modern agentic architecture principles with clear separation of concerns.
+This project demonstrates a multi-agent system that orchestrates insurance cross-selling opportunities by analyzing
+customer data, identifying suitable products, and coordinating customer communications. The system is built using modern
+agentic architecture principles with clear separation of concerns.
 
 ## Architecture
 
@@ -13,12 +16,15 @@ This project demonstrates a multi-agent system that orchestrates insurance cross
 The system consists of several specialized agents and MCP servers:
 
 #### 🤖 **Agents**
-- **[Insurance Host Agent](agents/insurance_host_agent/README.md)**: Main orchestration agent that coordinates customer interactions
+
+- **[Insurance Host Agent](agents/insurance_host_agent/README.md)**: Main orchestration agent that coordinates customer
+  interactions
 - **[Cross-Selling Agent](agents/cross_selling_agent/README.md)**: Identifies and presents cross-selling opportunities
 - **[Communications Agent](agents/communications_agent/README.md)**: Handles external communications (Slack, email)
 - **[Base Agent](agents/base/README.md)**: Shared utilities and execution framework
 
 #### 🔌 **MCP Servers**
+
 - **[Customer CRM](mcp-servers/customer_crm/README.md)**: Customer relationship management data and services
 - **[Insurance Products](mcp-servers/insurance_products/README.md)**: Insurance product catalog and information
 
@@ -43,6 +49,8 @@ uv sync --all-packages
 
 ### 2. Google Cloud Authentication
 
+A connection to Google Cloud is required to use Gemini models.
+
 ```bash
 # Authenticate with Google Cloud
 gcloud auth application-default login
@@ -64,6 +72,26 @@ SLACK_BOT_TOKEN=xoxb-your-slack-bot-token
 ```
 
 ## Development
+
+### Local Deployment
+
+```bash
+# Start all services
+docker compose up
+
+# View logs
+docker compose logs -f
+```
+
+Visit http://localhost:8001/ to access the ADK Web UI.
+
+You'll have access to the insurance host agent. Example questions:
+
+- "Welche Cross-Selling-Möglichkeiten gibt es für unsere Kundin Anna Müller mit der Kundennummer cust001?"
+- "Verfasse eine E-Mail an Anna Müller, um ihr unsere neuen Versicherungsprodukte vorzustellen."
+
+The traces can be viewed
+in [Grafana](http://localhost:3000/a/grafana-exploretraces-app/explore?from=now-30m&to=now&timezone=browser&var-ds=tempo-main&var-primarySignal=nestedSetParent%3C0&var-filters=&var-metric=rate&var-groupBy=resource.service.name&var-spanListColumns=&var-latencyThreshold=&var-partialLatencyThreshold=&actionView=traceList).
 
 ### Code Quality
 
@@ -115,6 +143,7 @@ uv init --package agents/any_insurance_agent
 #### 2. Configure Dependencies
 
 Edit the new agent's `pyproject.toml` file as follows:
+
 - Add the base dependency
 - Point the project.script to the main function of the new agent
 - Name the project.script the same as the agent package name
@@ -150,16 +179,4 @@ uv sync
 
 # Test the new agent
 uv run --package <NEW_AGENT_NAME> <NEW_AGENT_NAME>
-```
-
-## Deployment
-
-### Docker Compose
-
-```bash
-# Start all services
-docker compose up
-
-# View logs
-docker compose logs -f
 ```
