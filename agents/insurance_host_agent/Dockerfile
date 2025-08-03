@@ -27,4 +27,4 @@ EXPOSE 8000
 EXPOSE 8001
 
 # Run the specified agent
-CMD uv run adk web --host 0.0.0.0 --port 8001 agents/insurance_host_agent/src
+CMD ["uv", "run", "adk", "web", "--host", "0.0.0.0", "--port", "8001", "agents/insurance_host_agent/src"]
