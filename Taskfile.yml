@@ -3,13 +3,6 @@ version: '3'
 
 dotenv: ['.env', '{{.HOME}}/.env']
 
-env:
-  REPO_NAME: agentic-playground
-  GITHUB_USER: qaware-internal
-  GCP_PROJECT: qaware-paal
-  GCP_REGION: europe-west3
-  GCP_CLUSTER: k8s-{{.REPO_NAME}}
-
 tasks:
   default:
     desc: If running only "task" print all available tasks
