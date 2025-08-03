@@ -253,7 +253,7 @@ class HostAgent:
 
         # Simplified task and context ID management
         state = tool_context.state
-        task_id = state.get("task_id", str(uuid.uuid4()))
+        task_id = state.get("task_id")
         context_id = state.get("context_id", str(uuid.uuid4()))
         message_id = str(uuid.uuid4())
 
