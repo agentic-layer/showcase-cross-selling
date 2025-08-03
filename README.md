@@ -38,7 +38,7 @@ The system consists of several specialized agents and MCP servers:
 brew bundle
 
 # Install Python dependencies for all agents and MCP servers
-uv sync --all-extras --dev --all-packages
+uv sync --all-packages
 ```
 
 ### 2. Google Cloud Authentication
