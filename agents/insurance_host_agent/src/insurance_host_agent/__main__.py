@@ -1,9 +1,10 @@
 import uvicorn
 from fastapi import FastAPI
+from google.adk.cli.fast_api import get_fast_api_app
 
 from insurance_host_agent.a2a.a2a import a2a_app
 from insurance_host_agent.api.api import api
-from google.adk.cli.fast_api import get_fast_api_app
+
 
 def main():
     app = FastAPI(
