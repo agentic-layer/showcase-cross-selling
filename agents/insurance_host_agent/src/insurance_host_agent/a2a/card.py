@@ -49,8 +49,8 @@ agent_card = AgentCard(
     description=root_agent.description,
     url="http://insurance-host-agent:10001/a2a/",
     version="1.0.0",
-    defaultInputModes=["text", "text/plain"],
-    defaultOutputModes=["text", "text/plain"],
+    default_input_modes=["text", "text/plain"],
+    default_output_modes=["text", "text/plain"],
     capabilities=AgentCapabilities(streaming=True),
     skills=agent_skills,
 )
