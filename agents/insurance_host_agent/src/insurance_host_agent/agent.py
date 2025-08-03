@@ -267,9 +267,9 @@ class HostAgent:
         payload: Message = Message(
             role=Role("user"),
             parts=[Part(root=TextPart(text=task))],
-            messageId=message_id,
-            contextId=context_id,
-            taskId=task_id,
+            message_id=message_id,
+            context_id=context_id,
+            task_id=task_id,
             metadata=metadata,
         )
 
