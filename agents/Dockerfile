@@ -8,20 +8,19 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 # Accept AGENT_NAME as build arg (required)
 ARG AGENT_NAME
 RUN test -n "$AGENT_NAME" || (echo "AGENT_NAME build arg is required" && false)
-ENV AGENT_NAME_ENV=${AGENT_NAME}
 
 # Copy workspace configuration files for dependency resolution
 COPY uv.lock pyproject.toml ./
 
 # Copy source code after dependency installation
 COPY agents/base ./agents/base
-COPY agents/${AGENT_NAME_ENV} ./agents/${AGENT_NAME_ENV}
+COPY agents/${AGENT_NAME} ./agents/${AGENT_NAME}
 
 # Install the project
-RUN uv sync --frozen --package ${AGENT_NAME_ENV}
+RUN uv sync --frozen --package ${AGENT_NAME}
 
 # Expose port
 EXPOSE 8000
 
 # Run the specified agent
-CMD ["uv", "run", "--package", "${AGENT_NAME_ENV}", "${AGENT_NAME_ENV}"]
+CMD ["uv", "run", "--package", "${AGENT_NAME}", "${AGENT_NAME}"]
