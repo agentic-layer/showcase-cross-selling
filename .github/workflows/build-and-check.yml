@@ -40,7 +40,7 @@ jobs:
           python-version-file: "pyproject.toml"
 
       - name: Install Dependencies
-        run: uv sync --all-extras --dev --all-packages
+        run: uv sync --all-packages
 
       - name: Run checks
         run: uv run poe check
