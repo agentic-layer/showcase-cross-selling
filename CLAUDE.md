@@ -72,7 +72,7 @@ Each agent must:
 4. **Network Accessibility**: Run with `uvicorn` on `0.0.0.0:8000` for inter-agent communication
 5. **Use Base Components**: Leverage shared `A2AAgentExecutor` from `base/` module for consistent behavior
 6. **Register with Host Agent**: Add agent URL to the host agent's `subagent_urls` for routing
-7. **Added to docker-compose**: Ensure `./cross-selling-use-case/docker-compose.yml` includes your new agent
+7. **Added to docker-compose**: Ensure `./cross-selling-use-case/compose.yml` includes your new agent
 8. **Added to github workflows**: Ensure `./cross-selling-use-case/.github/workflows/build-and-check.yml` and `./cross-selling-use-case/.github/workflows/build-and-publish.yml` include your new agent and its Dockerfile under strategy matrix include
 
 #### Orchestration Flow

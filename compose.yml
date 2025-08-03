@@ -104,7 +104,7 @@ services:
     image: grafana/tempo:latest
     command: [ "-config.file=/etc/tempo.yaml" ]
     volumes:
-      - ./tempo-config.yaml:/etc/tempo.yaml
+      - ./dev/tempo/tempo-config.yaml:/etc/tempo.yaml
     ports:
       - "3200:3200"      # Tempo UI
       - "4318:4318"      # OTLP HTTP receiver
@@ -123,7 +123,7 @@ services:
     depends_on:
       - tempo
     volumes:
-      - ./datasource.yaml:/etc/grafana/provisioning/datasources/datasource.yaml
+      - ./dev/grafana/datasource.yaml:/etc/grafana/provisioning/datasources/datasource.yaml
 
 networks:
   agentic-network:

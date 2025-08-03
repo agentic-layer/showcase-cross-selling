@@ -43,7 +43,7 @@ Thumbs.db
 
 # Docker
 Dockerfile*
-docker-compose*
+compose*
 .dockerignore
 
 # Temporary files
