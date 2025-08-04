@@ -22,5 +22,5 @@ RUN uv sync --frozen --package ${MCP_SERVER_NAME_ENV}
 # Expose port
 EXPOSE 8000
 
-# Run the specified mcp server
+# Run the specified mcp server (using shell form for env var expansion)
 CMD uv run --package ${MCP_SERVER_NAME_ENV} ${MCP_SERVER_NAME_ENV}
