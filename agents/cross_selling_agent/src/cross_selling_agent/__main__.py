@@ -10,6 +10,11 @@ def main():
         description="API for the Cross Selling Agent",
         version="1.0.0",
     )
+
+    @app.get("/health")
+    async def health_check():
+        return {"status": "healthy"}
+
     app.mount("/a2a", a2a_app, name="a2a")
 
     uvicorn.run(app, host="0.0.0.0")
