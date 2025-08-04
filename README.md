@@ -71,16 +71,29 @@ GOOGLE_API_KEY=your-google-api-key
 SLACK_BOT_TOKEN=xoxb-your-slack-bot-token
 ```
 
+Ensure Docker can use at least 8GB of memory. For Colima users:
+  ```
+  colima start --memory 8
+  ```
+
+Using `k3d`, create a local registry and cluster:
+```
+k3d registry create local-paal-registry --port 6169
+# Currently required for Colima users. See https://github.com/k3d-io/k3d/pull/1584
+export K3D_FIX_DNS=0
+k3d cluster create local-paal --registry-use k3d-local-paal-registry
+```
+
 ## Development
 
 ### Local Deployment
 
 ```bash
 # Start all services
-docker compose up
+tilt up
 
 # View logs
-docker compose logs -f
+tilt logs
 ```
 
 Visit http://localhost:8000/ to access the ADK Web UI or access the OpenAI API at http://localhost:8000/api.
