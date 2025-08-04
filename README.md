@@ -83,7 +83,9 @@ docker compose up
 docker compose logs -f
 ```
 
-Visit http://localhost:8001/ to access the ADK Web UI.
+Visit http://localhost:8000/ to access the ADK Web UI or access the OpenAI API at http://localhost:8000/api.
+
+API specifications can be found at http://localhost:8000/api/docs.
 
 You'll have access to the insurance host agent. Example questions:
 
