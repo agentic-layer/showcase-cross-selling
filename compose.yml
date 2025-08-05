@@ -38,6 +38,48 @@ services:
       - mcp-customer-crm
       - mcp-insurance-products
 
+  # Stats agent
+  stats-analysis-agent:
+    build:
+      context: .
+      dockerfile: agents/Dockerfile
+      args:
+        AGENT_NAME: stats_analysis_agent
+    ports:
+      - "10004:8000"
+    env_file: agents/.env
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4318
+      OTEL_SERVICE_NAME: stats-analysis-agent
+      MCP_CUSTOMER_CRM_URL: http://mcp-customer-crm:8000/mcp
+      MCP_INSURANCE_PRODUCTS_URL: http://mcp-insurance-products:8000/mcp
+      GOOGLE_APPLICATION_CREDENTIALS: /tmp/keys/keyfile.json
+    volumes:
+      - $HOME/.config/gcloud/application_default_credentials.json:/tmp/keys/keyfile.json:ro
+    depends_on:
+      - mcp-customer-crm
+      - mcp-insurance-products
+
+  # A2A Insurance Products Agent
+  insurance-products-agent:
+    build:
+      context: .
+      dockerfile: agents/Dockerfile
+      args:
+        AGENT_NAME: insurance_products_agent
+    ports:
+      - "10005:8000"
+    env_file: agents/.env
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4318
+      OTEL_SERVICE_NAME: insurance-products-agent
+      MCP_INSURANCE_PRODUCTS_URL: http://mcp-insurance-products:8000/mcp
+      GOOGLE_APPLICATION_CREDENTIALS: /tmp/keys/keyfile.json
+    volumes:
+      - $HOME/.config/gcloud/application_default_credentials.json:/tmp/keys/keyfile.json:ro
+    depends_on:
+      - mcp-insurance-products
+
   # MCP Server - Customer CRM
   mcp-customer-crm:
     build:
@@ -77,6 +119,7 @@ services:
     depends_on:
       - communications-agent
       - cross-selling-agent
+      - insurance-products-agent
 
   # Grafana and Grafana Tempo
   tempo:
