@@ -58,7 +58,7 @@ class ChatCompletionService:
                     prompt_tokens = event.usage_metadata.prompt_token_count or 0
                     completion_tokens = event.usage_metadata.candidates_token_count or 0
                 for part in event.content.parts:
-                    if hasattr(part, "text") and part.text:
+                    if hasattr(part, "text") and part.text and not part.thought:
                         response_text += part.text
 
         return ChatCompletionResponse(
@@ -115,9 +115,11 @@ class ChatCompletionService:
 
             # Stream agent response
             async for event in self.runner.run_async(user_id=user, session_id=session.id, new_message=content):
+                print(f"Event received: {event}")
+                print(event)
                 if event.content and event.content.parts:
                     for part in event.content.parts:
-                        if hasattr(part, "text") and part.text:
+                        if hasattr(part, "text") and part.text and not part.thought:
                             chunk = ChatCompletionStreamResponse(
                                 id=completion_id,
                                 created=created,
