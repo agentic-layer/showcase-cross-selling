@@ -1,5 +1,6 @@
 import uvicorn
 from fastapi import FastAPI
+from base import add_health_endpoint
 
 from cross_selling_agent.a2a.a2a import a2a_app
 
@@ -11,9 +12,7 @@ def main():
         version="1.0.0",
     )
 
-    @app.get("/health")
-    async def health_check():
-        return {"status": "healthy"}
+    add_health_endpoint(app)
 
     app.mount("/a2a", a2a_app, name="a2a")
 
