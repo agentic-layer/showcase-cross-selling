@@ -29,7 +29,7 @@ helm_remote('kube-prometheus-stack',
 
 # Add labels to monitoring resources
 k8s_resource('tempo', labels=['monitoring'])
-k8s_resource('kube-prometheus-stack-grafana', port_forwards='3000:3000', labels=['monitoring']
+k8s_resource('kube-prometheus-stack-grafana', port_forwards='3000:3000', labels=['monitoring'])
 
 
 """Create Kubernetes secrets from environment variables"""
