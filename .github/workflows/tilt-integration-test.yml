@@ -27,6 +27,7 @@ jobs:
       with:
         repository: agentic-layer/infrastructure
         path: infrastructure
+        ref: feat/local_k8s_setup # todo fix me before merge!
         ssh-key: ${{ secrets.INFRASTRUCTURE_REPO_DEPLOY_KEY }}
 
     - name: Install k3d
