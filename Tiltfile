@@ -1,5 +1,37 @@
 # Tiltfile for cross-selling use case development
 
+"""Deploy monitoring stack with Tempo and kube-prometheus-stack"""
+load('ext://helm_remote', 'helm_remote')
+
+# Deploy Tempo
+helm_remote('tempo',
+    repo_name='grafana',
+    repo_url='https://grafana.github.io/helm-charts',
+    version='1.23.2',
+    namespace='monitoring',
+    create_namespace=True,
+    set=['mode=monolithic', 'tempo.service.type=ClusterIP', 'tempo.service.port=3200']
+)
+
+# Deploy kube-prometheus-stack
+helm_remote('kube-prometheus-stack',
+    repo_name='prometheus-community',
+    repo_url='https://prometheus-community.github.io/helm-charts',
+    version='66.3.0',
+    namespace='monitoring',
+    set=[
+        'grafana.additionalDataSources[0].name=Tempo',
+        'grafana.additionalDataSources[0].type=tempo',
+        'grafana.additionalDataSources[0].access=proxy',
+        'grafana.additionalDataSources[0].url=http://tempo.monitoring.svc.cluster.local:3200'
+    ]
+)
+
+# Add labels to monitoring resources
+k8s_resource('tempo', labels=['monitoring'])
+k8s_resource('kube-prometheus-stack-grafana', port_forwards='3000:3000', labels=['monitoring']
+
+
 """Create Kubernetes secrets from environment variables"""
 load('ext://secret', 'secret_from_dict')
 
