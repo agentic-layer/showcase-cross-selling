@@ -18,6 +18,10 @@ def main():
 
     adk_web = get_fast_api_app(agents_dir="agents/insurance_host_agent/src", web=True)
 
+    @app.get("/health")
+    async def health_check():
+        return {"status": "healthy"}
+
     app.mount("/a2a", a2a_app, name="a2a")
     app.mount("/api", api, name="api")
     app.mount("/", adk_web, name="web")
