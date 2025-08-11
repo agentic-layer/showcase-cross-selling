@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.13"
 
 [manifest]
@@ -11,7 +11,6 @@ members = [
     "customer-crm",
     "insurance-host-agent",
     "insurance-products",
-    "service-expert",
     "stats-analysis-agent",
 ]
 
@@ -2571,17 +2570,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/64/df/ce88803e9ed6e27fe9b9abefa157cf2c80e4fa527cf17ee14be41f790ad4/scipy-1.16.1-cp314-cp314t-musllinux_1_2_x86_64.whl", hash = "sha256:709559a1db68a9abc3b2c8672c4badf1614f3b440b3ab326d86a5c0491eafae3", size = 38050306, upload-time = "2025-07-27T16:31:48.109Z" },
     { url = "https://files.pythonhosted.org/packages/6e/6c/a76329897a7cae4937d403e623aa6aaea616a0bb5b36588f0b9d1c9a3739/scipy-1.16.1-cp314-cp314t-win_amd64.whl", hash = "sha256:c0c804d60492a0aad7f5b2bb1862f4548b990049e27e828391ff2bf6f7199998", size = 39427705, upload-time = "2025-07-27T16:31:53.96Z" },
 ]
-
-[[package]]
-name = "service-expert"
-version = "0.1.0"
-source = { editable = "agents/service_expert" }
-dependencies = [
-    { name = "base" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "base", editable = "agents/base" }]
 
 [[package]]
 name = "setuptools"

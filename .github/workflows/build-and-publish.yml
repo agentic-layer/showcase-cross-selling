@@ -1,7 +1,7 @@
 #
 # GitHub Action: `build-and-publish.yml`
 #
-# This workflow automates the building and publishing of Docker images for 
+# This workflow automates the building and publishing of Docker images for
 # ADK agents and MCP servers to Google Cloud Artifact Registry via the following job:
 #
 # `build-and-publish-image`: authenticates with Google Cloud, builds images tagged as 'latest',
@@ -41,7 +41,7 @@ jobs:
           - image_name: "insurance_host_agent"
             dockerfile: "agents/Dockerfile"
             build_arg_key: "AGENT_NAME"
-          - image_name: "service_expert"
+          - image_name: "stats_analysis_agent"
             dockerfile: "agents/Dockerfile"
             build_arg_key: "AGENT_NAME"
           # MCP server builds
@@ -72,9 +72,9 @@ jobs:
       - name: 'Generate Image Tag'
         id: 'generate_tag'
         run: |
-          # Set tag to latest, for unique tags use 
+          # Set tag to latest, for unique tags use
           # IMAGE_TAG=$(git describe --tags --always ${{ github.ref_type != 'tag' && '--long' || '' }})
-          IMAGE_TAG=latest            
+          IMAGE_TAG=latest
           echo "image-tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
           echo "Generated Tag: $IMAGE_TAG"
 
