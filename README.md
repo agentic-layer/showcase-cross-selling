@@ -71,13 +71,17 @@ GOOGLE_API_KEY=your-google-api-key
 SLACK_BOT_TOKEN=xoxb-your-slack-bot-token
 ```
 
-Ensure Docker can use at least 8GB of memory. For Colima users:
-  ```
-  colima start --memory 8
-  ```
+### 4. Local Kubernetes Setup
+
+For local development, you need a Kubernetes cluster.
+Use your preferred method to set up a local Kubernetes cluster,
+or use `k3d` for a lightweight solution.
+
+Hint: Ensure Docker can use **at least** 8GB of memory. For Colima users: `colima start --memory 8`
 
 Using `k3d`, create a local registry and cluster:
 ```
+brew install k3d
 k3d registry create local-paal-registry --port 6169
 # Currently required for Colima users. See https://github.com/k3d-io/k3d/pull/1584
 export K3D_FIX_DNS=0
