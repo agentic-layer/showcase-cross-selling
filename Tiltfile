@@ -32,7 +32,7 @@ def snake_to_kebab(snake_str):
 agents = [
     {'name': 'communications_agent', 'port': '10002:8000'},
     {'name': 'cross_selling_agent', 'port': '10003:8000'},
-    {'name': 'insurance_host_agent', 'port': '8000:8000'}
+    {'name': 'insurance_host_agent', 'port': '8000:8000'},
 ]
 
 for agent in agents:
@@ -42,14 +42,14 @@ for agent in agents:
         context='.',
         dockerfile='./agents/Dockerfile',
         build_args={'AGENT_NAME': agent_name},
-        live_update=[live_update_sync, live_update_run]
+        live_update=[live_update_sync, live_update_run],
     )
     k8s_resource(snake_to_kebab(agent_name), port_forwards=agent['port'], labels=['agents'])
 
 # Open ports and sync changes to MCP servers
 mcp_servers = [
     {'name': 'customer_crm', 'port': '8002:8000'},
-    {'name': 'insurance_products', 'port': '8003:8000'}
+    {'name': 'insurance_products', 'port': '8003:8000'},
 ]
 
 for server in mcp_servers:
@@ -59,6 +59,17 @@ for server in mcp_servers:
         context='.',
         dockerfile='./mcp-servers/Dockerfile',
         build_args={'MCP_SERVER_NAME': server_name},
-        live_update=[live_update_sync, live_update_run]
+        live_update=[live_update_sync, live_update_run],
     )
     k8s_resource(snake_to_kebab(server_name), port_forwards=server['port'], labels=['mcp-servers'])
+
+config.define_bool("run-tests")
+cfg = config.parse()
+
+local_resource(
+    'test_e2e_openai_api',
+    cmd='./test/e2e/openai-api.sh',
+    resource_deps=['insurance-host-agent'],
+    auto_init=cfg.get('run-tests', False),
+    trigger_mode=TRIGGER_MODE_MANUAL,
+)
