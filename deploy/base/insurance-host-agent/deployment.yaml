@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: insurance-host-agent
-        image: europe-west3-docker.pkg.dev/qaware-paal/agentic-layer-private/insurance_host_agent:latest
+        image: insurance_host_agent:latest
         ports:
         - containerPort: 8000
         readinessProbe:
