@@ -1,6 +1,6 @@
 import uvicorn
+from base.fastapi_health_endpoint import add_health_endpoint
 from fastapi import FastAPI
-from base import add_health_endpoint
 
 from cross_selling_agent.a2a.a2a import a2a_app
 
