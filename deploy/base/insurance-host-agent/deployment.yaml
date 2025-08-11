@@ -36,10 +36,9 @@ spec:
             secretKeyRef:
               name: api-key-secrets
               key: GOOGLE_API_KEY
-        - name: OTEL_EXPORTER_OTLP_ENDPOINT
-          valueFrom:
-            configMapKeyRef:
-              key: OTEL_EXPORTER_OTLP_ENDPOINT
-              name: otel-tempo-config
         - name: OTEL_SERVICE_NAME
           value: insurance-host-agent
+        envFrom:
+          - configMapRef:
+              name: otel-tempo-config
+              optional: true
