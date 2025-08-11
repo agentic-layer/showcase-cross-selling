@@ -17,3 +17,8 @@ tasks:
     cmd: brew bundle --no-lock --verbose
     status:
       - brew bundle check --verbose
+
+  test:
+    desc: Run tests
+    run: once
+    cmd: tilt ci -- --run-tests
