@@ -36,6 +36,7 @@ spec:
             secretKeyRef:
               name: api-key-secrets
               key: GOOGLE_API_KEY
+              optional: true
         - name: OTEL_SERVICE_NAME
           value: insurance-host-agent
         envFrom:
