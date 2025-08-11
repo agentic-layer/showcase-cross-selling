@@ -1,43 +1,15 @@
 # Tiltfile for cross-selling use case development
 
-"""Deploy monitoring stack with Tempo and kube-prometheus-stack"""
-load('ext://helm_remote', 'helm_remote')
+# Load .env file for environment variables
+load('ext://dotenv', 'dotenv')
+dotenv()
 
-# Deploy Tempo
-helm_remote('tempo',
-    repo_name='grafana',
-    repo_url='https://grafana.github.io/helm-charts',
-    version='1.23.2',
-    namespace='monitoring',
-    create_namespace=True,
-    set=['mode=monolithic', 'tempo.service.type=ClusterIP', 'tempo.service.port=3200']
-)
-
-# Deploy kube-prometheus-stack
-helm_remote('kube-prometheus-stack',
-    repo_name='prometheus-community',
-    repo_url='https://prometheus-community.github.io/helm-charts',
-    version='66.3.0',
-    namespace='monitoring',
-    set=[
-        'grafana.additionalDataSources[0].name=Tempo',
-        'grafana.additionalDataSources[0].type=tempo',
-        'grafana.additionalDataSources[0].access=proxy',
-        'grafana.additionalDataSources[0].url=http://tempo.monitoring.svc.cluster.local:3200'
-    ]
-)
-
-# Add labels to monitoring resources
-k8s_resource('tempo', labels=['monitoring'])
-k8s_resource('kube-prometheus-stack-grafana', port_forwards='3000:3000', labels=['monitoring'])
-
-
-"""Create Kubernetes secrets from environment variables"""
+# Create Kubernetes secrets from environment variables
 load('ext://secret', 'secret_from_dict')
 
-google_api_key = os.environ.get('GEMINI_API_KEY', '')
+google_api_key = os.environ.get('GOOGLE_API_KEY', '')
 if not google_api_key:
-    fail('GEMINI_API_KEY environment variable is required. Please set it in your shell or .env file.')
+    fail('GOOGLE_API_KEY environment variable is required. Please set it in your shell or .env file.')
 
 k8s_yaml(secret_from_dict(
     name = "api-key-secrets",
@@ -46,7 +18,7 @@ k8s_yaml(secret_from_dict(
 ))
 
 # Apply Kubernetes manifests
-k8s_yaml(kustomize('../infrastructure/platform/applications/use-case-cross-selling/local'))
+k8s_yaml(kustomize('deploy/local'))
 
 # Live update configuration for faster development
 live_update_sync = sync('.', '/app')
