@@ -111,7 +111,7 @@ You'll have access to the insurance host agent. Example questions:
 - "Verfasse eine E-Mail an Anna Müller, um ihr unsere neuen Versicherungsprodukte vorzustellen."
 
 The traces can be viewed
-in [Grafana](http://localhost:3000/a/grafana-exploretraces-app/explore?from=now-30m&to=now&timezone=browser&var-ds=tempo-main&var-primarySignal=nestedSetParent%3C0&var-filters=&var-metric=rate&var-groupBy=resource.service.name&var-spanListColumns=&var-latencyThreshold=&var-partialLatencyThreshold=&actionView=traceList).
+in [Grafana](http://localhost:3000/a/grafana-exploretraces-app/explore?from=now-30m&to=now&timezone=browser&var-ds=Tempo&var-primarySignal=nestedSetParent%3C0&var-filters=&var-metric=rate&var-groupBy=resource.service.name&var-spanListColumns=&var-latencyThreshold=&var-partialLatencyThreshold=&actionView=traceList).
 
 ### Code Quality
 
