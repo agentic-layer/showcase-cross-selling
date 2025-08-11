@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - otel-tempo-config.yaml
+  - ../base
+
+images:
+  - name: europe-west3-docker.pkg.dev/qaware-paal/agentic-layer-private/communications_agent
+    newName: communications_agent
+  - name: europe-west3-docker.pkg.dev/qaware-paal/agentic-layer-private/cross_selling_agent
+    newName: cross_selling_agent
+  - name: europe-west3-docker.pkg.dev/qaware-paal/agentic-layer-private/insurance_host_agent
+    newName: insurance_host_agent
+  - name: europe-west3-docker.pkg.dev/qaware-paal/agentic-layer-private/customer_crm
+    newName: customer_crm
+  - name: europe-west3-docker.pkg.dev/qaware-paal/agentic-layer-private/insurance_products
+    newName: insurance_products

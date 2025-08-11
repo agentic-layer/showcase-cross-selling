@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: customer-crm
+  namespace: use-case-cross-selling
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: customer-crm
+  template:
+    metadata:
+      labels:
+        app: customer-crm
+    spec:
+      containers:
+      - name: customer-crm
+        image: europe-west3-docker.pkg.dev/qaware-paal/agentic-layer-private/customer_crm:latest
+        ports:
+        - containerPort: 8000

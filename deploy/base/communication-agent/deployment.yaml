@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: communications-agent
+  namespace: use-case-cross-selling
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: communications-agent
+  template:
+    metadata:
+      labels:
+        app: communications-agent
+    spec:
+      containers:
+      - name: communications-agent
+        image: europe-west3-docker.pkg.dev/qaware-paal/agentic-layer-private/communications_agent:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: GOOGLE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: api-key-secrets
+              key: GOOGLE_API_KEY
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          valueFrom:
+            configMapKeyRef:
+              key: OTEL_EXPORTER_OTLP_ENDPOINT
+              name: otel-tempo-config
+        - name: OTEL_SERVICE_NAME
+          value: communications-agent
