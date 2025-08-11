@@ -7,3 +7,4 @@ resources:
   - communication-agent/
   - cross-selling-agent/
   - insurance-host-agent/
+  - stats-analysis-agent/
