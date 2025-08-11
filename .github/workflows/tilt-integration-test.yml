@@ -19,16 +19,6 @@ jobs:
     steps:
     - name: Checkout cross-selling-use-case code
       uses: actions/checkout@v4
-      with:
-        path: cross-selling-use-case
-
-    - name: Checkout infrastructure code
-      uses: actions/checkout@v4
-      with:
-        repository: agentic-layer/infrastructure
-        path: infrastructure
-        ref: feat/local_k8s_setup # todo fix me before merge!
-        ssh-key: ${{ secrets.INFRASTRUCTURE_REPO_DEPLOY_KEY }}
 
     - name: Install k3d
       run: |
@@ -53,21 +43,8 @@ jobs:
 
     - name: Run Tilt CI
       run: |
-        cd cross-selling-use-case
         # Use tilt ci which blocks until resources are healthy or fail
         tilt ci --context=k3d-local-paal
-
-    - name: Port forward insurance host agent
-      run: |
-        kubectl port-forward -n use-case-cross-selling deployment/insurance-host-agent 8000:8000 &
-        PORT_FORWARD_PID=$!
-        echo "PORT_FORWARD_PID=$PORT_FORWARD_PID" >> $GITHUB_ENV
-
-        # Wait for port forward to establish
-        sleep 5
-
-        # Test if port forward is working
-        timeout 10 bash -c 'until curl -f http://localhost:8000/health 2>/dev/null; do echo "Waiting for port forward..."; sleep 2; done' || true
 
     - name: Test agent conversation
       run: |
