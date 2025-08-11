@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: insurance-products
+  namespace: use-case-cross-selling
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: insurance-products
+  template:
+    metadata:
+      labels:
+        app: insurance-products
+    spec:
+      containers:
+      - name: insurance-products
+        image: europe-west3-docker.pkg.dev/qaware-paal/agentic-layer-private/insurance_products:latest
+        ports:
+        - containerPort: 8000
