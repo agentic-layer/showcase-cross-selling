@@ -64,6 +64,10 @@ for server in mcp_servers:
     )
     k8s_resource(snake_to_kebab(server_name), port_forwards=server['port'], labels=['mcp-servers'])
 
+# Expose the Monitoring stack (Grafana)
+k8s_resource('lgtm', port_forwards='3000:3000')
+
+# Add flag to run tests
 config.define_bool("run-tests")
 cfg = config.parse()
 
