@@ -74,8 +74,9 @@ SLACK_BOT_TOKEN=xoxb-your-slack-bot-token
 ### 4. Local Kubernetes Setup
 
 For local development, you need a Kubernetes cluster.
-Use your preferred method to set up a local Kubernetes cluster,
-or use `k3d` for a lightweight solution.
+Use your preferred method to set up a local Kubernetes cluster. Docker Desktop, Ranger Desktop and Colima all provide standard Kubernetes clusters. Those are recommended.
+
+Alternatively, use `k3d` for a lightweight solution.
 
 Hint: Ensure Docker can use **at least** 8GB of memory. For Colima users: `colima start --memory 8`
 
