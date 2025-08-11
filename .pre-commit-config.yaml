@@ -16,7 +16,6 @@ repos:
       - id: trailing-whitespace
       - id: requirements-txt-fixer
       - id: mixed-line-ending
-      - id: no-commit-to-branch
 
   - repo: https://github.com/astral-sh/uv-pre-commit
     # uv version.
