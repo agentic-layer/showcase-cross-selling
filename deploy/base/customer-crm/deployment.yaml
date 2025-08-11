@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
       - name: customer-crm
-        image: europe-west3-docker.pkg.dev/qaware-paal/agentic-layer-private/customer_crm:latest
+        image: customer_crm:latest
         ports:
         - containerPort: 8000

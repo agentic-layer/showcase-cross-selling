@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: cross-selling-agent
-        image: europe-west3-docker.pkg.dev/qaware-paal/agentic-layer-private/cross_selling_agent:latest
+        image: cross_selling_agent:latest
         ports:
         - containerPort: 8000
         env:
