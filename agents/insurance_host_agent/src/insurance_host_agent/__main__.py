@@ -3,8 +3,8 @@ from base.fastapi_health_endpoint import add_health_endpoint
 from fastapi import FastAPI
 from google.adk.cli.fast_api import get_fast_api_app
 
-from insurance_host_agent.a2a.a2a import a2a_app
-from insurance_host_agent.api.api import api
+from .a2a.a2a import a2a_app
+from .api.api import api
 
 
 def main():
@@ -17,10 +17,6 @@ def main():
     add_health_endpoint(app)
 
     adk_web = get_fast_api_app(agents_dir="agents/insurance_host_agent/src", web=True)
-
-    @app.get("/health")
-    async def health_check():
-        return {"status": "healthy"}
 
     app.mount("/a2a", a2a_app, name="a2a")
     app.mount("/api", api, name="api")

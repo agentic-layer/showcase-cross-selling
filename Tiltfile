@@ -33,6 +33,7 @@ agents = [
     {'name': 'communications_agent', 'port': '10002:8000'},
     {'name': 'cross_selling_agent', 'port': '10003:8000'},
     {'name': 'insurance_host_agent', 'port': '8000:8000'},
+    {'name': 'stats_analysis_agent', 'port': '10004:8000'},
 ]
 
 for agent in agents:

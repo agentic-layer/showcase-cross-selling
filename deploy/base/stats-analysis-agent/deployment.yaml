@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stats-analysis-agent
+  namespace: use-case-cross-selling
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stats-analysis-agent
+  template:
+    metadata:
+      labels:
+        app: stats-analysis-agent
+    spec:
+      containers:
+      - name: stats-analysis-agent
+        image: europe-west3-docker.pkg.dev/qaware-paal/agentic-layer-private/stats_analysis_agent:latest
+        ports:
+        - containerPort: 8000
+        readinessProbe:
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          httpGet:
+            port: 8000
+            path: /health
+        livenessProbe:
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          httpGet:
+            port: 8000
+            path: /health
+        env:
+        - name: GOOGLE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: api-key-secrets
+              key: GOOGLE_API_KEY
+        - name: OTEL_SERVICE_NAME
+          value: stats-analysis-agent
+        envFrom:
+          - configMapRef:
+              name: otel-tempo-config
+              optional: true
