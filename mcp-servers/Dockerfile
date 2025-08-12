@@ -10,14 +10,19 @@ ARG MCP_SERVER_NAME
 RUN test -n "MCP_SERVER_NAME" || (echo "MCP_SERVER_NAME build arg is required" && false)
 ENV MCP_SERVER_NAME_ENV=${MCP_SERVER_NAME}
 
-# Copy workspace configuration files for dependency resolution
 COPY uv.lock pyproject.toml ./
 
-# Copy source code
+# Install dependencies in a separate layer for better caching
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=mcp-servers/${MCP_SERVER_NAME}/pyproject.toml,target=mcp-servers/${MCP_SERVER_NAME}/pyproject.toml \
+    uv sync --frozen --package ${MCP_SERVER_NAME} --no-install-project
+
+# Copy source code after dependency installation
 COPY mcp-servers/${MCP_SERVER_NAME_ENV} ./mcp-servers/${MCP_SERVER_NAME_ENV}
 
-# Install the project
-RUN uv sync --frozen --package ${MCP_SERVER_NAME_ENV}
+# Install the project in a final layer
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --package ${MCP_SERVER_NAME_ENV}
 
 # Expose port
 EXPOSE 8000
