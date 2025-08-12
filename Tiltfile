@@ -76,6 +76,34 @@ for server in mcp_servers:
     )
     k8s_resource(snake_to_kebab(server_name), port_forwards=server['port'], labels=['mcp-servers'])
 
+# Build and deploy the agent communications dashboard backend if the repository exists
+dashboard_backend_name = 'agent-communications-dashboard-backend'
+dashboard_repo_exists = os.path.exists('../agent-communications-dashboard')
+
+if dashboard_repo_exists:
+    docker_build(
+        dashboard_backend_name,
+        context='../agent-communications-dashboard/backend',
+        live_update=[
+            # Sync only the backend's source code into the container
+            sync('../agent-communications-dashboard/backend/src', '/app/src'),
+
+            # Re-install dependencies if the project files in that repo change
+            run(
+                'uv pip install .',
+                trigger=['../agent-communications-dashboard/pyproject.toml', '../agent-communications-dashboard/uv.lock']
+            )
+        ]
+    )
+
+    k8s_resource(
+        dashboard_backend_name,
+        port_forwards='10005:8000',
+        labels=['agent-communications-dashboard']
+    )
+else:
+    print('Skipping agent communications dashboard - repository not found at ../agent-communications-dashboard')
+
 # Expose the Monitoring stack (Grafana)
 k8s_resource('lgtm', port_forwards='3000:3000')
 
