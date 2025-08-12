@@ -10,15 +10,20 @@ ARG AGENT_NAME
 RUN test -n "$AGENT_NAME" || (echo "AGENT_NAME build arg is required" && false)
 ENV AGENT_NAME=${AGENT_NAME}
 
-# Copy workspace configuration files for dependency resolution
+COPY agents/base ./agents/base
 COPY uv.lock pyproject.toml ./
 
+# Install dependencies in a separate layer for better caching
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=agents/${AGENT_NAME}/pyproject.toml,target=agents/${AGENT_NAME}/pyproject.toml \
+    uv sync --frozen --package ${AGENT_NAME} --no-install-project
+
 # Copy source code after dependency installation
-COPY agents/base ./agents/base
 COPY agents/${AGENT_NAME} ./agents/${AGENT_NAME}
 
-# Install the project
-RUN uv sync --frozen --package ${AGENT_NAME}
+# Install the project in a final layer
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --package ${AGENT_NAME}
 
 # Expose port
 EXPOSE 8000
