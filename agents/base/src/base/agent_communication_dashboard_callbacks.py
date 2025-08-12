@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from google.adk.agents.callback_context import CallbackContext
 from google.adk.models import LlmRequest, LlmResponse
@@ -100,7 +100,7 @@ def before_tool_callback_agent_communications_dashboard(
 
 
 def after_tool_callback_agent_communications_dashboard(
-    tool: BaseTool, args: Dict[str, Any], tool_context: ToolContext, tool_response: Dict | List | CallToolResult
+    tool: BaseTool, args: Dict[str, Any], tool_context: ToolContext, tool_response: Union[Dict, List, CallToolResult]
 ) -> Optional[Dict]:
     with trace.get_tracer(__name__).start_as_current_span("after_tool_callback_agent_communications_dashboard") as span:
         set_span_attributes_for_tool(span, tool, args, tool_context)
