@@ -1,5 +1,5 @@
 #
-# GitHub Action: `build-and-publish.yml`
+# GitHub Action: `Publish`
 #
 # This workflow automates the building and publishing of Docker images for
 # ADK agents and MCP servers to Google Cloud Artifact Registry via the following job:
@@ -7,7 +7,7 @@
 # `build-and-publish-image`: authenticates with Google Cloud, builds images tagged as 'latest',
 ## and pushes them to the GCP Artifact Registry.
 #
-name: build-and-publish.yml
+name: Publish
 on:
   push:
     branches: [ main ]
