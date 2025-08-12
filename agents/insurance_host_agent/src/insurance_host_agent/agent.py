@@ -17,6 +17,14 @@ from a2a.types import (
     Task,
     TextPart,
 )
+from base.agent_communication_dashboard_callbacks import (
+    after_agent_callback_agent_communications_dashboard,
+    after_model_callback_agent_communications_dashboard,
+    after_tool_callback_agent_communications_dashboard,
+    before_agent_callback_agent_communications_dashboard,
+    before_model_callback_agent_communications_dashboard,
+    before_tool_callback_agent_communications_dashboard,
+)
 from dotenv import load_dotenv
 from google.adk import Agent
 from google.adk.agents.callback_context import CallbackContext
@@ -118,6 +126,22 @@ class HostAgent:
             before_agent_callback=[
                 _before_agent_callback_create_conversation_id,
                 _before_agent_callback_inject_conversation_id_into_span,
+                before_agent_callback_agent_communications_dashboard,
+            ],
+            after_agent_callback=[
+                after_agent_callback_agent_communications_dashboard,
+            ],
+            before_model_callback=[
+                before_model_callback_agent_communications_dashboard,
+            ],
+            after_model_callback=[
+                after_model_callback_agent_communications_dashboard,
+            ],
+            before_tool_callback=[
+                before_tool_callback_agent_communications_dashboard,
+            ],
+            after_tool_callback=[
+                after_tool_callback_agent_communications_dashboard,
             ],
             planner=BuiltInPlanner(
                 thinking_config=types.ThinkingConfig(

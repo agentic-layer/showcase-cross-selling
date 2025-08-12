@@ -1,3 +1,5 @@
+from time import time
+
 from a2a.server.agent_execution import AgentExecutor, RequestContext
 from a2a.server.events import EventQueue
 from a2a.server.tasks import TaskUpdater
@@ -7,21 +9,14 @@ from a2a.types import (
     TextPart,
 )
 from a2a.utils import new_agent_text_message, new_task
-from a2a.utils.telemetry import trace_function
 from google.adk.artifacts import InMemoryArtifactService
+from google.adk.events import Event, EventActions
 from google.adk.memory.in_memory_memory_service import InMemoryMemoryService
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai import types
-from opentelemetry.trace import Span
 
-
-def _add_conversation_id_to_span(span: Span, args, kwargs, result, exception):
-    if len(args) > 1:
-        context = args[1]
-        metadata = getattr(context.message, "metadata", {})
-        if conversation_id := metadata.get("conversation_id"):
-            span.set_attribute("conversation_id", conversation_id)
+from base.agent_communication_dashboard_plugin import AgentCommunicationDashboardPlugin
 
 
 class A2AAgentExecutor(AgentExecutor):
@@ -47,9 +42,9 @@ class A2AAgentExecutor(AgentExecutor):
             artifact_service=InMemoryArtifactService(),
             session_service=InMemorySessionService(),
             memory_service=InMemoryMemoryService(),
+            plugins=[AgentCommunicationDashboardPlugin()],
         )
 
-    @trace_function(attribute_extractor=_add_conversation_id_to_span)
     async def cancel(
         self,
         context: RequestContext,
@@ -58,7 +53,6 @@ class A2AAgentExecutor(AgentExecutor):
         """Cancel the execution of a specific task."""
         raise NotImplementedError("Cancellation is not implemented for ADKAgentExecutor.")
 
-    @trace_function(attribute_extractor=_add_conversation_id_to_span)
     async def execute(
         self,
         context: RequestContext,
@@ -94,6 +88,23 @@ class A2AAgentExecutor(AgentExecutor):
                 state={},
                 session_id=task.context_id,
             )
+
+            # Set conversation_id in session state
+            message = context.message
+            metadata = getattr(message, "metadata", {})
+            conversation_id = metadata.get("conversation_id")
+            current_time = time()
+            state_changes = {
+                "conversation_id": conversation_id,
+            }
+            actions_with_update = EventActions(state_delta=state_changes)
+            system_event = Event(
+                invocation_id="update_state",
+                author=self.agent.name,
+                actions=actions_with_update,
+                timestamp=current_time,
+            )
+            await self.runner.session_service.append_event(session, system_event)
 
             content = types.Content(role="user", parts=[types.Part.from_text(text=query)])
 
