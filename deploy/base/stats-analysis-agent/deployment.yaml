@@ -31,12 +31,15 @@ spec:
             port: 8000
             path: /health
         env:
-        - name: GOOGLE_API_KEY
+        - name: LITELLM_PROXY_API_KEY
           valueFrom:
             secretKeyRef:
-              name: api-key-secrets
-              key: GOOGLE_API_KEY
-              optional: true
+              name: litellm-proxy-api-key-secret
+              key: LITELLM_PROXY_API_KEY
+        - name: LITELLM_PROXY_API_BASE
+          value: "http://litellm.llm-gateway.svc.cluster.local:4000"
+        - name: USE_LITELLM_PROXY
+          value: "True"
         - name: OTEL_SERVICE_NAME
           value: stats-analysis-agent
         envFrom:
