@@ -69,6 +69,9 @@ GOOGLE_API_KEY=your-google-api-key
 
 # Slack Integration (optional)
 SLACK_BOT_TOKEN=xoxb-your-slack-bot-token
+
+# LiteLLM Api Key. Defaults to the master key (optional)
+LITELLM_PROXY_API_KEY=sk-your-api-key
 ```
 
 ### 4. Local Kubernetes Setup
