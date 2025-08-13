@@ -4,6 +4,7 @@ from email.mime.text import MIMEText
 from typing import Any, Dict, Optional, Protocol
 
 from google.adk.agents import Agent
+from google.adk.models.lite_llm import LiteLlm
 from google.adk.planners import BuiltInPlanner
 from google.genai import types
 from slack_sdk import WebClient
@@ -183,7 +184,7 @@ def send_slack_direct_message(slack_user_id: str, message: str) -> Dict[str, Any
 
 root_agent = Agent(
     name="communications_agent",
-    model="gemini-2.5-flash-lite",
+    model=LiteLlm(model="gemini/gemini-2.5-flash-lite"),
     description="Communications Agent - Handles email and Slack direct messaging for automated communications",
     instruction="""\
         You are a professional communications src that helps with sending emails and Slack direct messages.

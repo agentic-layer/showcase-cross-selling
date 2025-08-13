@@ -1,4 +1,5 @@
 from google.adk.agents import Agent
+from google.adk.models.lite_llm import LiteLlm
 from google.adk.planners import BuiltInPlanner
 from google.adk.tools.mcp_tool import StreamableHTTPConnectionParams
 from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset
@@ -23,7 +24,7 @@ insurance_products_toolset = MCPToolset(
 
 root_agent = Agent(
     name="insurance_cross_sell_agent",
-    model="gemini-2.5-flash-lite",
+    model=LiteLlm(model="gemini/gemini-2.5-flash-lite"),
     description=(
         f"Insurance Cross-Selling Agent for {insurance_company_name} - Assists employees in identifying "
         "and recommending insurance products to customers based on CRM data and product analysis"

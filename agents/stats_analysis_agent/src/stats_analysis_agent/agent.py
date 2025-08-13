@@ -1,4 +1,5 @@
 from google.adk.agents import Agent
+from google.adk.models.lite_llm import LiteLlm
 from google.adk.planners import BuiltInPlanner
 from google.adk.tools.mcp_tool import StreamableHTTPConnectionParams
 from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset
@@ -23,7 +24,7 @@ insurance_products_toolset = MCPToolset(
 
 root_agent = Agent(
     name="stats_analysis_agent",
-    model="gemini-2.5-flash-lite",
+    model=LiteLlm(model="gemini/gemini-2.5-flash-lite"),
     description=(
         f"Customer statistics and analysis agent for {insurance_company_name} - Assists employees in identifying "
         "patterns in their current customer base as well as recognizing risk factors related to cancellation and"

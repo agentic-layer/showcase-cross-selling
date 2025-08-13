@@ -23,6 +23,7 @@ from google.adk.agents.callback_context import CallbackContext
 from google.adk.agents.readonly_context import ReadonlyContext
 from google.adk.artifacts import InMemoryArtifactService
 from google.adk.memory.in_memory_memory_service import InMemoryMemoryService
+from google.adk.models.lite_llm import LiteLlm
 from google.adk.planners import BuiltInPlanner
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
@@ -107,7 +108,7 @@ class HostAgent:
 
     def create_agent(self) -> Agent:
         return Agent(
-            model="gemini-2.5-flash-lite",
+            model=LiteLlm(model="gemini/gemini-2.5-flash-lite"),
             name="Host_Agent",
             instruction=self.root_instruction,
             description="This Host src orchestrates customer support for insurance cross selling.",
