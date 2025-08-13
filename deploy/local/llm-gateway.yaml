@@ -1,0 +1,128 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: llm-gateway
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: litellm-config-file
+  namespace: llm-gateway
+data:
+  config.yaml: |
+      model_list: 
+        - model_name: gemini/gemini-2.5-flash-lite
+          litellm_params:
+            model: gemini/gemini-2.5-flash-lite
+            api_key: os.environ/GOOGLE_API_KEY
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: litellm
+  namespace: llm-gateway
+spec:
+  selector:
+    matchLabels:
+      app: litellm
+  template:
+    metadata:
+      labels:
+        app: litellm
+    spec:
+      containers:
+      - name: litellm
+        image: ghcr.io/berriai/litellm:v1.74.15-stable
+        args:
+          - "--config"
+          - "/app/proxy_server_config.yaml"
+        ports:
+        - containerPort: 4000
+        env:
+        - name: GOOGLE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: api-key-secrets
+              key: GOOGLE_API_KEY
+              optional: true
+        - name: LITELLM_MASTER_KEY
+          valueFrom:
+            secretKeyRef:
+              name: litellm-master-key-secrets
+              key: LITELLM_MASTER_KEY
+        - name: LITELLM_SALT_KEY
+          value: "sk-salt"
+        - name: DATABASE_URL
+          value: "postgresql://postgres:my-secret-password@postgres:5432/litellm"
+        - name: STORE_MODEL_IN_DB
+          value: "TRUE"
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/proxy_server_config.yaml
+          subPath: config.yaml
+      volumes:
+      - name: config-volume
+        configMap:
+          name: litellm-config-file
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: litellm
+  namespace: llm-gateway
+  labels:
+    app: litellm
+spec:
+  selector:
+    app: litellm
+  ports:
+    - name: http
+      port: 4000
+      targetPort: 4000
+      protocol: TCP
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: llm-gateway
+  labels:
+    app: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:17
+        env:
+        - name: POSTGRES_DB
+          value: litellm
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_PASSWORD
+          value: my-secret-password
+        ports:
+        - containerPort: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: llm-gateway
+spec:
+  selector:
+    app: postgres
+  ports:
+  - name: http
+    port: 5432
+    targetPort: 5432
+    protocol: TCP
+  type: ClusterIP

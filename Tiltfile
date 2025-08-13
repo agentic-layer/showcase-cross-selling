@@ -13,8 +13,20 @@ if not google_api_key:
 
 k8s_yaml(secret_from_dict(
     name = "api-key-secrets",
-    namespace = "use-case-cross-selling",
+    namespace = "llm-gateway",
     inputs = { "GOOGLE_API_KEY": google_api_key }
+))
+
+litellm_master_key = os.environ.get('LITELLM_MASTER_KEY', 'sk-admin')
+k8s_yaml(secret_from_dict(
+    name = "litellm-master-key-secrets",
+    namespace = "llm-gateway",
+    inputs = { "LITELLM_MASTER_KEY": litellm_master_key }
+))
+k8s_yaml(secret_from_dict(
+    name = "litellm-proxy-api-key-secret",
+    namespace = "use-case-cross-selling",
+    inputs = { "LITELLM_PROXY_API_KEY": os.environ.get('LITELLM_PROXY_API_KEY', litellm_master_key) }
 ))
 
 # Apply Kubernetes manifests
@@ -66,6 +78,9 @@ for server in mcp_servers:
 
 # Expose the Monitoring stack (Grafana)
 k8s_resource('lgtm', port_forwards='3000:3000')
+
+# Expose LLM Gateway (LiteLLM)
+k8s_resource('litellm', port_forwards='4000:4000')
 
 # Add flag to run tests
 config.define_bool("run-tests")
