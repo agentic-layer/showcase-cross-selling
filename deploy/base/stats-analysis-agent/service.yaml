@@ -10,7 +10,7 @@ spec:
     app: stats-analysis-agent
   ports:
   - name: http
-    port: 8001
-    targetPort: 8001
+    port: 8000
+    targetPort: 8000
     protocol: TCP
   type: ClusterIP
