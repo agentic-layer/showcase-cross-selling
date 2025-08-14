@@ -18,6 +18,18 @@ spec:
         image: cross_selling_agent:latest
         ports:
         - containerPort: 8000
+        readinessProbe:
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          httpGet:
+            port: 8000
+            path: /health
+        livenessProbe:
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          httpGet:
+            port: 8000
+            path: /health
         env:
         - name: LITELLM_PROXY_API_KEY
           valueFrom:
