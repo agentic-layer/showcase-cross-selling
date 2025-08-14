@@ -8,4 +8,3 @@ resources:
   - cross-selling-agent/
   - insurance-host-agent/
   - stats-analysis-agent/
-  - agent-communications-dashboard-backend/
