@@ -6,3 +6,4 @@ metadata:
 data:
   OTEL_SDK_DISABLED: "false"
   OTEL_EXPORTER_OTLP_ENDPOINT: "http://lgtm.monitoring.svc.cluster.local:4318"
+  OBSERVABILITY_DASHBOARD_ENDPOINT: "http://observability-dashboard.observability-dashboard.svc.cluster.local:8000/v1/traces"

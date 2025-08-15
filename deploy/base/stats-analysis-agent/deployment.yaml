@@ -46,6 +46,3 @@ spec:
           - configMapRef:
               name: otel-tempo-config
               optional: true
-          - configMapRef:
-              name: agent-communications-dashboard-backend-config
-              optional: true
