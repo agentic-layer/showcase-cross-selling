@@ -74,7 +74,9 @@ class AgentCommunicationDashboardPlugin(BasePlugin):
         error: Exception,
     ) -> Optional[LlmResponse]:
         # not yet tested
-        with trace.get_tracer(__name__).start_as_current_span("on_model_error_callback_agent_communications_dashboard") as span:
+        with trace.get_tracer(__name__).start_as_current_span(
+            "on_model_error_callback_agent_communications_dashboard"
+        ) as span:
             set_span_attributes_from_callback_context(span, callback_context)
             span.set_attribute("model", llm_request.model or "unknown")
             span.set_attributes(
@@ -92,7 +94,9 @@ class AgentCommunicationDashboardPlugin(BasePlugin):
         error: Exception,
     ) -> Optional[dict]:
         # not yet tested
-        with trace.get_tracer(__name__).start_as_current_span("on_tool_error_callback_agent_communications_dashboard") as span:
+        with trace.get_tracer(__name__).start_as_current_span(
+            "on_tool_error_callback_agent_communications_dashboard"
+        ) as span:
             set_span_attributes_for_tool(span, tool, tool_args, tool_context)
             span.set_attribute("error", str(error))
         return None

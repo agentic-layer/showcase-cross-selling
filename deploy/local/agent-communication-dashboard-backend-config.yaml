@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: agent-communications-dashboard-backend-config
-  namespace: use-case-cross-selling
-data:
-  AGENT_COMMUNICATION_DASHBOARD_BACKEND_ENDPOINT: "http://agent-communications-dashboard-backend.monitoring.svc.cluster.local:8000/v1/traces"

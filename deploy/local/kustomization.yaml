@@ -5,4 +5,3 @@ resources:
   - ../base
   - lgtm.yaml
   - llm-gateway.yaml
-  - agent-communication-dashboard-backend-config.yaml
