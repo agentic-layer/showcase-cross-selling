@@ -47,7 +47,7 @@ def flatten_dict(data, parent_key="", sep=".", parent_key_lower=None) -> Dict[st
 def set_span_attributes_from_callback_context(span, callback_context: CallbackContext):
     span.set_attribute("conversation_id", callback_context.state.to_dict().get("conversation_id"))
     span.set_attribute("agent_name", callback_context.agent_name)
-    span.set_attribute("agent_communication_dashboard", True)
+    span.set_attribute("observability_dashboard", True)
 
     if callback_context.user_content:
         span.set_attributes(flatten_dict(callback_context.user_content.model_dump(), parent_key="user_content"))
@@ -62,28 +62,22 @@ def set_span_attributes_for_tool(span, tool: BaseTool, args: Dict[str, Any], too
     span.set_attributes(flatten_dict(args, parent_key="args"))
 
 
-def before_agent_callback_agent_communications_dashboard(callback_context: CallbackContext) -> Optional[types.Content]:
-    with trace.get_tracer(__name__).start_as_current_span(
-        "before_agent_callback_agent_communications_dashboard"
-    ) as span:
+def before_agent_callback_observability_dashboard(callback_context: CallbackContext) -> Optional[types.Content]:
+    with trace.get_tracer(__name__).start_as_current_span("before_agent_callback_observability_dashboard") as span:
         set_span_attributes_from_callback_context(span, callback_context)
     return None
 
 
-def after_agent_callback_agent_communications_dashboard(callback_context: CallbackContext) -> Optional[types.Content]:
-    with trace.get_tracer(__name__).start_as_current_span(
-        "after_agent_callback_agent_communications_dashboard"
-    ) as span:
+def after_agent_callback_observability_dashboard(callback_context: CallbackContext) -> Optional[types.Content]:
+    with trace.get_tracer(__name__).start_as_current_span("after_agent_callback_observability_dashboard") as span:
         set_span_attributes_from_callback_context(span, callback_context)
     return None
 
 
-def before_model_callback_agent_communications_dashboard(
+def before_model_callback_observability_dashboard(
     callback_context: CallbackContext, llm_request: LlmRequest
 ) -> Optional[LlmResponse]:
-    with trace.get_tracer(__name__).start_as_current_span(
-        "before_model_callback_agent_communications_dashboard"
-    ) as span:
+    with trace.get_tracer(__name__).start_as_current_span("before_model_callback_observability_dashboard") as span:
         set_span_attributes_from_callback_context(span, callback_context)
         span.set_attribute("model", llm_request.model or "unknown")
         if llm_request.contents:
@@ -93,31 +87,27 @@ def before_model_callback_agent_communications_dashboard(
     return None
 
 
-def after_model_callback_agent_communications_dashboard(
+def after_model_callback_observability_dashboard(
     callback_context: CallbackContext, llm_response: LlmResponse
 ) -> Optional[LlmResponse]:
-    with trace.get_tracer(__name__).start_as_current_span(
-        "after_model_callback_agent_communications_dashboard"
-    ) as span:
+    with trace.get_tracer(__name__).start_as_current_span("after_model_callback_observability_dashboard") as span:
         set_span_attributes_from_callback_context(span, callback_context)
         span.set_attributes(flatten_dict(llm_response.model_dump(), parent_key="llm_response"))
     return None
 
 
-def before_tool_callback_agent_communications_dashboard(
+def before_tool_callback_observability_dashboard(
     tool: BaseTool, args: Dict[str, Any], tool_context: ToolContext
 ) -> Optional[Dict]:
-    with trace.get_tracer(__name__).start_as_current_span(
-        "before_tool_callback_agent_communications_dashboard"
-    ) as span:
+    with trace.get_tracer(__name__).start_as_current_span("before_tool_callback_observability_dashboard") as span:
         set_span_attributes_for_tool(span, tool, args, tool_context)
     return None
 
 
-def after_tool_callback_agent_communications_dashboard(
+def after_tool_callback_observability_dashboard(
     tool: BaseTool, args: Dict[str, Any], tool_context: ToolContext, tool_response: Union[Dict, List, CallToolResult]
 ) -> Optional[Dict]:
-    with trace.get_tracer(__name__).start_as_current_span("after_tool_callback_agent_communications_dashboard") as span:
+    with trace.get_tracer(__name__).start_as_current_span("after_tool_callback_observability_dashboard") as span:
         set_span_attributes_for_tool(span, tool, args, tool_context)
         if isinstance(tool_response, (dict, list)):
             span.set_attributes(flatten_dict(tool_response, parent_key="tool_response"))

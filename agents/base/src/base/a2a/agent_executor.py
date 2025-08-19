@@ -16,7 +16,7 @@ from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai import types
 
-from base.agent_communication_dashboard_plugin import AgentCommunicationDashboardPlugin
+from base.observability_dashboard_plugin import AgentCommunicationDashboardPlugin
 
 
 class A2AAgentExecutor(AgentExecutor):

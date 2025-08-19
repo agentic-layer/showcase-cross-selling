@@ -8,13 +8,13 @@ from google.adk.tools import BaseTool, ToolContext
 from google.genai import types
 from opentelemetry import trace
 
-from .agent_communication_dashboard_callbacks import (
-    after_agent_callback_agent_communications_dashboard,
-    after_model_callback_agent_communications_dashboard,
-    after_tool_callback_agent_communications_dashboard,
-    before_agent_callback_agent_communications_dashboard,
-    before_model_callback_agent_communications_dashboard,
-    before_tool_callback_agent_communications_dashboard,
+from .observability_dashboard_callbacks import (
+    after_agent_callback_observability_dashboard,
+    after_model_callback_observability_dashboard,
+    after_tool_callback_observability_dashboard,
+    before_agent_callback_observability_dashboard,
+    before_model_callback_observability_dashboard,
+    before_tool_callback_observability_dashboard,
     flatten_dict,
     set_span_attributes_for_tool,
     set_span_attributes_from_callback_context,
@@ -30,22 +30,22 @@ class AgentCommunicationDashboardPlugin(BasePlugin):
     async def before_agent_callback(
         self, *, agent: BaseAgent, callback_context: CallbackContext
     ) -> Optional[types.Content]:
-        return before_agent_callback_agent_communications_dashboard(callback_context)
+        return before_agent_callback_observability_dashboard(callback_context)
 
     async def after_agent_callback(
         self, *, agent: BaseAgent, callback_context: CallbackContext
     ) -> Optional[types.Content]:
-        return after_agent_callback_agent_communications_dashboard(callback_context)
+        return after_agent_callback_observability_dashboard(callback_context)
 
     async def before_model_callback(
         self, *, callback_context: CallbackContext, llm_request: LlmRequest
     ) -> Optional[LlmResponse]:
-        return before_model_callback_agent_communications_dashboard(callback_context, llm_request)
+        return before_model_callback_observability_dashboard(callback_context, llm_request)
 
     async def after_model_callback(
         self, *, callback_context: CallbackContext, llm_response: LlmResponse
     ) -> Optional[LlmResponse]:
-        return after_model_callback_agent_communications_dashboard(callback_context, llm_response)
+        return after_model_callback_observability_dashboard(callback_context, llm_response)
 
     async def before_tool_callback(
         self,
@@ -54,7 +54,7 @@ class AgentCommunicationDashboardPlugin(BasePlugin):
         tool_args: dict[str, Any],
         tool_context: ToolContext,
     ) -> Optional[dict]:
-        return before_tool_callback_agent_communications_dashboard(tool, tool_args, tool_context)
+        return before_tool_callback_observability_dashboard(tool, tool_args, tool_context)
 
     async def after_tool_callback(
         self,
@@ -64,7 +64,7 @@ class AgentCommunicationDashboardPlugin(BasePlugin):
         tool_context: ToolContext,
         result: dict,
     ) -> Optional[dict]:
-        return after_tool_callback_agent_communications_dashboard(tool, tool_args, tool_context, result)
+        return after_tool_callback_observability_dashboard(tool, tool_args, tool_context, result)
 
     async def on_model_error_callback(
         self,
@@ -75,7 +75,7 @@ class AgentCommunicationDashboardPlugin(BasePlugin):
     ) -> Optional[LlmResponse]:
         # not yet tested
         with trace.get_tracer(__name__).start_as_current_span(
-            "on_model_error_callback_agent_communications_dashboard"
+            "on_model_error_callback_observability_dashboard"
         ) as span:
             set_span_attributes_from_callback_context(span, callback_context)
             span.set_attribute("model", llm_request.model or "unknown")
@@ -95,9 +95,7 @@ class AgentCommunicationDashboardPlugin(BasePlugin):
         error: Exception,
     ) -> Optional[dict]:
         # not yet tested
-        with trace.get_tracer(__name__).start_as_current_span(
-            "on_tool_error_callback_agent_communications_dashboard"
-        ) as span:
+        with trace.get_tracer(__name__).start_as_current_span("on_tool_error_callback_observability_dashboard") as span:
             set_span_attributes_for_tool(span, tool, tool_args, tool_context)
             span.set_attribute("error", str(error))
         return None
