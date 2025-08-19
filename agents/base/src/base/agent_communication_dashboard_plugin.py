@@ -79,9 +79,10 @@ class AgentCommunicationDashboardPlugin(BasePlugin):
         ) as span:
             set_span_attributes_from_callback_context(span, callback_context)
             span.set_attribute("model", llm_request.model or "unknown")
-            span.set_attributes(
-                flatten_dict(llm_request.contents[-1].model_dump(), parent_key="llm_request.content")
-            )  # only send the last content part (last user input)
+            if llm_request.contents:
+                span.set_attributes(
+                    flatten_dict(llm_request.contents[-1].model_dump(), parent_key="llm_request.content")
+                )  # only send the last content part (last user input)
             span.set_attribute("error", str(error))
         return None
 
