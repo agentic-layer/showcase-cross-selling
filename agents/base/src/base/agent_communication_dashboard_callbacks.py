@@ -1,3 +1,4 @@
+import re
 from typing import Any, Dict, List, Optional, Union
 
 from google.adk.agents.callback_context import CallbackContext
@@ -8,24 +9,38 @@ from google.genai import types
 from mcp.types import CallToolResult
 from opentelemetry import trace
 
+# Pattern to match any key containing 'structuredcontent' or 'structured_content', case-insensitive
+STRUCTURED_CONTENT_PATTERN = re.compile(r"\.structured[_]?content", re.IGNORECASE)
 
-def flatten_dict(data, parent_key="", sep=".") -> Dict[str, Any]:
-    if any(key in parent_key.lower() for key in (".structuredcontent", ".structured_content")):
+
+def _span_attribute_item(key: str, data: Any) -> tuple[str, Any]:
+    """Convert data to a span attribute-compatible type."""
+    if isinstance(data, (str, bool, int, float)):  # only these types are supported by span attributes
+        return (key, data)
+    else:
+        return (key, str(data))
+
+
+def flatten_dict(data, parent_key="", sep=".", parent_key_lower=None) -> Dict[str, Any]:
+    if parent_key_lower is None:
+        parent_key_lower = parent_key.lower()
+
+    if STRUCTURED_CONTENT_PATTERN.search(parent_key_lower):
         return {}  # skip structured content as it can add too many attributes
+
     items: list[tuple[str, Any]] = []
     if isinstance(data, dict):
         for k, v in data.items():
             new_key = f"{parent_key}{sep}{k}" if parent_key else k
-            items.extend(flatten_dict(v, new_key, sep=sep).items())
+            new_key_lower = new_key.lower()
+            items.extend(flatten_dict(v, new_key, sep=sep, parent_key_lower=new_key_lower).items())
     elif isinstance(data, list):
         for i, v in enumerate(data):
             new_key = f"{parent_key}{sep}{i}"
-            items.extend(flatten_dict(v, new_key, sep=sep).items())
+            new_key_lower = new_key.lower()
+            items.extend(flatten_dict(v, new_key, sep=sep, parent_key_lower=new_key_lower).items())
     elif data is not None:
-        if isinstance(data, (str, bool, int, float)):  # only these types are supported by span attributes
-            items.append((parent_key, data))
-        else:
-            items.append((parent_key, str(data)))
+        items.append(_span_attribute_item(parent_key, data))
     return dict(items)
 
 

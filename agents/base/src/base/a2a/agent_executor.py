@@ -1,4 +1,4 @@
-from time import time
+import datetime
 
 from a2a.server.agent_execution import AgentExecutor, RequestContext
 from a2a.server.events import EventQueue
@@ -93,7 +93,7 @@ class A2AAgentExecutor(AgentExecutor):
             message = context.message
             metadata = getattr(message, "metadata", {})
             conversation_id = metadata.get("conversation_id")
-            current_time = time()
+            current_time = datetime.datetime.now(datetime.timezone.utc).timestamp()
             state_changes = {
                 "conversation_id": conversation_id,
             }
