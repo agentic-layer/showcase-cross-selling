@@ -1024,7 +1024,7 @@ _mock_database = {
     },
     "cust032": {
         "personal_info": {
-            "name": "Emma Lorentz",
+            "name": "Emma Lorenz",
             "birth_date": "1982-04-04",
             "age": 43,
             "address": "Marktplatz 5, 06108 Halle (Saale)",
