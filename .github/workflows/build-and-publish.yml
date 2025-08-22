@@ -72,7 +72,7 @@ jobs:
       - name: 'Generate Image Tag'
         id: 'generate_tag'
         run: |
-          IMAGE_TAG=$(git describe --tags --always ${{ github.ref_type != 'tag' && '--long' || '' }})
+          IMAGE_TAG=$(git describe --tags --always ${{ github.ref_type != 'tag' && '--long' || '' }} | sed 's/^v//')
           echo "image-tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
           echo "Generated Tag: $IMAGE_TAG"
 
