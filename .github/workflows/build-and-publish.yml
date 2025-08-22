@@ -72,7 +72,9 @@ jobs:
       - name: 'Generate Image Tag'
         id: 'generate_tag'
         run: |
-          IMAGE_TAG=$(git describe --tags --always ${{ github.ref_type != 'tag' && '--long' || '' }} | sed 's/^v//')
+          GIT_BRANCH="${{ github.ref_name }}"
+          GIT_SHA="${{ github.sha }}"
+          IMAGE_TAG="${GIT_BRANCH}-${GIT_SHA:0:7}-$(date +%s)"
           echo "image-tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
           echo "Generated Tag: $IMAGE_TAG"
 
