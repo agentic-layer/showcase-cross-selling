@@ -1,64 +1,62 @@
-# Insurance Cross-Selling Use Case
+# Insurance Cross-Selling Agentic System
 
-An agentic system for intelligent insurance cross-selling using Google's Agent Development Kit (ADK), Model Context
-Protocol (MCP) servers, and agent-to-agent communication.
+> **🔒 Private Repository** - This is a private repository containing proprietary demo showcases.
 
-## Overview
 
-This project demonstrates a multi-agent system that orchestrates insurance cross-selling opportunities by analyzing
-customer data, identifying suitable products, and coordinating customer communications. The system is built using modern
-agentic architecture principles with clear separation of concerns.
+A sophisticated multi-agent system for intelligent insurance cross-selling built with Google's Agent Development Kit (ADK), Model Context Protocol (MCP) servers, and agent-to-agent communication. This system orchestrates insurance cross-selling opportunities by analyzing customer data, identifying suitable products, and coordinating customer communications through specialized AI agents.
 
-## Architecture
+----
 
-### Components
+## Table of Contents
 
-The system consists of several specialized agents and MCP servers:
+- [Prerequisites](#prerequisites)
+- [Getting Started](#getting-started)
+- [Development](#development)
+- [End-to-End (E2E) Testing](#end-to-end-e2e-testing)
+- [Testing Tools and Their Configuration](#testing-tools-and-their-configuration)
+- [Sample Data](#sample-data)
+- [Project Architecture](#project-architecture)
 
-#### 🤖 **Agents**
-
-- **[Insurance Host Agent](agents/insurance_host_agent/README.md)**: Main orchestration agent that coordinates customer
-  interactions
-- **[Cross-Selling Agent](agents/cross_selling_agent/README.md)**: Identifies and presents cross-selling opportunities
-- **[Communications Agent](agents/communications_agent/README.md)**: Handles external communications (Slack, email)
-- **[Base Agent](agents/base/README.md)**: Shared utilities and execution framework
-
-#### 🔌 **MCP Servers**
-
-- **[Customer CRM](mcp-servers/customer_crm/README.md)**: Customer relationship management data and services
-- **[Insurance Products](mcp-servers/insurance_products/README.md)**: Insurance product catalog and information
+----
 
 ## Prerequisites
 
-- **Python 3.13+**: Required for all components
-- **Google Cloud Account**: For ADK and Vertex AI integration
-- **Slack Bot Token**: For communications agent (optional)
-- **uv**: Package manager for Python projects
+The following tools and dependencies are required to run this project:
 
-## Setup
+- **Python 3.13+**: Required for all agent components and MCP servers
+- **Google Cloud SDK**: For ADK and Vertex AI integration
+- **uv 0.5.0+**: Python package manager for dependency management
+- **Tilt**: Kubernetes development environment orchestration
+- **Docker**: For containerization and local Kubernetes
+- **Google Cloud Account**: With access to Vertex AI or Google AI APIs
+- **Slack Bot Token** (optional): For communications agent integration
+
+----
+
+## Getting Started
 
 ### 1. Install Dependencies
 
 ```bash
-# Install system dependencies
+# Install system dependencies via Homebrew
 brew bundle
-
+```
+```bash
 # Install Python dependencies for all agents and MCP servers
 uv sync --all-packages
 ```
 
-### 2. Google Cloud Authentication
-
-A connection to Google Cloud is required to use Gemini models.
+### 2. Authentication Setup
 
 ```bash
-# Authenticate with Google Cloud
+# Authenticate with Google Cloud for AI model access
 gcloud auth application-default login
 ```
 
+
 ### 3. Environment Configuration
 
-Create a `.env` file in the [agents](./agents) directory with the following content:
+Create a `.env` file in the root directory with the following content:
 
 ```dotenv
 # Google Cloud Configuration
@@ -74,79 +72,34 @@ SLACK_BOT_TOKEN=xoxb-your-slack-bot-token
 LITELLM_PROXY_API_KEY=sk-your-api-key
 ```
 
-### 4. Local Kubernetes Setup
+### 4. Start the Application
 
-For local development, you need a Kubernetes cluster.
-Use your preferred method to set up a local Kubernetes cluster. Docker Desktop, Ranger Desktop and Colima all provide standard Kubernetes clusters. Those are recommended.
-
-Alternatively, use `k3d` for a lightweight solution.
-
-Hint: Ensure Docker can use **at least** 8GB of memory. For Colima users: `colima start --memory 8`
-
-Using `k3d`, create a local registry and cluster:
-```
-brew install k3d
-k3d registry create local-paal-registry --port 6169
-# Currently required for Colima users. See https://github.com/k3d-io/k3d/pull/1584
-export K3D_FIX_DNS=0
-k3d cluster create local-paal --registry-use k3d-local-paal-registry
-```
-
-## Development
-
-### Local Deployment
+Launch all services using Tilt:
 
 ```bash
-# Start all services
+# Start all agents and MCP servers
 tilt up
-
-# View logs
+```
+```bash
+# View real-time logs
 tilt logs
 ```
 
-Visit http://localhost:8000/ to access the ADK Web UI or access the OpenAI API at http://localhost:8000/api.
+**Expected Results:**
+- ADK Web UI available at http://localhost:8000/
+- OpenAI-compatible API available at http://localhost:8000/api
+- API documentation at http://localhost:8000/api/docs
+- Grafana observability dashboard at http://localhost:3000
 
-API specifications can be found at http://localhost:8000/api/docs.
+## Development
 
-You'll have access to the insurance host agent. Example questions:
+### Developer Setup
+For detailed contributing guidelines, refer to the [global contributing guide](https://github.com/agentic-layer/.github?tab=contributing-ov-file).
 
-- "Welche Cross-Selling-Möglichkeiten gibt es für unsere Kundin Anna Müller mit der Kundennummer cust001?"
-- "Verfasse eine E-Mail an Anna Müller, um ihr unsere neuen Versicherungsprodukte vorzustellen."
-
-The traces can be viewed
-in [Grafana](http://localhost:3000/a/grafana-exploretraces-app/explore?from=now-30m&to=now&timezone=browser&var-ds=Tempo&var-primarySignal=nestedSetParent%3C0&var-filters=&var-metric=rate&var-groupBy=resource.service.name&var-spanListColumns=&var-latencyThreshold=&var-partialLatencyThreshold=&actionView=traceList).
-
-### Code Quality
-
-The project includes comprehensive code quality tools:
-
+**Mandatory first step for contributors:**
 ```bash
-# Run all checks
-uv run poe check
-
-# Individual checks
-uv run poe mypy          # Type checking
-uv run poe ruff          # Linting and formatting
-uv run poe bandit        # Security analysis
-uv run poe lint-imports  # Import linting
-uv run poe test          # Run tests
-```
-
-### Workspace Structure
-
-The project uses uv workspace for dependency management:
-
-```
-├── agents/                    # Agent implementations
-│   ├── base/                 # Shared agent utilities
-│   ├── communications_agent/ # Communication handling
-│   ├── cross_selling_agent/  # Cross-selling logic
-│   └── insurance_host_agent/ # Main orchestration
-├── mcp-servers/              # MCP server implementations
-│   ├── customer_crm/        # Customer data server
-│   └── insurance_products/  # Product catalog server
-├── pyproject.toml           # Workspace configuration
-└── uv.lock                  # Dependency lock file
+# Activate pre-commit hooks
+pre-commit install
 ```
 
 ### Adding a New Agent
@@ -202,4 +155,138 @@ uv sync
 
 # Test the new agent
 uv run --package <NEW_AGENT_NAME> <NEW_AGENT_NAME>
+```
+
+**Agent Development Guidelines:**
+- Follow the existing agent structure in `agents/`
+- Implement A2A (Agent-to-Agent) communication protocols
+- Use the shared `base` package for common utilities
+- Create comprehensive agent cards for capability description
+- Ensure Kubernetes deployment compatibility
+
+### Code Quality Standards
+
+**Code Style:**
+- **Linting**: Ruff with 120 character line limit
+- **Type Checking**: mypy for static type analysis
+- **Security**: Bandit for security vulnerability detection
+- **Import Organization**: import-linter for dependency management
+
+**Development Commands:**
+```bash
+# Run all quality checks
+uv run poe check
+
+# Individual checks
+uv run poe mypy          # Type checking
+uv run poe ruff          # Linting and formatting
+uv run poe bandit        # Security analysis
+uv run poe lint-imports  # Import dependency validation
+uv run poe test          # Execute test suite
+
+# Auto-formatting
+uv run poe format        # Code formatting
+uv run poe lint          # Auto-fix linting issues
+```
+
+
+## End-to-End (E2E) Testing
+
+### Running E2E Tests
+
+Execute the end-to-end test suite to validate the complete agent workflow:
+
+```bash
+# Run the cross-selling conversation test
+./test/e2e/openai-api.sh
+```
+
+**Prerequisites for E2E Tests:**
+- All services must be running (`tilt up`)
+- Insurance Host Agent accessible at `http://localhost:8000`
+- Customer CRM and Insurance Products MCP servers operational
+- Network connectivity between all agent components
+
+**Test Coverage:**
+- Cross-selling strategy generation for customer `cust001`
+- Agent-to-agent communication validation
+- OpenAI-compatible API endpoint functionality
+- Response content validation for German language interactions
+
+## Testing Tools and Their Configuration
+
+### Testing Framework
+
+**Primary Tool: Bash/cURL Integration Tests**
+- **Location**: `test/e2e/openai-api.sh`
+- **Configuration**: Tests use OpenAI-compatible API endpoints
+- **Validation**: Response content matching using `grep` with German keywords
+
+**Example Test Configuration:**
+```bash
+# API endpoint configuration
+API_ENDPOINT="http://localhost:8000/api/v1/chat/completions"
+MODEL_NAME="insurance_host_agent"
+TIMEOUT="90"  # seconds
+```
+```bash
+# Content validation patterns
+EXPECTED_PATTERNS="cust001\|cross.sell\|strategie\|kunde"
+```
+
+
+## Sample Data
+
+### Customer CRM Data
+
+The system includes mock customer data accessible through the Customer CRM MCP server:
+
+**Sample Customer Record (cust001):**
+```json
+{
+  "customer_id": "cust001",
+  "name": "Anna Müller",
+  "current_policies": ["auto_insurance", "home_insurance"],
+  "demographics": {
+    "age": 35,
+    "location": "Munich",
+    "income_level": "middle"
+  }
+}
+```
+
+**Sample API Request:**
+```bash
+# Test cross-selling recommendation
+curl -X POST http://localhost:8000/api/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "insurance_host_agent",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Welche Cross-Selling-Möglichkeiten gibt es für unsere Kundin Anna Müller mit der Kundennummer cust001?"
+      }
+    ]
+  }'
+```
+
+**Database Seeding:**
+Customer and product data is automatically initialized when MCP servers start. No manual seeding required.
+
+
+
+## Project Architecture
+
+```
+agents/
+├── base/                 # Shared utilities and A2A framework
+├── insurance_host_agent/ # Main orchestration agent
+├── cross_selling_agent/  # Cross-selling logic implementation
+├── communications_agent/ # External communication handling
+└── stats_analysis_agent/ # Statistical analysis capabilities
+
+mcp-servers/
+├── customer_crm/        # Customer relationship management data
+└── insurance_products/  # Insurance product catalog server
 ```
