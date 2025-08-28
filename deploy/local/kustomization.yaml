@@ -5,3 +5,4 @@ resources:
   - ../base
   - lgtm.yaml
   - llm-gateway.yaml
+  - otel-collector.yaml

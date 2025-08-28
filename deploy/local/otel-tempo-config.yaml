@@ -5,4 +5,6 @@ metadata:
   namespace: use-case-cross-selling
 data:
   OTEL_SDK_DISABLED: "false"
-  OTEL_EXPORTER_OTLP_ENDPOINT: "http://lgtm.monitoring.svc.cluster.local:4318"
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.use-case-cross-selling.svc.cluster.local:4318"
+  # Local development: Agents → OTel Collector → LGTM stack
+  # Remote clusters: Agents → OTel Collector → Tempo

@@ -4,6 +4,12 @@
 load('ext://dotenv', 'dotenv')
 dotenv()
 
+# Configure for local k3d development
+allow_k8s_contexts('k3d-paal-local')
+
+# Use local k3d registry
+default_registry('localhost:5001')
+
 # Create Kubernetes secrets from environment variables
 load('ext://secret', 'secret_from_dict')
 
