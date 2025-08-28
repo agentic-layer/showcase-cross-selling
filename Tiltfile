@@ -90,7 +90,7 @@ cfg = config.parse()
 local_resource(
     'test_e2e_openai_api',
     cmd='./test/e2e/openai-api.sh',
-    resource_deps=['insurance-host-agent'],
+    resource_deps=['insurance-host-agent', 'cross-selling-agent', 'customer-crm', 'insurance-products', 'litellm', 'lgtm', 'stats-analysis-agent', 'communications-agent'],
     auto_init=cfg.get('run-tests', False),
     trigger_mode=TRIGGER_MODE_MANUAL,
 )
