@@ -53,6 +53,10 @@ spec:
               command:
                 - cat
                 - /tmp/ready
+          env:
+            # Use observability-dashboard, if deployed (lgtm will silently ignore it otherwise)
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://observability-dashboard.observability-dashboard.svc.cluster.local:8000"
           volumeMounts:
             - name: tempo-data
               mountPath: /data/tempo

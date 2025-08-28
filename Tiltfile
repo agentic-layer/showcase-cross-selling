@@ -78,7 +78,7 @@ for server in mcp_servers:
     k8s_resource(snake_to_kebab(server_name), port_forwards=server['port'], labels=['mcp-servers'])
 
 # Expose the Monitoring stack (Grafana)
-k8s_resource('lgtm', port_forwards='3000:3000')
+k8s_resource('lgtm', port_forwards=['3000:3000', '4318:4318', '4317:4317'])
 
 # Expose LLM Gateway (LiteLLM)
 k8s_resource('litellm', port_forwards='4000:4000')
