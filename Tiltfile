@@ -1,5 +1,7 @@
 # Tiltfile for cross-selling use case development
 
+update_settings(max_parallel_updates=10)
+
 # Load .env file for environment variables
 load('ext://dotenv', 'dotenv')
 dotenv()
