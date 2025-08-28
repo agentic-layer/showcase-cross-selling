@@ -34,9 +34,8 @@ k8s_yaml(secret_from_dict(
 # Apply Kubernetes manifests
 k8s_yaml(kustomize('deploy/local'))
 
-# Live update configuration for faster development
+# Live update configuration for faster development (note: this copies the whole project, not only the respective subfolder)
 live_update_sync = sync('.', '/app')
-live_update_run = run('uv pip install -e .', trigger=['pyproject.toml', 'uv.lock'])
 
 # Helper function to convert snake_case to kebab-case
 def snake_to_kebab(snake_str):
@@ -57,7 +56,7 @@ for agent in agents:
         context='.',
         dockerfile='./agents/Dockerfile',
         build_args={'AGENT_NAME': agent_name},
-        live_update=[live_update_sync, live_update_run],
+        live_update=[live_update_sync],
     )
     k8s_resource(snake_to_kebab(agent_name), port_forwards=agent['port'], labels=['agents'])
 
@@ -74,7 +73,7 @@ for server in mcp_servers:
         context='.',
         dockerfile='./mcp-servers/Dockerfile',
         build_args={'MCP_SERVER_NAME': server_name},
-        live_update=[live_update_sync, live_update_run],
+        live_update=[live_update_sync],
     )
     k8s_resource(snake_to_kebab(server_name), port_forwards=server['port'], labels=['mcp-servers'])
 
