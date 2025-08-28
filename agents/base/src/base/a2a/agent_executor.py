@@ -16,7 +16,7 @@ from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai import types
 
-from base.observability_dashboard_plugin import AgentCommunicationDashboardPlugin
+from base.observability_dashboard_plugin import ObservabilityDashboardPlugin
 
 
 class A2AAgentExecutor(AgentExecutor):
@@ -42,7 +42,7 @@ class A2AAgentExecutor(AgentExecutor):
             artifact_service=InMemoryArtifactService(),
             session_service=InMemorySessionService(),
             memory_service=InMemoryMemoryService(),
-            plugins=[AgentCommunicationDashboardPlugin()],
+            plugins=[ObservabilityDashboardPlugin()],
         )
 
     async def cancel(
