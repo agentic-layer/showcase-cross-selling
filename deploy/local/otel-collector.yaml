@@ -40,11 +40,9 @@ data:
             action: insert
     
     exporters:
-      # Export to LGTM stack for local development via gRPC
-      otlp:
-        endpoint: "lgtm.monitoring.svc.cluster.local:4317"
-        tls:
-          insecure: true
+      # Export to LGTM stack for local development via HTTP
+      otlphttp:
+        endpoint: "http://lgtm.monitoring.svc.cluster.local:4318"
       
       # Add logging for debugging
       logging:
@@ -61,7 +59,7 @@ data:
         traces:
           receivers: [otlp]
           processors: [memory_limiter, resource, batch]
-          exporters: [otlp, logging]
+          exporters: [otlphttp, logging]
         
         metrics:
           receivers: [otlp]
