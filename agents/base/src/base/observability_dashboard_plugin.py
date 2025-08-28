@@ -21,11 +21,11 @@ from .observability_dashboard_callbacks import (
 )
 
 
-class AgentCommunicationDashboardPlugin(BasePlugin):
-    """A custom plugin class for the Agent Communication Dashboard."""
+class ObservabilityDashboardPlugin(BasePlugin):
+    """A custom plugin class for the Observability Dashboard."""
 
     def __init__(self):
-        super().__init__("AgentCommunicationDashboardPlugin")
+        super().__init__("ObservabilityDashboardPlugin")
 
     async def before_agent_callback(
         self, *, agent: BaseAgent, callback_context: CallbackContext
