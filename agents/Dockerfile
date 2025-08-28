@@ -16,14 +16,14 @@ COPY uv.lock pyproject.toml ./
 # Install dependencies in a separate layer for better caching
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=agents/${AGENT_NAME}/pyproject.toml,target=agents/${AGENT_NAME}/pyproject.toml \
-    uv sync --frozen --package ${AGENT_NAME} --no-install-project
+    uv sync --frozen --package ${AGENT_NAME} --no-install-project --link-mode=copy
 
 # Copy source code after dependency installation
 COPY agents/${AGENT_NAME} ./agents/${AGENT_NAME}
 
 # Install the project in a final layer
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen --package ${AGENT_NAME}
+    uv sync --frozen --package ${AGENT_NAME} --link-mode=copy
 
 # Expose port
 EXPOSE 8000

@@ -15,14 +15,14 @@ COPY uv.lock pyproject.toml ./
 # Install dependencies in a separate layer for better caching
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=mcp-servers/${MCP_SERVER_NAME}/pyproject.toml,target=mcp-servers/${MCP_SERVER_NAME}/pyproject.toml \
-    uv sync --frozen --package ${MCP_SERVER_NAME} --no-install-project
+    uv sync --frozen --package ${MCP_SERVER_NAME} --no-install-project --link-mode=copy
 
 # Copy source code after dependency installation
 COPY mcp-servers/${MCP_SERVER_NAME_ENV} ./mcp-servers/${MCP_SERVER_NAME_ENV}
 
 # Install the project in a final layer
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen --package ${MCP_SERVER_NAME_ENV}
+    uv sync --frozen --package ${MCP_SERVER_NAME_ENV} --link-mode=copy
 
 # Expose port
 EXPOSE 8000
