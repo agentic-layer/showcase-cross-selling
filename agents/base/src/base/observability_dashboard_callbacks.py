@@ -63,13 +63,13 @@ def set_span_attributes_for_tool(span, tool: BaseTool, args: Dict[str, Any], too
 
 
 def before_agent_callback_observability_dashboard(callback_context: CallbackContext) -> Optional[types.Content]:
-    with trace.get_tracer(__name__).start_as_current_span("before_agent_callback_observability_dashboard") as span:
+    with trace.get_tracer(__name__).start_as_current_span("before_agent_callback") as span:
         set_span_attributes_from_callback_context(span, callback_context)
     return None
 
 
 def after_agent_callback_observability_dashboard(callback_context: CallbackContext) -> Optional[types.Content]:
-    with trace.get_tracer(__name__).start_as_current_span("after_agent_callback_observability_dashboard") as span:
+    with trace.get_tracer(__name__).start_as_current_span("after_agent_callback") as span:
         set_span_attributes_from_callback_context(span, callback_context)
     return None
 
@@ -77,7 +77,7 @@ def after_agent_callback_observability_dashboard(callback_context: CallbackConte
 def before_model_callback_observability_dashboard(
     callback_context: CallbackContext, llm_request: LlmRequest
 ) -> Optional[LlmResponse]:
-    with trace.get_tracer(__name__).start_as_current_span("before_model_callback_observability_dashboard") as span:
+    with trace.get_tracer(__name__).start_as_current_span("before_model_callback") as span:
         set_span_attributes_from_callback_context(span, callback_context)
         span.set_attribute("model", llm_request.model or "unknown")
         if llm_request.contents:
@@ -90,7 +90,7 @@ def before_model_callback_observability_dashboard(
 def after_model_callback_observability_dashboard(
     callback_context: CallbackContext, llm_response: LlmResponse
 ) -> Optional[LlmResponse]:
-    with trace.get_tracer(__name__).start_as_current_span("after_model_callback_observability_dashboard") as span:
+    with trace.get_tracer(__name__).start_as_current_span("after_model_callback") as span:
         set_span_attributes_from_callback_context(span, callback_context)
         span.set_attributes(flatten_dict(llm_response.model_dump(), parent_key="llm_response"))
     return None
@@ -99,7 +99,7 @@ def after_model_callback_observability_dashboard(
 def before_tool_callback_observability_dashboard(
     tool: BaseTool, args: Dict[str, Any], tool_context: ToolContext
 ) -> Optional[Dict]:
-    with trace.get_tracer(__name__).start_as_current_span("before_tool_callback_observability_dashboard") as span:
+    with trace.get_tracer(__name__).start_as_current_span("before_tool_callback") as span:
         set_span_attributes_for_tool(span, tool, args, tool_context)
     return None
 
@@ -107,7 +107,7 @@ def before_tool_callback_observability_dashboard(
 def after_tool_callback_observability_dashboard(
     tool: BaseTool, args: Dict[str, Any], tool_context: ToolContext, tool_response: Union[Dict, List, CallToolResult]
 ) -> Optional[Dict]:
-    with trace.get_tracer(__name__).start_as_current_span("after_tool_callback_observability_dashboard") as span:
+    with trace.get_tracer(__name__).start_as_current_span("after_tool_callback") as span:
         set_span_attributes_for_tool(span, tool, args, tool_context)
         if isinstance(tool_response, (dict, list)):
             span.set_attributes(flatten_dict(tool_response, parent_key="tool_response"))
