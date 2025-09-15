@@ -9,7 +9,7 @@ dependencies = [
     # Add other specific dependencies here
 ]
 [project.scripts]
-stats_analysis_agent = "stats_analysis_agent.__main__:main"
+stats-analysis-agent = "stats_analysis_agent.__main__:main"
 
 [tool.uv.sources]
 base = { workspace = true }
