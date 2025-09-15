@@ -1,0 +1,28 @@
+apiVersion: runtime.agentic-layer.ai/v1alpha1
+kind: Agent
+metadata:
+  name: cross-selling-agent
+  namespace: use-case-cross-selling
+spec:
+  replicas: 1
+  image: "cross_selling_agent:latest"
+  protocols:
+    - type: A2A
+      port: 8000
+    - type: OpenAI
+  env:
+    - name: LITELLM_PROXY_API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: litellm-proxy-api-key-secret
+          key: LITELLM_PROXY_API_KEY
+    - name: LITELLM_PROXY_API_BASE
+      value: "http://litellm.llm-gateway.svc.cluster.local:4000"
+    - name: USE_LITELLM_PROXY
+      value: "True"
+    - name: OTEL_SERVICE_NAME
+      value: cross-selling-agent
+  envFrom:
+    - configMapRef:
+        name: otel-tempo-config
+        optional: true

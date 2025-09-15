@@ -2,6 +2,27 @@
 
 update_settings(max_parallel_updates=10)
 
+# Configure Tilt to work with Agent Runtime Operator's custom Agent CRDs
+# Without these configurations, Tilt cannot properly manage Agent resources created by the operator:
+# image_json_path: Required because Agent CRDs store image references in a custom field ({.spec.image})
+#                  rather than standard Kubernetes image fields that Tilt knows about by default
+# pod_readiness: Required because the operator creates pods asynchronously after Agent CRD creation,
+#                and Tilt must wait for operator-managed pods rather than assuming immediate readiness
+k8s_kind(
+    'Agent',
+    image_json_path='{.spec.image}',
+    pod_readiness='wait'
+)
+
+# Check if Agent Runtime Operator is running before proceeding
+def check_operator_running():
+    result = local('kubectl get pods -n agent-runtime-operator-system -l control-plane=controller-manager -o jsonpath="{.items[*].status.phase}" 2>/dev/null || echo "NOT_FOUND"', quiet=True)
+    result_str = str(result).strip()
+    if result_str == 'NOT_FOUND' or 'Running' not in result_str:
+        fail('Agent Runtime Operator is not running. Please install and deploy it first. See: https://github.com/agentic-layer/agent-runtime-operator?tab=readme-ov-file#getting-started')
+
+check_operator_running()
+
 # Load .env file for environment variables
 load('ext://dotenv', 'dotenv')
 dotenv()
