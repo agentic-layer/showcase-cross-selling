@@ -1,13 +1,12 @@
 name: Tilt Integration Test
 
-# Temporarily disabled because the Agent Runtime Operator is needed and local deployment can only happen manually at the moment
-#on:
-#  push:
-#    branches:
-#      - main
-#      - 'renovate/**'
-#  pull_request:
-#  workflow_dispatch:
+on:
+  push:
+    branches:
+      - main
+      - 'renovate/**'
+  pull_request:
+  workflow_dispatch:
 
 env:
   # Required environment variables for the test
