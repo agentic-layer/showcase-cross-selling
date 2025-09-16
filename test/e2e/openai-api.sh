@@ -2,6 +2,10 @@
 
 echo "Testing cross-selling conversation..."
 
+echo "Waiting for the server to be ready..."
+# Temporary solution: Wait for a fixed time until readiness probes are implemented again
+sleep 1m
+
 # Start conversation with cross-selling request
 echo "Sending cross-selling request..."
 
