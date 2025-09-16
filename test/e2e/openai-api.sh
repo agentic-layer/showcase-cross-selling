@@ -24,7 +24,7 @@ echo "Conversation response:"
 echo "$CONVERSATION_RESPONSE" | jq '.' 2>/dev/null || echo "$CONVERSATION_RESPONSE"
 
 # Check if response contains expected content
-if echo "$CONVERSATION_RESPONSE" | grep -q "cust001\|cross.sell\|strategie\|kunde" -i; then
+if echo "$CONVERSATION_RESPONSE" | grep -q "cust001\|strategie\|kunde" -i; then
   echo "✅ SUCCESS: Agent responded with relevant cross-selling content"
 else
   echo "❌ FAILURE: Agent response doesn't contain expected content"
