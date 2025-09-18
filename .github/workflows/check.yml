@@ -1,27 +1,18 @@
 #
-# GitHub Action: `Check`
+# GitHub Action: Check
 #
-# This workflow is triggered on pull requests and pushes to main.
-# Its primary purpose is to perform checks and build Docker images for services within the repository.
-#
-# The workflow consists of two main jobs:
-#   1. `check-backend`: Sets up the Python environment and installs dependencies.
-#   2. `build-images`: Dynamically creates a matrix of build jobs, one for each
-#      service, defined in the strategy matrix. Each job builds a Docker image and tags it with "latest"
+# This workflow is triggered on pushes to main and renovate branches, as well as
+# pull requests. It runs backend checks and validates Docker builds without
+# pushing images to ensure code quality.
 #
 name: Check
+
 on:
   push:
     branches:
       - main
       - 'renovate/**'
   pull_request:
-
-env:
-  # GCP configuration
-  GCP_LOCATION: 'europe-west3'
-  GCP_PROJECT_ID: 'qaware-paal'
-  GCP_REPOSITORY: 'agentic-layer-private'
 
 jobs:
   check-backend:
@@ -48,10 +39,11 @@ jobs:
         run: uv run poe check
 
   build-images:
+    needs: check-backend
     runs-on: ubuntu-latest
     permissions:
-           contents: 'read'
-           id-token: 'write'
+      contents: 'read'
+      id-token: 'write'
 
     strategy:
       fail-fast: false # Ensures that if one build fails, the others will still run
@@ -79,24 +71,14 @@ jobs:
             build_arg_key: "MCP_SERVER_NAME"
 
     steps:
-      - name: 'Checkout' #Needed to access git describe in the image tag generation step
+      - name: 'Checkout'
         uses: 'actions/checkout@v5'
         with:
           fetch-depth: 0 # required to fetch all history for all branches and tags
 
-      - name: 'Generate Image Tag'
-        id: 'generate_tag'
-        run: |
-          IMAGE_TAG=$(git describe --tags --always ${{ github.ref_type != 'tag' && '--long' || '' }} | sed 's/^v//')
-          echo "image-tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
-          echo "Generated Tag: $IMAGE_TAG"
-
-      - name: 'Build and Push Docker Image'
-        uses: 'docker/build-push-action@v6'
+      - name: 'Build Docker Image'
+        uses: ./.github/actions/docker-build
         with:
-          context: .
-          file: ${{ matrix.dockerfile }}
-          push: false
-          tags: ${{ env.GCP_LOCATION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.GCP_REPOSITORY }}/${{ matrix.image_name }}:${{ steps.generate_tag.outputs.image-tag }}
-          build-args: |
-            ${{ matrix.build_arg_key }}=${{ matrix.image_name }}
+          image_name: ${{ matrix.image_name }}
+          dockerfile: ${{ matrix.dockerfile }}
+          build_arg_key: ${{ matrix.build_arg_key }}
