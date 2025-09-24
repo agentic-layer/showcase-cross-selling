@@ -70,6 +70,7 @@ Each agent must:
 1. **Define Agent Card**: Create `AgentCard` with capabilities, skills, and metadata in `a2a/card.py`
 2. **Setup A2A Application**: Configure `A2AStarletteApplication` with `DefaultRequestHandler` and `A2AAgentExecutor` in `a2a/a2a.py`
 3. **Create Main Entry Point**: Implement `__main__.py` with FastAPI app that mounts A2A endpoint at `/a2a`
+   - **Health Checking**: No manual health endpoint needed - health checking is handled by agent-runtime-operator via A2A endpoints
 4. **Network Accessibility**: Run with `uvicorn` on `0.0.0.0:8000` for inter-agent communication
 5. **Use Base Components**: Leverage shared `A2AAgentExecutor` from `base/` module for consistent behavior
 6. **Register with Host Agent**: Add agent URL to the host agent's `subagent_urls` for routing
