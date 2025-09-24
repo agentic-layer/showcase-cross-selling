@@ -1,5 +1,4 @@
 import uvicorn
-from base.fastapi_health_endpoint import add_health_endpoint
 from fastapi import FastAPI
 from google.adk.cli.fast_api import get_fast_api_app
 
@@ -13,8 +12,6 @@ def main():
         description="API for the Insurance Host Agent",
         version="1.0.0",
     )
-
-    add_health_endpoint(app)
 
     adk_web = get_fast_api_app(agents_dir="agents/insurance_host_agent/src", web=True)
 

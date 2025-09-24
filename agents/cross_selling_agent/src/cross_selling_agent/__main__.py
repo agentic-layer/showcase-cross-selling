@@ -1,5 +1,4 @@
 import uvicorn
-from base.fastapi_health_endpoint import add_health_endpoint
 from fastapi import FastAPI
 
 from cross_selling_agent.a2a.a2a import a2a_app
@@ -11,8 +10,6 @@ def main():
         description="API for the Cross Selling Agent",
         version="1.0.0",
     )
-
-    add_health_endpoint(app)
 
     app.mount("/a2a", a2a_app, name="a2a")
 
