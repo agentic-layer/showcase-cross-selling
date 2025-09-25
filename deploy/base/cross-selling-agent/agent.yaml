@@ -9,6 +9,7 @@ spec:
   protocols:
     - type: A2A
       port: 8000
+      path: "/a2a"
     - type: OpenAI
   env:
     - name: LITELLM_PROXY_API_KEY
