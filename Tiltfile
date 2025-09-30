@@ -7,7 +7,7 @@ load('ext://cert_manager', 'deploy_cert_manager')
 deploy_cert_manager()
 
 print("Installing agent-runtime-operator")
-local("kubectl apply -f https://github.com/agentic-layer/agent-runtime-operator/releases/download/v0.2.3/install.yaml")
+local("kubectl apply -f https://github.com/agentic-layer/agent-runtime-operator/releases/download/v0.4.5/install.yaml")
 
 print("Waiting for agent-runtime-operator to start")
 local("kubectl wait --for=condition=Available --timeout=60s -n agent-runtime-operator-system deployment/agent-runtime-operator-controller-manager")
@@ -20,8 +20,7 @@ local("kubectl wait --for=condition=Available --timeout=60s -n agent-runtime-ope
 #                and Tilt must wait for operator-managed pods rather than assuming immediate readiness
 k8s_kind(
     'Agent',
-    image_json_path='{.spec.image}',
-    pod_readiness='wait'
+    pod_readiness='wait',
 )
 
 # Load .env file for environment variables
@@ -63,23 +62,9 @@ live_update_sync = sync('.', '/app')
 def snake_to_kebab(snake_str):
     return snake_str.replace('_', '-')
 
-# Open ports and sync changes to agents
-agents = [
-    {'name': 'communications_agent', 'port': '10002:8000'},
-    {'name': 'cross_selling_agent', 'port': '10003:8000'},
-    {'name': 'insurance_host_agent', 'port': '8000:8000'},
-]
-
-for agent in agents:
-    agent_name = agent['name']
-    docker_build(
-        agent_name,
-        context='.',
-        dockerfile='./agents/Dockerfile',
-        build_args={'AGENT_NAME': agent_name},
-        live_update=[live_update_sync],
-    )
-    k8s_resource(snake_to_kebab(agent_name), port_forwards=agent['port'], labels=['agents'])
+k8s_resource('communications-agent', port_forwards='10002:8000', labels=['agents'])
+k8s_resource('cross-selling-agent', port_forwards='10003:8000', labels=['agents'])
+k8s_resource('insurance-host-agent', port_forwards='8000:8000', labels=['agents'])
 
 # Open ports and sync changes to MCP servers
 mcp_servers = [

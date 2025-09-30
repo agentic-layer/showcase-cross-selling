@@ -4,6 +4,6 @@ resources:
   - namespace.yaml
   - customer-crm/
   - insurance-products/
-  - communications-agent/
-  - cross-selling-agent/
-  - insurance-host-agent/
+  - communications-agent.yaml
+  - cross-selling-agent.yaml
+  - insurance-host-agent.yaml

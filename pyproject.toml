@@ -16,10 +16,6 @@ dev = [
 
 [tool.uv.workspace]
 members = [
-    "agents/base",
-    "agents/insurance_host_agent",
-    "agents/communications_agent",
-    "agents/cross_selling_agent",
     "mcp-servers/customer_crm",
     "mcp-servers/insurance_products",
 ]
@@ -36,15 +32,12 @@ bandit = "bandit -c pyproject.toml -r ."
 mypy = "mypy ."
 lint-imports = "lint-imports"
 
-check = ["mypy", "bandit", "ruff", "lint-imports", "test"]
+# Note: Do not run tests, as we have none at the moment
+check = ["mypy", "bandit", "ruff", "lint-imports"]
 
 [tool.importlinter]
 root_packages = [
-    "base",
-    "communications_agent",
-    "cross_selling_agent",
     "customer_crm",
-    "insurance_host_agent",
     "insurance_products",
 ]
 

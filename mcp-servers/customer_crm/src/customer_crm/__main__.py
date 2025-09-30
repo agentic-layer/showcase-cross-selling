@@ -96,7 +96,6 @@ def get_customer_crm_data(customer_id: str) -> dict:
 
     customer_id = customer_id.strip()
 
-    # TODO: Implement actual CRM database connection
     # For skeleton purposes, using mock data based on customer_id
     if int(customer_id.lower()[-3:]) <= mock_database.get_database_size():
         mock_customer_data = mock_database.get_customer(customer_id)
@@ -143,6 +142,26 @@ def get_all_customer_data() -> dict:
         "All Customer CRM data retrieved",
         customer_data=mock_database.get_all_customers(),
     )
+
+
+@mcp.tool()
+def send_message(customer_id: str, subject: str, body: str) -> dict:
+    """
+    Sends a message to the specified customer.
+
+    :param customer_id:
+    :param subject:
+    :param body:
+    :return:
+    """
+
+    print("--- Mock Sending Message ---")
+    print(f"To: Customer {customer_id}")
+    print(f"Subject: {subject}")
+    print(f"Body: {body}")
+    print("--------------------------")
+
+    return _create_success_response(f"Message sent to customer {customer_id}")
 
 
 def main():
