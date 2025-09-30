@@ -68,7 +68,6 @@ agents = [
     {'name': 'communications_agent', 'port': '10002:8000'},
     {'name': 'cross_selling_agent', 'port': '10003:8000'},
     {'name': 'insurance_host_agent', 'port': '8000:8000'},
-    {'name': 'stats_analysis_agent', 'port': '10004:8000'},
 ]
 
 for agent in agents:
@@ -112,7 +111,7 @@ cfg = config.parse()
 local_resource(
     'test_e2e_openai_api',
     cmd='./test/e2e/openai-api.sh',
-    resource_deps=['insurance-host-agent', 'cross-selling-agent', 'customer-crm', 'insurance-products', 'litellm', 'lgtm', 'stats-analysis-agent', 'communications-agent'],
+    resource_deps=['insurance-host-agent', 'cross-selling-agent', 'customer-crm', 'insurance-products', 'litellm', 'lgtm', 'communications-agent'],
     auto_init=cfg.get('run-tests', False),
     trigger_mode=TRIGGER_MODE_MANUAL,
 )

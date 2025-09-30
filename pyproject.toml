@@ -22,7 +22,6 @@ members = [
     "agents/cross_selling_agent",
     "mcp-servers/customer_crm",
     "mcp-servers/insurance_products",
-    "agents/stats_analysis_agent",
 ]
 
 [tool.poe.tasks]

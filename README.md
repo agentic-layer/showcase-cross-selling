@@ -289,8 +289,7 @@ agents/
 ├── base/                 # Shared utilities and A2A framework
 ├── insurance_host_agent/ # Main orchestration agent
 ├── cross_selling_agent/  # Cross-selling logic implementation
-├── communications_agent/ # External communication handling
-└── stats_analysis_agent/ # Statistical analysis capabilities
+└── communications_agent/ # External communication handling
 
 mcp-servers/
 ├── customer_crm/        # Customer relationship management data
