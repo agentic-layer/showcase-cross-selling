@@ -11,7 +11,7 @@ dependencies = [
 base = { workspace = true }
 
 [project.scripts]
-cross-selling-agent = "cross_selling_agent.__main__:main"
+cross_selling_agent = "cross_selling_agent.__main__:main"
 
 [build-system]
 requires = ["hatchling"]
