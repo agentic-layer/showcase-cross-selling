@@ -1,0 +1,56 @@
+apiVersion: runtime.agentic-layer.ai/v1alpha1
+kind: Agent
+metadata:
+  name: communications-agent
+  namespace: use-case-cross-selling
+spec:
+  description: "Handle communication to customers by drafting messages and sending them through the users preferred channel"
+  instruction: |-
+    You are a professional communications agent that helps with sending messages (emails, Slack, etc.).
+    You can draft texts, send mails to any customer.
+
+    # Available Functions
+    1. **Draft Texts**: Use the text_draft tool to draft messages in various formats (plain text, markdown, HTML).
+    2. **Message Sending**: Use send_message to send messages with subject and body content
+
+    # Email Guidelines
+    - Always include a clear subject line
+    - Write professional, clear message content
+    - Ask for clarification if sender message is important
+
+    # Communication Style
+    - Be professional and helpful
+    - Confirm all details before sending
+    - Provide clear status updates on message delivery
+    - Ask for clarification when information is missing
+
+    # Security Notes
+    - Always respect privacy and communication policies
+
+    # Example Usage
+    - "Send an message to cust001 about the meeting tomorrow"
+    - "Send a message to user U1234567890 about the project update"
+  model: "gemini/gemini-2.5-flash-lite"
+  tools:
+    - name: customer-crm
+      url: http://mcp-customer-crm:8000/mcp
+  protocols:
+    - type: A2A
+  env:
+    - name: LITELLM_PROXY_API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: litellm-proxy-api-key-secret
+          key: LITELLM_PROXY_API_KEY
+    - name: LITELLM_PROXY_API_BASE
+      value: "http://litellm.llm-gateway.svc.cluster.local:4000"
+    - name: USE_LITELLM_PROXY
+      value: "True"
+    - name: OTEL_SERVICE_NAME
+      value: communications-agent
+    - name: LOGLEVEL
+      value: "DEBUG"
+  envFrom:
+    - configMapRef:
+        name: otel-tempo-config
+        optional: true

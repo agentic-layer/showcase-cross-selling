@@ -9,21 +9,35 @@ sleep 1m
 # Start conversation with cross-selling request
 echo "Sending cross-selling request..."
 
+request=$(cat <<EOF
+{
+ "jsonrpc": "2.0",
+ "id": 1,
+ "method": "message/send",
+ "params": {
+   "message": {
+     "role": "user",
+     "parts": [
+       {
+         "kind": "text",
+         "text": "Bitte entwickle eine cross-selling-strategie für Kunde cust001"
+       }
+     ],
+     "messageId": "$(uuidgen)",
+     "contextId": "$(uuidgen)"
+   },
+   "metadata": {}
+ }
+}
+EOF
+)
+
 # -s: silent mode (no progress meter)
 # -S: show error message even with -s
 # -f: fail silently (no HTML output on server errors like 404)
-CONVERSATION_RESPONSE=$(curl --max-time 90 -sfS -X POST http://localhost:8000/api/v1/chat/completions \
+CONVERSATION_RESPONSE=$(curl --max-time 90 -sfS -X POST http://localhost:8000 \
    -H "Content-Type: application/json" \
-   -H "Accept: application/json" \
-   -d '{
-     "model": "insurance_host_agent",
-     "messages": [
-       {
-         "role": "user",
-         "content": "Bitte entwickle eine cross-selling-strategie für Kunde cust001"
-       }
-     ]
-   }')
+   -d "${request}")
 exit_code=$?
 
 echo "Conversation response:"
@@ -32,7 +46,7 @@ echo "$CONVERSATION_RESPONSE" | jq '.' 2>/dev/null || echo "$CONVERSATION_RESPON
 # Check the exit code
 if [[ $exit_code -eq 0 ]]; then
   # Check if response contains expected content
-  if echo "$CONVERSATION_RESPONSE" | grep -q "cust001\|strategie\|kunde" -i; then
+  if echo "$CONVERSATION_RESPONSE" | grep -q "versicherung" -i; then
       echo "✅ SUCCESS: Agent responded with relevant cross-selling content"
     else
       echo "❌ FAILURE: Agent response doesn't contain expected content"
