@@ -45,7 +45,6 @@ cd mcp-server
   - `communications_agent/`: Handles drafting professional communications
   - `cross_selling_agent/`: Identifies cross-selling opportunities from CRM data
   - `insurance_host_agent/`: Orchestrates customer support for insurance brokers (German language)
-  - `stats_analysis_agent/`: Provides statistical analysis capabilities
 - Each agent follows the structure: `agent_name/src/agent_name/agent.py`
 - Each agent includes A2A (Agent-to-Agent) integration in `agent_name/src/agent_name/a2a/`
 - For detailed instructions on creating new agents, see the "Adding a New Agent" section in [README.md](./README.md)
