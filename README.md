@@ -5,6 +5,9 @@
 
 A sophisticated multi-agent system for intelligent insurance cross-selling built with Google's Agent Development Kit (ADK), Model Context Protocol (MCP) servers, and agent-to-agent communication. This system orchestrates insurance cross-selling opportunities by analyzing customer data, identifying suitable products, and coordinating customer communications through specialized AI agents.
 
+This showcase demonstrates the capabilities of the [Agentic Layer platform](http://agentic-layer.ai/) for building complex multi-agent AI systems.
+Further information about the Agentic Layer can be found in our [documentation](https://docs.agentic-layer.ai/).
+
 ----
 
 ## Table of Contents
@@ -42,7 +45,7 @@ The following tools and dependencies are required to run this project:
 brew bundle
 ```
 ```bash
-# Install Python dependencies for all agents and MCP servers
+# Install Python dependencies for all MCP servers
 uv sync --all-packages
 ```
 
@@ -64,9 +67,6 @@ GOOGLE_GENAI_USE_VERTEXAI=FALSE
 GOOGLE_CLOUD_PROJECT=qaware-paal
 GOOGLE_CLOUD_LOCATION=europe-west3
 GOOGLE_API_KEY=your-google-api-key
-
-# Slack Integration (optional)
-SLACK_BOT_TOKEN=xoxb-your-slack-bot-token
 
 # LiteLLM Api Key. Defaults to the master key (optional)
 LITELLM_PROXY_API_KEY=sk-your-api-key
@@ -107,68 +107,6 @@ For detailed contributing guidelines, refer to the [global contributing guide](h
 # Activate pre-commit hooks
 pre-commit install
 ```
-
-### Adding a New Agent
-
-To add a new agent to the project, follow these steps:
-
-#### 1. Create the Agent Package
-
-```bash
-# Create a new agent package
-uv init --package agents/<NEW_AGENT_NAME>
-
-# Example: Creating a fraud detection agent
-uv init --package agents/any_insurance_agent
-```
-
-#### 2. Configure Dependencies
-
-Edit the new agent's `pyproject.toml` file as follows:
-
-- Add the base dependency
-- Point the project.script to the main function of the new agent
-- Name the project.script the same as the agent package name
-
-```toml
-[project]
-name = "any-insurance-agent"
-version = "0.1.0"
-description = "An agent used for any insurance use case"
-readme = "README.md"
-requires-python = ">=3.13"
-dependencies = [
-    "base",
-    # Add other specific dependencies here
-]
-
-[tool.uv.sources]
-base = { workspace = true }
-
-[project.scripts]
-any_insurance_agent = "any_insurance_agent.__main__:main"
-
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-```
-
-#### 3. Install and Test
-
-```bash
-# Install dependencies
-uv sync
-
-# Test the new agent
-uv run --package <NEW_AGENT_NAME> <NEW_AGENT_NAME>
-```
-
-**Agent Development Guidelines:**
-- Follow the existing agent structure in `agents/`
-- Implement A2A (Agent-to-Agent) communication protocols
-- Use the shared `base` package for common utilities
-- Create comprehensive agent cards for capability description
-- Ensure Kubernetes deployment compatibility
 
 ### Code Quality Standards
 
@@ -240,7 +178,6 @@ TIMEOUT="90"  # seconds
 EXPECTED_PATTERNS="cust001\|cross.sell\|strategie\|kunde"
 ```
 
-
 ## Sample Data
 
 ### Customer CRM Data
@@ -281,16 +218,9 @@ curl -X POST http://localhost:8000/api/v1/chat/completions \
 Customer and product data is automatically initialized when MCP servers start. No manual seeding required.
 
 
-
 ## Project Architecture
 
 ```
-agents/
-├── base/                 # Shared utilities and A2A framework
-├── insurance_host_agent/ # Main orchestration agent
-├── cross_selling_agent/  # Cross-selling logic implementation
-└── communications_agent/ # External communication handling
-
 mcp-servers/
 ├── customer_crm/        # Customer relationship management data
 └── insurance_products/  # Insurance product catalog server
