@@ -7,7 +7,7 @@ load('ext://cert_manager', 'deploy_cert_manager')
 deploy_cert_manager()
 
 print("Installing agent-runtime-operator")
-local("kubectl apply -f https://github.com/agentic-layer/agent-runtime-operator/releases/download/v0.2.3/install.yaml")
+local("kubectl apply -f https://github.com/agentic-layer/agent-runtime-operator/releases/download/v0.5.0/install.yaml")
 
 print("Waiting for agent-runtime-operator to start")
 local("kubectl wait --for=condition=Available --timeout=60s -n agent-runtime-operator-system deployment/agent-runtime-operator-controller-manager")
