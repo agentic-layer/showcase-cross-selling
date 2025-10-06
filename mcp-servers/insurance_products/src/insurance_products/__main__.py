@@ -1,4 +1,6 @@
 from fastmcp import FastMCP
+from starlette.requests import Request
+from starlette.responses import JSONResponse
 
 from . import mock_database
 
@@ -153,6 +155,12 @@ def get_products_by_segment(segment: str) -> dict:
         segment=segment,
         product_count=len(matching_products),
     )
+
+
+@mcp.custom_route("/health", methods=["GET"])
+async def health_check(_: Request) -> JSONResponse:
+    """Health check endpoint."""
+    return JSONResponse({"status": "healthy"})
 
 
 def main():

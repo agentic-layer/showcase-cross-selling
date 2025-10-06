@@ -1,4 +1,6 @@
 from fastmcp import FastMCP
+from starlette.requests import Request
+from starlette.responses import JSONResponse
 
 from . import mock_database
 
@@ -162,6 +164,12 @@ def send_message(customer_id: str, subject: str, body: str) -> dict:
     print("--------------------------")
 
     return _create_success_response(f"Message sent to customer {customer_id}")
+
+
+@mcp.custom_route("/health", methods=["GET"])
+async def health_check(_: Request) -> JSONResponse:
+    """Health check endpoint."""
+    return JSONResponse({"status": "healthy"})
 
 
 def main():
