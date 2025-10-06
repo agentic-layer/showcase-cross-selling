@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: customer-crm
-  namespace: use-case-cross-selling
+  namespace: showcase-cross-selling
 spec:
   replicas: 1
   selector:

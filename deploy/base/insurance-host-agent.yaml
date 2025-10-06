@@ -2,7 +2,7 @@ apiVersion: runtime.agentic-layer.ai/v1alpha1
 kind: Agent
 metadata:
   name: insurance-host-agent
-  namespace: use-case-cross-selling
+  namespace: showcase-cross-selling
 spec:
   framework: google-adk
   description: "Orchestrate customer support for insurance cross selling"

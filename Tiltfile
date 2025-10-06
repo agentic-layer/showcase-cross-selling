@@ -48,7 +48,7 @@ k8s_yaml(secret_from_dict(
 ))
 k8s_yaml(secret_from_dict(
     name = "litellm-proxy-api-key-secret",
-    namespace = "use-case-cross-selling",
+    namespace = "showcase-cross-selling",
     inputs = { "LITELLM_PROXY_API_KEY": os.environ.get('LITELLM_PROXY_API_KEY', litellm_master_key) }
 ))
 

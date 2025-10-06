@@ -2,7 +2,7 @@ apiVersion: runtime.agentic-layer.ai/v1alpha1
 kind: Agent
 metadata:
   name: cross-selling-agent
-  namespace: use-case-cross-selling
+  namespace: showcase-cross-selling
 spec:
   description: "Insurance Cross-Selling Agent for SecureLife Insurance - Assists employees in identifying and recommending insurance products to customers based on CRM data and product analysis"
   instruction: |-
