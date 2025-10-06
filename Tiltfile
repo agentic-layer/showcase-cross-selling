@@ -2,26 +2,11 @@
 
 update_settings(max_parallel_updates=10)
 
-# Cert manager is required for Agent Runtime Operator to support webhooks
-load('ext://cert_manager', 'deploy_cert_manager')
-deploy_cert_manager()
+load('./cert-manager.Tiltfile', 'cert_manager_install')
+cert_manager_install()
 
-print("Installing agent-runtime-operator")
-local("kubectl apply -f https://github.com/agentic-layer/agent-runtime-operator/releases/download/v0.5.0/install.yaml")
-
-print("Waiting for agent-runtime-operator to start")
-local("kubectl wait --for=condition=Available --timeout=60s -n agent-runtime-operator-system deployment/agent-runtime-operator-controller-manager")
-
-# Configure Tilt to work with Agent Runtime Operator's custom Agent CRDs
-# Without these configurations, Tilt cannot properly manage Agent resources created by the operator:
-# image_json_path: Required because Agent CRDs store image references in a custom field ({.spec.image})
-#                  rather than standard Kubernetes image fields that Tilt knows about by default
-# pod_readiness: Required because the operator creates pods asynchronously after Agent CRD creation,
-#                and Tilt must wait for operator-managed pods rather than assuming immediate readiness
-k8s_kind(
-    'Agent',
-    pod_readiness='wait',
-)
+load('./agent-runtime.Tiltfile', 'agent_runtime_install')
+agent_runtime_install()
 
 # Load .env file for environment variables
 load('ext://dotenv', 'dotenv')
@@ -55,9 +40,6 @@ k8s_yaml(secret_from_dict(
 # Apply Kubernetes manifests
 k8s_yaml(kustomize('deploy/local'))
 
-# Live update configuration for faster development (note: this copies the whole project, not only the respective subfolder)
-live_update_sync = sync('.', '/app')
-
 # Helper function to convert snake_case to kebab-case
 def snake_to_kebab(snake_str):
     return snake_str.replace('_', '-')
@@ -75,13 +57,12 @@ for server in mcp_servers:
         context='.',
         dockerfile='./mcp-servers/Dockerfile',
         build_args={'MCP_SERVER_NAME': server_name},
-        live_update=[live_update_sync],
     )
     k8s_resource(snake_to_kebab(server_name), port_forwards=server['port'], labels=['mcp-servers'])
 
-k8s_resource('communications-agent', port_forwards='10002:8000', labels=['agents'], resource_deps=['customer-crm'])
-k8s_resource('cross-selling-agent', port_forwards='10003:8000', labels=['agents'], resource_deps=['customer-crm', 'insurance-products'])
-k8s_resource('insurance-host-agent', port_forwards='8000:8000', labels=['agents'])
+k8s_resource('communications-agent', port_forwards='10002:8000', labels=['agents'], resource_deps=['agent-runtime', 'customer-crm'])
+k8s_resource('cross-selling-agent', port_forwards='10003:8000', labels=['agents'], resource_deps=['agent-runtime', 'customer-crm', 'insurance-products'])
+k8s_resource('insurance-host-agent', port_forwards='8000:8000', labels=['agents'], resource_deps=['agent-runtime'])
 
 # Expose the Monitoring stack (Grafana)
 k8s_resource('lgtm', port_forwards=['3000:3000', '4318:4318', '4317:4317'])
