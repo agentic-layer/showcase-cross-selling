@@ -1,9 +1,9 @@
-FROM python:3.13-slim
+FROM python:3.13-slim-trixie
 
 WORKDIR /app
 
 # Install uv
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+COPY --from=ghcr.io/astral-sh/uv:0.8 /uv /bin/uv
 
 # Accept MCP_SERVER_NAME as build arg (required)
 ARG MCP_SERVER_NAME
