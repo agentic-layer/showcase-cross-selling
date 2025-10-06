@@ -62,10 +62,6 @@ live_update_sync = sync('.', '/app')
 def snake_to_kebab(snake_str):
     return snake_str.replace('_', '-')
 
-k8s_resource('communications-agent', port_forwards='10002:8000', labels=['agents'])
-k8s_resource('cross-selling-agent', port_forwards='10003:8000', labels=['agents'])
-k8s_resource('insurance-host-agent', port_forwards='8000:8000', labels=['agents'])
-
 # Open ports and sync changes to MCP servers
 mcp_servers = [
     {'name': 'customer_crm', 'port': '8002:8000'},
@@ -82,6 +78,10 @@ for server in mcp_servers:
         live_update=[live_update_sync],
     )
     k8s_resource(snake_to_kebab(server_name), port_forwards=server['port'], labels=['mcp-servers'])
+
+k8s_resource('communications-agent', port_forwards='10002:8000', labels=['agents'], resource_deps=['customer-crm'])
+k8s_resource('cross-selling-agent', port_forwards='10003:8000', labels=['agents'], resource_deps=['customer-crm', 'insurance-products'])
+k8s_resource('insurance-host-agent', port_forwards='8000:8000', labels=['agents'])
 
 # Expose the Monitoring stack (Grafana)
 k8s_resource('lgtm', port_forwards=['3000:3000', '4318:4318', '4317:4317'])
