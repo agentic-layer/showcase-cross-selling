@@ -2,10 +2,14 @@
 
 update_settings(max_parallel_updates=10)
 
-load('./cert-manager.Tiltfile', 'cert_manager_install')
+v1alpha1.extension_repo(name='agentic-layer', url='https://github.com/agentic-layer/tilt-extensions')
+
+v1alpha1.extension(name='cert-manager', repo_name='agentic-layer', repo_path='cert-manager')
+load('ext://cert-manager', 'cert_manager_install')
 cert_manager_install()
 
-load('./agent-runtime.Tiltfile', 'agent_runtime_install')
+v1alpha1.extension(name='agent-runtime', repo_name='agentic-layer', repo_path='agent-runtime')
+load('ext://agent-runtime', 'agent_runtime_install')
 agent_runtime_install()
 
 # Load .env file for environment variables
