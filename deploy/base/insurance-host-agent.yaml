@@ -4,6 +4,7 @@ metadata:
   name: insurance-host-agent
   namespace: showcase-cross-selling
 spec:
+  exposed: true
   framework: google-adk
   description: "Orchestrate customer support for insurance cross selling"
   instruction: |-
