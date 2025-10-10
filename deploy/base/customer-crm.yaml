@@ -1,0 +1,11 @@
+apiVersion: runtime.agentic-layer.ai/v1alpha1
+kind: ToolServer
+metadata:
+  name: customer-crm
+  namespace: showcase-cross-selling
+spec:
+  protocol: mcp
+  transportType: http
+  image: customer_crm:latest
+  port: 8000
+  replicas: 1
