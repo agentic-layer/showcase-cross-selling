@@ -33,7 +33,7 @@ spec:
   model: "gemini/gemini-2.5-flash-lite"
   tools:
     - name: customer-crm
-      url: http://mcp-customer-crm:8000/mcp
+      url: http://customer-crm:8000/mcp
   protocols:
     - type: A2A
   env:

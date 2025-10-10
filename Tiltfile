@@ -12,6 +12,23 @@ v1alpha1.extension(name='agent-runtime', repo_name='agentic-layer', repo_path='a
 load('ext://agent-runtime', 'agent_runtime_install')
 agent_runtime_install(version='0.6.2')
 
+# Configure Tilt to work with Agent Runtime Operator's (ARO) custom CRDs
+# Without these configurations, Tilt cannot properly manage Agent resources created by the operator:
+# image_json_path: Required because ARO CRDs store image references in a custom field ({.spec.image})
+#                  rather than standard Kubernetes image fields that Tilt knows about by default
+# pod_readiness: Required because the operator creates pods asynchronously after ARO CRD creation,
+#                and Tilt must wait for operator-managed pods rather than assuming immediate readiness
+k8s_kind(
+    'Agent',
+    pod_readiness='wait',
+)
+
+k8s_kind(
+    'ToolServer',
+    image_json_path='{.spec.image}',
+    pod_readiness='wait',
+)
+
 # Load .env file for environment variables
 load('ext://dotenv', 'dotenv')
 dotenv()

@@ -1,0 +1,11 @@
+apiVersion: runtime.agentic-layer.ai/v1alpha1
+kind: ToolServer
+metadata:
+  name: insurance-products
+  namespace: showcase-cross-selling
+spec:
+  protocol: mcp
+  transportType: http
+  image: insurance_products:latest
+  port: 8000
+  replicas: 1

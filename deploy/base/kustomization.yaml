@@ -2,8 +2,8 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - namespace.yaml
-  - customer-crm/
-  - insurance-products/
+  - customer-crm.yaml
+  - insurance-products.yaml
   - communications-agent.yaml
   - cross-selling-agent.yaml
   - insurance-host-agent.yaml
