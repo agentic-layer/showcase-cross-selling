@@ -10,7 +10,7 @@ cert_manager_install()
 
 v1alpha1.extension(name='agent-runtime', repo_name='agentic-layer', repo_path='agent-runtime')
 load('ext://agent-runtime', 'agent_runtime_install')
-agent_runtime_install(version='0.6.1')
+agent_runtime_install(version='0.6.2')
 
 # Load .env file for environment variables
 load('ext://dotenv', 'dotenv')
