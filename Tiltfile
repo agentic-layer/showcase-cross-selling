@@ -79,7 +79,7 @@ for server in mcp_servers:
         dockerfile='./mcp-servers/Dockerfile',
         build_args={'MCP_SERVER_NAME': server_name},
     )
-    k8s_resource(snake_to_kebab(server_name), port_forwards=server['port'], labels=['mcp-servers'])
+    k8s_resource(snake_to_kebab(server_name), port_forwards=server['port'], labels=['mcp-servers'], resource_deps=['agent-runtime'])
 
 k8s_resource('communications-agent', port_forwards='10002:8000', labels=['agents'], resource_deps=['agent-runtime', 'customer-crm'])
 k8s_resource('cross-selling-agent', port_forwards='10003:8000', labels=['agents'], resource_deps=['agent-runtime', 'customer-crm', 'insurance-products'])
