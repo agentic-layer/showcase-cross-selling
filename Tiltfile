@@ -10,7 +10,7 @@ cert_manager_install()
 
 v1alpha1.extension(name='agent-runtime', repo_name='agentic-layer', repo_path='agent-runtime')
 load('ext://agent-runtime', 'agent_runtime_install')
-agent_runtime_install(version='0.6.2')
+agent_runtime_install(version='0.7.0')
 
 # Configure Tilt to work with Agent Runtime Operator's (ARO) custom CRDs
 # Without these configurations, Tilt cannot properly manage Agent resources created by the operator:
