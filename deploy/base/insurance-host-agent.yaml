@@ -77,6 +77,7 @@ spec:
       url: "http://communications-agent:8000/.well-known/agent-card.json"
   protocols:
     - type: A2A
+      name: a2a-8000
   env:
     - name: LITELLM_PROXY_API_KEY
       valueFrom:

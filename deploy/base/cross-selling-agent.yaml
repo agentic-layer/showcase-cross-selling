@@ -69,6 +69,7 @@ spec:
       url: http://insurance-products:8000/mcp
   protocols:
     - type: A2A
+      name: a2a-8000
   env:
     - name: LITELLM_PROXY_API_KEY
       valueFrom:
