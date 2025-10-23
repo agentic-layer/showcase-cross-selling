@@ -2,7 +2,7 @@
 
 update_settings(max_parallel_updates=10)
 
-v1alpha1.extension_repo(name='agentic-layer', url='https://github.com/agentic-layer/tilt-extensions')
+v1alpha1.extension_repo(name='agentic-layer', url='https://github.com/agentic-layer/tilt-extensions'))
 
 v1alpha1.extension(name='cert-manager', repo_name='agentic-layer', repo_path='cert-manager')
 load('ext://cert-manager', 'cert_manager_install')
@@ -29,6 +29,18 @@ k8s_kind(
     pod_readiness='wait',
 )
 
+v1alpha1.extension(name='ai-gateway', repo_name='agentic-layer', repo_path='ai-gateway')
+load('ext://ai-gateway', 'ai_gateway_operator_install')
+ai_gateway_operator_install(version='0.1.0')
+
+v1alpha1.extension(name='ai-gateway-litellm', repo_name='agentic-layer', repo_path='ai-gateway-litellm')
+load('ext://ai-gateway-litellm', 'ai_gateway_litellm_operator_install')
+ai_gateway_litellm_operator_install(version='0.1.1')
+
+v1alpha1.extension(name='agent-gateway-krakend', repo_name='agentic-layer', repo_path='agent-gateway-krakend')
+load('ext://agent-gateway-krakend', 'agent_gateway_krakend_operator_install')
+agent_gateway_krakend_operator_install(version='0.1.4')
+
 # Load .env file for environment variables
 load('ext://dotenv', 'dotenv')
 dotenv()
@@ -36,26 +48,14 @@ dotenv()
 # Create Kubernetes secrets from environment variables
 load('ext://secret', 'secret_from_dict')
 
-google_api_key = os.environ.get('GOOGLE_API_KEY', '')
-if not google_api_key:
-    fail('GOOGLE_API_KEY environment variable is required. Please set it in your shell or .env file.')
+gemini_api_key = os.environ.get('GEMINI_API_KEY', '')
+if not gemini_api_key:
+    fail('GEMINI_API_KEY environment variable is required. Please set it in your shell or .env file.')
 
 k8s_yaml(secret_from_dict(
     name = "api-key-secrets",
-    namespace = "llm-gateway",
-    inputs = { "GOOGLE_API_KEY": google_api_key }
-))
-
-litellm_master_key = os.environ.get('LITELLM_MASTER_KEY', 'sk-admin')
-k8s_yaml(secret_from_dict(
-    name = "litellm-master-key-secrets",
-    namespace = "llm-gateway",
-    inputs = { "LITELLM_MASTER_KEY": litellm_master_key }
-))
-k8s_yaml(secret_from_dict(
-    name = "litellm-proxy-api-key-secret",
-    namespace = "showcase-cross-selling",
-    inputs = { "LITELLM_PROXY_API_KEY": os.environ.get('LITELLM_PROXY_API_KEY', litellm_master_key) }
+    namespace = "ai-gateway",
+    inputs = { "GEMINI_API_KEY": gemini_api_key }
 ))
 
 # Apply Kubernetes manifests
@@ -85,11 +85,11 @@ k8s_resource('communications-agent', port_forwards='10002:8000', labels=['agents
 k8s_resource('cross-selling-agent', port_forwards='10003:8000', labels=['agents'], resource_deps=['agent-runtime', 'customer-crm', 'insurance-products'])
 k8s_resource('insurance-host-agent', port_forwards='8000:8000', labels=['agents'], resource_deps=['agent-runtime'])
 
+k8s_resource('ai-gateway', resource_deps=['ai-gateway-litellm-operator'])
+k8s_resource('agent-gateway', port_forwards='8080:8080', resource_deps=['insurance-host-agent'])
+
 # Expose the Monitoring stack (Grafana)
 k8s_resource('lgtm', port_forwards=['3000:3000', '4318:4318', '4317:4317'])
-
-# Expose LLM Gateway (LiteLLM)
-k8s_resource('litellm', port_forwards='4000:4000')
 
 # Add flag to run tests
 config.define_bool("run-tests")
@@ -98,7 +98,7 @@ cfg = config.parse()
 local_resource(
     'test_e2e_openai_api',
     cmd='./test/e2e/openai-api.sh',
-    resource_deps=['insurance-host-agent', 'cross-selling-agent', 'customer-crm', 'insurance-products', 'litellm', 'lgtm', 'communications-agent'],
+    resource_deps=['insurance-host-agent', 'cross-selling-agent', 'customer-crm', 'insurance-products', 'ai-gateway', 'lgtm', 'communications-agent', 'agent-gateway'],
     auto_init=cfg.get('run-tests', False),
     trigger_mode=TRIGGER_MODE_MANUAL,
 )

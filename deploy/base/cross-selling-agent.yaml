@@ -72,12 +72,9 @@ spec:
       name: a2a-8000
   env:
     - name: LITELLM_PROXY_API_KEY
-      valueFrom:
-        secretKeyRef:
-          name: litellm-proxy-api-key-secret
-          key: LITELLM_PROXY_API_KEY
+      value: "NOT_NEEDED_BY_GATEWAY"
     - name: LITELLM_PROXY_API_BASE
-      value: "http://litellm.llm-gateway.svc.cluster.local:4000"
+      value: "http://ai-gateway.ai-gateway.svc.cluster.local:4000"
     - name: USE_LITELLM_PROXY
       value: "True"
     - name: OTEL_SERVICE_NAME
