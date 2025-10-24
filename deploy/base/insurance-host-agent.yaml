@@ -79,12 +79,6 @@ spec:
     - type: A2A
       name: a2a-8000
   env:
-    - name: LITELLM_PROXY_API_KEY
-      value: "NOT_NEEDED_BY_GATEWAY"
-    - name: LITELLM_PROXY_API_BASE
-      value: "http://ai-gateway.ai-gateway.svc.cluster.local:4000"
-    - name: USE_LITELLM_PROXY
-      value: "True"
     - name: OTEL_SERVICE_NAME
       value: insurance-host-agent
     - name: LOGLEVEL
