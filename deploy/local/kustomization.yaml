@@ -4,4 +4,3 @@ resources:
   - otel-tempo-config.yaml
   - ../base
   - lgtm.yaml
-  - llm-gateway.yaml

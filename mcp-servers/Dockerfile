@@ -28,4 +28,4 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 EXPOSE 8000
 
 # Run the specified mcp server (using shell form for env var expansion)
-CMD uv run --package ${MCP_SERVER_NAME_ENV} ${MCP_SERVER_NAME_ENV}
+CMD uv run --no-sync --package ${MCP_SERVER_NAME_ENV} ${MCP_SERVER_NAME_ENV}
