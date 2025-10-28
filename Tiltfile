@@ -52,14 +52,15 @@ dotenv()
 # Create Kubernetes secrets from environment variables
 load('ext://secret', 'secret_from_dict')
 
-gemini_api_key = os.environ.get('GEMINI_API_KEY', '')
-if not gemini_api_key:
-    fail('GEMINI_API_KEY environment variable is required. Please set it in your shell or .env file.')
+google_api_key = os.environ.get('GOOGLE_API_KEY', '')
+if not google_api_key:
+    fail('GOOGLE_API_KEY environment variable is required. Please set it in your shell or .env file.')
 
 k8s_yaml(secret_from_dict(
     name = "api-key-secrets",
     namespace = "ai-gateway",
-    inputs = { "GEMINI_API_KEY": gemini_api_key }
+    # The ai-gateway expects the API key to be called <provider>_API_KEY
+    inputs = { "GEMINI_API_KEY": google_api_key }
 ))
 
 # Apply Kubernetes manifests

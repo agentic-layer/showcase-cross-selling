@@ -10,7 +10,7 @@ on:
 
 env:
   # Required environment variables for the test
-  GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+  GEMINI_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
 
 jobs:
   tilt-integration-test:
