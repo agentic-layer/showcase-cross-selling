@@ -33,7 +33,8 @@ spec:
   model: "gemini/gemini-2.5-flash-lite"
   tools:
     - name: customer-crm
-      url: http://customer-crm:8000/mcp
+      toolServerRef:
+        name: customer-crm
   protocols:
     - type: A2A
       name: a2a-8000
