@@ -83,6 +83,8 @@ spec:
       value: insurance-host-agent
     - name: LOGLEVEL
       value: "DEBUG"
+    - name: AGENT_OTEL_ENABLED
+      value: "true"
   envFrom:
     - configMapRef:
         name: otel-tempo-config
