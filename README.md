@@ -86,16 +86,16 @@ Launch all services using Tilt:
 # Start all agents and MCP servers
 tilt up
 ```
-```bash
-# View real-time logs
-tilt logs
-```
 
 **Expected Results:**
-- ADK Web UI available at http://localhost:8000/
-- OpenAI-compatible API available at http://localhost:8000/api
-- API documentation at http://localhost:8000/api/docs
-- Grafana observability dashboard at http://localhost:3000
+- Grafana at http://localhost:11000
+- AI Gateway at http://localhost:11001
+- Agent Gateway at http://localhost:11002
+- Insurance Host Agent at http://localhost:11010
+- Communications Agent at http://localhost:11011
+- Cross-Selling Agent at http://localhost:11012
+- Customer CRM MCP Server at http://localhost:11020
+- Insurance Products MCP Server at http://localhost:11021
 
 ## Development
 
@@ -147,9 +147,6 @@ Execute the end-to-end test suite to validate the complete agent workflow:
 
 **Prerequisites for E2E Tests:**
 - All services must be running (`tilt up`)
-- Insurance Host Agent accessible at `http://localhost:8000`
-- Customer CRM and Insurance Products MCP servers operational
-- Network connectivity between all agent components
 
 **Test Coverage:**
 - Cross-selling strategy generation for customer `cust001`
@@ -169,7 +166,7 @@ Execute the end-to-end test suite to validate the complete agent workflow:
 **Example Test Configuration:**
 ```bash
 # API endpoint configuration
-API_ENDPOINT="http://localhost:8000/api/v1/chat/completions"
+API_ENDPOINT="http://localhost:11002/api/v1/chat/completions"
 MODEL_NAME="insurance_host_agent"
 TIMEOUT="90"  # seconds
 ```
@@ -201,7 +198,7 @@ The system includes mock customer data accessible through the Customer CRM MCP s
 **Sample API Request:**
 ```bash
 # Test cross-selling recommendation
-curl -X POST http://localhost:8000/api/v1/chat/completions \
+curl -X POST http://localhost:11002/api/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{
     "model": "insurance_host_agent",

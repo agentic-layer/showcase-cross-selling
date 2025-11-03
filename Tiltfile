@@ -33,8 +33,8 @@ def snake_to_kebab(snake_str):
 
 # Open ports and sync changes to MCP servers
 mcp_servers = [
-    {'name': 'customer_crm', 'port': '8002:8000'},
-    {'name': 'insurance_products', 'port': '8003:8000'},
+    {'name': 'customer_crm', 'port': '11020:8000'},
+    {'name': 'insurance_products', 'port': '11021:8000'},
 ]
 
 for server in mcp_servers:
@@ -47,12 +47,17 @@ for server in mcp_servers:
     )
     k8s_resource(snake_to_kebab(server_name), port_forwards=server['port'], labels=['mcp-servers'], resource_deps=['agent-runtime'])
 
-k8s_resource('communications-agent', port_forwards='10002:8000', labels=['agents'], resource_deps=['agent-runtime', 'customer-crm'])
-k8s_resource('cross-selling-agent', port_forwards='10003:8000', labels=['agents'], resource_deps=['agent-runtime', 'customer-crm', 'insurance-products'])
-k8s_resource('insurance-host-agent', port_forwards='8000:8000', labels=['agents'], resource_deps=['agent-runtime'])
-
 # Expose the Monitoring stack (Grafana)
-k8s_resource('lgtm', port_forwards=['3000:3000', '4318:4318', '4317:4317'])
+k8s_resource('lgtm', port_forwards=['11000:3000'])
+
+# Expose AI and Agent Gateways
+k8s_resource('ai-gateway-litellm', port_forwards=['11001:4000'])
+k8s_resource('agent-gateway-krakend', port_forwards=['11002:8080'])
+
+k8s_resource('insurance-host-agent', port_forwards='11010:8000', labels=['agents'], resource_deps=['agent-runtime'])
+k8s_resource('communications-agent', port_forwards='11011:8000', labels=['agents'], resource_deps=['agent-runtime', 'customer-crm'])
+k8s_resource('cross-selling-agent', port_forwards='11012:8000', labels=['agents'], resource_deps=['agent-runtime', 'customer-crm', 'insurance-products'])
+
 
 # Add flag to run tests
 config.define_bool("run-tests")
