@@ -27,6 +27,9 @@ agent_gateway_krakend_install(version='0.1.4')
 # Apply Kubernetes manifests
 k8s_yaml(kustomize('deploy/local'))
 
+# Add resource dependency for workforce to ensure CRD exists and webhook is ready
+k8s_resource('cross-selling-workforce', resource_deps=['agent-runtime-webhook-ready'])
+
 # Helper function to convert snake_case to kebab-case
 def snake_to_kebab(snake_str):
     return snake_str.replace('_', '-')
