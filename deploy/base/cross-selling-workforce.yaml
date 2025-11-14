@@ -2,6 +2,7 @@ apiVersion: runtime.agentic-layer.ai/v1alpha1
 kind: AgenticWorkforce
 metadata:
   name: cross-selling-workforce
+  namespace: showcase-cross-selling
 spec:
   # Human-readable name for the workforce
   name: "Cross selling workforce"
