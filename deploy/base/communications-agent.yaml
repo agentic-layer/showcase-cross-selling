@@ -2,7 +2,6 @@ apiVersion: runtime.agentic-layer.ai/v1alpha1
 kind: Agent
 metadata:
   name: communications-agent
-  namespace: showcase-cross-selling
 spec:
   description: "Handle communication to customers by drafting messages and sending them through the users preferred channel"
   instruction: |-

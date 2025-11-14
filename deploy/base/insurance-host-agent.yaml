@@ -2,7 +2,6 @@ apiVersion: runtime.agentic-layer.ai/v1alpha1
 kind: Agent
 metadata:
   name: insurance-host-agent
-  namespace: showcase-cross-selling
 spec:
   exposed: true
   framework: google-adk
