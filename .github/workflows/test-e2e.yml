@@ -1,0 +1,38 @@
+name: E2E Tests
+
+on:
+  push:
+    branches:
+      - main
+      - 'renovate/**'
+  pull_request:
+  workflow_dispatch:
+
+env:
+  # Required environment variables for the test
+  GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+
+jobs:
+  tilt-integration-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Create k8s Kind Cluster
+        uses: helm/kind-action@v1
+
+      - name: Install Tilt
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/tilt-dev/tilt/master/scripts/install.sh | bash
+          tilt version
+
+      - name: Run Tilt CI
+        run: tilt ci
+
+      - name: Verify Deployment
+        run: |
+          kubectl port-forward service/agent-gateway-krakend -n agent-gateway-krakend 11002:10000 &
+          ./test/e2e/a2a-message.sh
