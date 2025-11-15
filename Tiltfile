@@ -59,26 +59,3 @@ k8s_resource('cross-selling-workforce', labels=['showcase'], resource_deps=['age
 k8s_resource('insurance-host-agent', labels=['showcase'], resource_deps=['agent-runtime'], port_forwards='11010:8000')
 k8s_resource('communications-agent', labels=['showcase'], resource_deps=['agent-runtime', 'customer-crm'], port_forwards='11011:8000')
 k8s_resource('cross-selling-agent', labels=['showcase'], resource_deps=['agent-runtime', 'customer-crm', 'insurance-products'], port_forwards='11012:8000')
-
-
-# Add flag to run tests
-config.define_bool("run-tests")
-cfg = config.parse()
-
-local_resource(
-    'test_e2e_openai_api',
-    cmd='./test/e2e/openai-api.sh',
-    labels=['showcase'],
-    resource_deps=[
-        'insurance-host-agent',
-        'cross-selling-agent',
-        'communications-agent',
-        'customer-crm',
-        'insurance-products',
-        'ai-gateway-litellm',
-        'agent-gateway-krakend',
-        'lgtm',
-        ],
-    auto_init=cfg.get('run-tests', False),
-    trigger_mode=TRIGGER_MODE_MANUAL,
-)
