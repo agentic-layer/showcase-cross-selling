@@ -198,17 +198,27 @@ The system includes mock customer data accessible through the Customer CRM MCP s
 **Sample API Request:**
 ```bash
 # Test cross-selling recommendation
-curl -X POST http://localhost:11002/api/v1/chat/completions \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "insurance_host_agent",
-    "messages": [
-      {
-        "role": "user",
-        "content": "Welche Cross-Selling-Möglichkeiten gibt es für unsere Kundin Anna Müller mit der Kundennummer cust001?"
+curl -X POST http://localhost:11002/insurance-host-agent \
+    -H "Content-Type: application/json" \
+    -d '{
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "message/send",
+      "params": {
+        "message": {
+          "role": "user",
+          "parts": [
+            {
+              "kind": "text",
+              "text": "Welche Cross-Selling-Möglichkeiten gibt es für unsere Kundin Anna Müller mit der Kundennummer cust001?"
+            }
+          ],
+          "messageId": "9229e770-767c-417b-a0b0-f0741243c589",
+          "contextId": "abcd1234-5678-90ab-cdef-1234567890ab"
+        },
+        "metadata": {"conversationId": "9229e770-767c-417b-a0b0-f0741243c589"}
       }
-    ]
-  }'
+    }'
 ```
 
 **Database Seeding:**
