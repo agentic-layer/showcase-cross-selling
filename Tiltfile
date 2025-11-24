@@ -22,7 +22,7 @@ ai_gateway_litellm_install(version='0.2.0')
 
 v1alpha1.extension(name='agent-gateway-krakend', repo_name='agentic-layer', repo_path='agent-gateway-krakend')
 load('ext://agent-gateway-krakend', 'agent_gateway_krakend_install')
-agent_gateway_krakend_install(version='0.2.0')
+agent_gateway_krakend_install(version='0.2.1')
 
 # Apply Kubernetes manifests
 k8s_yaml(kustomize('deploy/local'))
