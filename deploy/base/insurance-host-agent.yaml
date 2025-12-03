@@ -72,8 +72,10 @@ spec:
   subAgents:
     - name: "cross_selling_agent"
       url: "http://cross-selling-agent:8000/.well-known/agent-card.json"
+      interactionType: "tool_call"
     - name: "communications_agent"
       url: "http://communications-agent:8000/.well-known/agent-card.json"
+      interactionType: "tool_call"
   protocols:
     - type: A2A
       name: a2a-8000
