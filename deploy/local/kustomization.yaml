@@ -4,3 +4,5 @@ resources:
   - otel-tempo-config.yaml
   - ../base
   - lgtm.yaml
+  - ../librechat
+  - observability-dashboard.yaml
