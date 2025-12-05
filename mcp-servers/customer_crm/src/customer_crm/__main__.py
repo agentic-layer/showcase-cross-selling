@@ -147,6 +147,73 @@ def get_all_customer_data() -> dict:
 
 
 @mcp.tool()
+def search_customer_by_name(name: str) -> dict:
+    """
+    Searches for customers by name (case-insensitive, partial match).
+
+    Use this tool when you have a customer's name but not their ID.
+    For example, if a broker asks about "Anna Müller", use this tool to find her.
+
+    Args:
+        name (str): The customer's name or part of it (e.g., "Anna", "Müller", or "Anna Müller").
+
+    Returns:
+        dict: A dictionary containing the search results.
+              On success with matches:
+              {
+                  "status": "success",
+                  "message": "Found X customer(s) matching 'name'",
+                  "customers": [
+                      {
+                          "customer_id": "cust001",
+                          "name": "Anna Müller",
+                          "email": "anna.mueller@email.com",
+                          ... (full customer data)
+                      }
+                  ],
+                  "count": 1
+              }
+              On success with no matches:
+              {
+                  "status": "success",
+                  "message": "No customers found matching 'name'",
+                  "customers": [],
+                  "count": 0
+              }
+
+    Usage Guidance:
+        This is the preferred tool when brokers refer to customers by name instead of ID.
+        It performs a case-insensitive partial match, so searching for "anna" will find "Anna Müller".
+    """
+    if not name or not name.strip():
+        return _create_error_response("Customer name is required.", "MISSING_NAME")
+
+    search_term = name.strip().lower()
+    all_customers = mock_database.get_all_customers()
+    matches = []
+
+    for customer_id, customer_data in all_customers.items():
+        customer_name = customer_data.get("personal_info", {}).get("name", "").lower()
+        if search_term in customer_name:
+            # Include customer_id in the result
+            customer_with_id = {"customer_id": customer_id, **customer_data}
+            matches.append(customer_with_id)
+
+    if matches:
+        return _create_success_response(
+            f"Found {len(matches)} customer(s) matching '{name}'",
+            customers=matches,
+            count=len(matches),
+        )
+    else:
+        return _create_success_response(
+            f"No customers found matching '{name}'",
+            customers=[],
+            count=0,
+        )
+
+
+@mcp.tool()
 def send_message(customer_id: str, subject: str, body: str) -> dict:
     """
     Sends a message to the specified customer.
