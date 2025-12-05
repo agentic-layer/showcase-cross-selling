@@ -214,9 +214,9 @@ def search_customer_by_name(name: str) -> dict:
 
 
 @mcp.tool()
-def send_message(customer_id: str, subject: str, body: str) -> dict:
+def send_email(customer_id: str, subject: str, body: str) -> dict:
     """
-    Sends a message to the specified customer.
+    Sends an email to the specified customer.
 
     :param customer_id:
     :param subject:
@@ -224,13 +224,13 @@ def send_message(customer_id: str, subject: str, body: str) -> dict:
     :return:
     """
 
-    print("--- Mock Sending Message ---")
+    print("--- Mock Sending Email ---")
     print(f"To: Customer {customer_id}")
     print(f"Subject: {subject}")
     print(f"Body: {body}")
     print("--------------------------")
 
-    return _create_success_response(f"Message sent to customer {customer_id}")
+    return _create_success_response(f"Email sent to customer {customer_id}")
 
 
 @mcp.custom_route("/health", methods=["GET"])
