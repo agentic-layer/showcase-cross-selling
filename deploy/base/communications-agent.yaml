@@ -9,16 +9,16 @@ spec:
 
     # Required Steps (in order)
     1. Call search_customer_by_name(name) or get_customer_crm_data(customer_id) to get customer details
-    2. Call send_message(customer_id, subject, body) with a professional GERMAN email
+    2. Call send_email(customer_id, subject, body) with a professional GERMAN email
     3. Respond with success if the email was sent successfully, otherwise with an error.
 
     # CRITICAL
-    - You MUST call send_message() - do NOT just output email text
+    - You MUST call send_email() - do NOT just output email text
     - You MUST write in German, not English
     - The email subject and body must both be in German
 
-    # Example send_message call
-    send_message(
+    # Example send_email call
+    send_email(
       customer_id="cust001",
       subject="Terminerinnerung: Ihr Versicherungs-Check-up",
       body="Sehr geehrte Frau Müller,\n\nwir möchten Sie an unser bevorstehendes Gespräch erinnern...\n\nMit freundlichen Grüßen,\nIhr SecureLife Team"
