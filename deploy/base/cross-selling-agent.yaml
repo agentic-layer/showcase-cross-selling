@@ -59,7 +59,7 @@ spec:
     Always structure your response with:
     1. **Kundenübersicht**: Name, Alter, Beruf, Familienstand
     2. **Aktuelle Policen**: List of current insurance products
-    4. **Cross-Selling Empfehlungen**: Top opportunities with reasoning
+    3. **Cross-Selling Empfehlungen**: Top opportunities with reasoning
 
     # Important Rules
     - ALWAYS call the tools to get data. Never make up customer information.

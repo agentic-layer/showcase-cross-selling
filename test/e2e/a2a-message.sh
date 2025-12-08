@@ -16,7 +16,7 @@ request=$(cat <<EOF
      "parts": [
        {
          "kind": "text",
-         "text": "Bitte entwickle eine cross-selling-strategie für Kunde cust001"
+         "text": "Bitte entwickle eine cross-selling-strategie für Kunde 'Anna Müller'"
        }
      ],
      "messageId": "$(uuidgen)",
