@@ -104,11 +104,13 @@ Launch all services using Tilt:
 # Start all agents and MCP servers
 tilt up
 ```
+We recommend using the included Librechat instance (http://localhost:11003) to easily have conversations with the insurance host agent. 
 
 **Expected Results:**
 - Grafana at http://localhost:11000
 - AI Gateway at http://localhost:11001
 - Agent Gateway at http://localhost:11002
+- Librechat (chat interface) at http://localhost:11003
 - Insurance Host Agent at http://localhost:11010
 - Communications Agent at http://localhost:11011
 - Cross-Selling Agent at http://localhost:11012
