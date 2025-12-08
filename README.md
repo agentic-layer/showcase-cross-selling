@@ -143,7 +143,7 @@ Execute the end-to-end test suite to validate the complete agent workflow:
 - All services must be running (`tilt up`)
 
 **Test Coverage:**
-- Cross-selling strategy generation for customer `cust001`
+- Cross-selling strategy generation for customer `Anna Müller`
 - Agent-to-agent communication validation
 - OpenAI-compatible API endpoint functionality
 - Response content validation for German language interactions
@@ -175,7 +175,7 @@ EXPECTED_PATTERNS="cust001\|cross.sell\|strategie\|kunde"
 
 The system includes mock customer data accessible through the Customer CRM MCP server:
 
-**Sample Customer Record (cust001):**
+**Sample Customer Record (Anna Müller):**
 ```json
 {
   "customer_id": "cust001",
@@ -204,7 +204,7 @@ curl -X POST http://localhost:11002/insurance-host-agent \
           "parts": [
             {
               "kind": "text",
-              "text": "Welche Cross-Selling-Möglichkeiten gibt es für unsere Kundin Anna Müller mit der Kundennummer cust001?"
+              "text": "Welche Cross-Selling-Möglichkeiten gibt es für unsere Kundin Anna Müller?"
             }
           ],
           "messageId": "9229e770-767c-417b-a0b0-f0741243c589",
