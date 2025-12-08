@@ -72,13 +72,7 @@ GOOGLE_API_KEY=your-google-api-key
 LITELLM_PROXY_API_KEY=sk-your-api-key
 ```
 
-### 4. Agent Runtime Operator Setup
-
-The Agent Runtime Operator is required for agent deployment and management. For detailed setup instructions, please refer to the [Agent Runtime Operator Getting Started guide](https://github.com/agentic-layer/agent-runtime-operator?tab=readme-ov-file#getting-started).
-
-**Note:** Ensure the operator is installed and running in your Kubernetes cluster before proceeding to step 5.
-
-### 5. Start the Application
+### 4. Start the Application
 
 Launch all services using Tilt:
 
