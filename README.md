@@ -12,6 +12,7 @@ Further information about the Agentic Layer can be found in our [documentation](
 
 ## Table of Contents
 
+- [Intro](#introduction)
 - [Prerequisites](#prerequisites)
 - [Getting Started](#getting-started)
 - [Development](#development)
@@ -19,6 +20,29 @@ Further information about the Agentic Layer can be found in our [documentation](
 - [Testing Tools and Their Configuration](#testing-tools-and-their-configuration)
 - [Sample Data](#sample-data)
 - [Project Architecture](#project-architecture)
+
+---
+
+## Introduction
+
+In this showcase, a host agent uses tools and calls other agents to facilitate user requests like so:
+
+**Conversation 1:**
+
+> Nutzer: Bitte bereite mir ein Kundengespräch mit der Kundin Anna Müller vor.
+>
+> Agent: Gern helfe ich dir, das Gespräch vorzubereiten. Hier sind Optionen für verschiedene Verkaufsstrategien: …
+>
+> Nutzer: Bitte verschicke eine E-Mail an die Kundin mit einer Agenda.
+>
+> Agent: Erledigt.
+
+**Conversation 2:**
+
+> Nutzer: Bitte bereite mir ein Kundengespräch mit dem Kunden Thomas Schmidt vor. Sende außerdem eine Erinnerungs-Mail an den Kunden, dass das Gespräch stattfindet.
+>
+> Agent: Hier ist die Vorbereitung für dein Gespräch. Die Erinnerungsmail habe ich verschickt: …
+
 
 ----
 
