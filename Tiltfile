@@ -57,8 +57,8 @@ for server in mcp_servers:
     )
     k8s_resource(snake_to_kebab(server_name), port_forwards=server['port'], labels=['showcase'], resource_deps=['agent-runtime'])
 
-# Expose the Monitoring stack (Grafana)
-k8s_resource('lgtm', port_forwards=['11000:3000'])
+# Monitoring
+k8s_resource('lgtm', labels=['monitoring'], resource_deps=[], port_forwards=['11000:3000'])
 
 # Observability Dashboard
 k8s_resource('observability-dashboard', labels=['monitoring'], port_forwards=['11004:8000'])
@@ -67,10 +67,11 @@ k8s_resource('observability-dashboard', labels=['monitoring'], port_forwards=['1
 k8s_resource('ai-gateway-litellm', port_forwards=['11001:4000'])
 k8s_resource('agent-gateway-krakend', port_forwards=['11002:8080'])
 
-k8s_resource('librechat-librechat', port_forwards=['11003:3080'])
+k8s_resource('librechat-librechat', labels=['librechat'], port_forwards=['11003:3080'])
+k8s_resource('librechat-mongodb', labels=['librechat'])
+k8s_resource('librechat-meilisearch', labels=['librechat'])
 
 k8s_resource('cross-selling-workforce', labels=['showcase'], resource_deps=['agent-runtime'], pod_readiness='ignore')
 k8s_resource('insurance-host-agent', labels=['showcase'], resource_deps=['agent-runtime'], port_forwards='11010:8000')
 k8s_resource('communications-agent', labels=['showcase'], resource_deps=['agent-runtime', 'customer-crm'], port_forwards='11011:8000')
 k8s_resource('cross-selling-agent', labels=['showcase'], resource_deps=['agent-runtime', 'customer-crm', 'insurance-products'], port_forwards='11012:8000')
-
