@@ -1,11 +1,22 @@
 from fastmcp import FastMCP
+from fastmcp.server.middleware.opentelemetry import OpenTelemetryMiddleware
+from opentelemetry import trace
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 from . import mock_database
 
+# Configure OpenTelemetry (reads from OTEL_SERVICE_NAME, OTEL_EXPORTER_OTLP_ENDPOINT env vars)
+trace_provider = TracerProvider()
+trace_provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporter()))
+trace.set_tracer_provider(trace_provider)
+
 # Create an MCP server for customer CRM data
 mcp: FastMCP = FastMCP(name="Customer CRM")
+mcp.add_middleware(OpenTelemetryMiddleware())
 
 
 def _create_error_response(message: str, error_code: str, **additional_data) -> dict:

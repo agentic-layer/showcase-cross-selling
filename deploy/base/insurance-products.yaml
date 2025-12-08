@@ -8,3 +8,10 @@ spec:
   image: insurance_products:latest
   port: 8000
   replicas: 1
+  env:
+    - name: OTEL_SERVICE_NAME
+      value: insurance-products-mcp
+  envFrom:
+    - configMapRef:
+        name: otel-tempo-config
+        optional: true
