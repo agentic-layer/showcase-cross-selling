@@ -22,7 +22,7 @@ ai_gateway_litellm_install(version='0.3.0')
 
 v1alpha1.extension(name='agent-gateway-krakend', repo_name='agentic-layer', repo_path='agent-gateway-krakend')
 load('ext://agent-gateway-krakend', 'agent_gateway_krakend_install')
-agent_gateway_krakend_install(version='0.4.0')
+agent_gateway_krakend_install(version='0.4.1')
 
 # LibreChat Helm chart
 load('ext://helm_remote', 'helm_remote')
@@ -74,7 +74,3 @@ k8s_resource('insurance-host-agent', labels=['showcase'], resource_deps=['agent-
 k8s_resource('communications-agent', labels=['showcase'], resource_deps=['agent-runtime', 'customer-crm'], port_forwards='11011:8000')
 k8s_resource('cross-selling-agent', labels=['showcase'], resource_deps=['agent-runtime', 'customer-crm', 'insurance-products'], port_forwards='11012:8000')
 
-# LibreChat Components
-k8s_resource('librechat-librechat', labels=['librechat'], port_forwards=['11003:3080'])
-k8s_resource('librechat-mongodb', labels=['librechat'])
-k8s_resource('librechat-meilisearch', labels=['librechat'])
