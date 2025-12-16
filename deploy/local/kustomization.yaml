@@ -4,3 +4,4 @@ resources:
   - otel-tempo-config.yaml
   - lgtm.yaml
   - observability-dashboard.yaml
+  - data-server
