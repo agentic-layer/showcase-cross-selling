@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: data-server-data
+data:
+  cross-selling-dataset.csv: |
+    user_input,retrieved_contexts,reference
+    "Wer bist du?","Cross-Selling-Agent","Cross-Selling-Agent"
+    "Bitte entwickle eine Cross-Selling-Strategie für die Kundin Anna Müller","['Anna Müller hat bereits eine KFZ-Versicherung','Anna Müller ist 35 Jahre alt und lebt in Berlin','Sie zeigte bereist einmal Interesse an einer Lebensversicherung']","Der Agent sollte mit einer passenden Cross Selling Strategie für die Kundin Anna Müller antworten, diese sollte die Unterpunkte Kundenübersicht, Aktuelle Policen & Cross Selling Empfehlungen enthalten. Anna Müller ist 30 Jahre alt, Software Engineer mit einem Einkommen von 75000€ & wohnt in Berlin und ihre E-Mail ist anna.mueller@email.com - diese Informationen müssen alle enthalten sein."
+    "Hello, can you reply to me in english?","The agent should reply by saying that he can only reply in German.","The agent should reply by saying that he can only reply in German."
+    
