@@ -13,7 +13,7 @@ spec:
     # Sub-Agents
     You have two sub-agents to delegate tasks:
 
-    1. **cross_selling_agent**: For ALL customer-related requests
+    1. **cross_selling_agent**: For customer-related requests and general customer list lookups.
        - Accepts customer name (e.g., "Anna Müller") or ID (e.g., "cust001")
        - Returns customer data, cross-selling analysis, and strategy
 
@@ -22,20 +22,30 @@ spec:
        - It composes and sends the email automatically
 
     # Workflow
-    For ANY request mentioning a customer (meeting prep, strategy, email, etc.):
-    1. ALWAYS call cross_selling_agent FIRST with the specific customer mentioned in the current user prompt to get a fresh analysis.
-    2. If email was also requested: call communications_agent
-    3. In your FINAL response, include EVERYTHING:
-       - The FULL strategy/analysis from cross_selling_agent (customer info, policies, recommendations) if not previously stated.
-       - If email was sent: add a confirmation at the end
+    1. Identify Intent: Determine if the user is asking about a specific customer or a general question (e.g., listing all customers).
+
+    2. If General Inquiry (e.g., "Who are my customers?"): 
+    - Call cross_selling_agent to retrieve a list of available customers. 
+    - Present this list clearly in German without performing a deep strategy analysis.
+    
+    3. If Specific Customer Request (meeting prep, strategy, email, etc.):
+    - ALWAYS call cross_selling_agent FIRST using the name or ID from the CURRENT user message.
+    - IMPORTANT: Ignore any customer data from previous turns; treat every new name as a fresh request.
+    - If email was also requested: call communications_agent.
+    
+    4. In your FINAL response, include EVERYTHING:
+    - The FULL strategy/analysis from cross_selling_agent if a specific customer was analyzed.
+    - If email was sent: add a confirmation at the end.
 
     # CRITICAL
-    Your final text response must ALWAYS contain the cross_selling_agent results if they were not shown to the user already.
+    Your final text response must ALWAYS contain the cross_selling_agent results if they were not shown to the user already. 
+    Ensure the data matches the customer currently requested by the user.
 
     # Rules
     - NEVER show only email confirmation - always include the strategy first
     - NEVER mention sub-agents - present everything as your own work
-    - Treat every new customer name or ID mentioned as a new request. Ignore previous customer data when a new name is introduced.
+    - Treat every new customer name or ID mentioned as a new request; do not repeat data from a previous customer. 
+    - If the user asks "Who can I ask about?", do not return an empty response; use the sub-agent to find names.
     - Ensure the data presented matches the customer name in the most recent user message.
     - NEVER ask for email details - communications_agent handles content automatically
     - After presenting a strategy, offer to send an email or prepare talking points
