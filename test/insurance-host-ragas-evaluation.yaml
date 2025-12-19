@@ -1,12 +1,12 @@
 apiVersion: testworkflows.testkube.io/v1
 kind: TestWorkflow
 metadata:
-  name: cross-selling-ragas-evaluation
+  name: insurance-host-ragas-evaluation
   namespace: testkube
   labels:
     test-type: ragas-evaluation
     component: insurance-agents
-    agent: cross-selling
+    agent: insurance-host
 spec:
   # Pod configuration with shared volume
   pod:
@@ -31,13 +31,13 @@ spec:
     datasetUrl:
       type: string
       description: "URL to the dataset file"
-      default: "http://data-server.data-server.svc.cluster.local:8000/cross-selling-dataset.csv"
+      default: "http://data-server.data-server.svc.cluster.local:8000/insurance-host-dataset.csv"
 
     # Agent configuration
     agentUrl:
       type: string
       description: "URL to the agent endpoint"
-      default: "http://cross-selling-agent.showcase-cross-selling.svc.cluster.local:8000"
+      default: "http://insurance-host-agent.showcase-cross-selling:8000"
 
     # Evaluation configuration
     model:
@@ -54,7 +54,7 @@ spec:
     workflowName:
       type: string
       description: "Workflow name for metrics"
-      default: "cross-selling-ragas-evaluation"
+      default: "insurance-host-ragas-evaluation"
 
 
     otlpEndpoint:
