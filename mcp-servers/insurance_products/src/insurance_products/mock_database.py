@@ -2,6 +2,7 @@
 _mock_database = {
     "life_insurance": {
         "product_id": "LIFE001",
+        "type": "life insurance",
         "name": "SecureLife Premium",
         "description": "Comprehensive life insurance with flexible coverage options",
         "min_coverage": 50000,
@@ -18,6 +19,7 @@ _mock_database = {
     },
     "term_life_basic": {
         "product_id": "LIFE002",
+        "type": "life insurance",
         "name": "StartLife Term",
         "description": "Affordable term life insurance designed for young professionals and first-time buyers",
         "min_coverage": 25000,
@@ -34,6 +36,7 @@ _mock_database = {
     },
     "senior_life_insurance": {
         "product_id": "LIFE003",
+        "type": "life insurance",
         "name": "GoldenYears Life Coverage",
         "description": "Simplified life insurance for seniors with guaranteed acceptance",
         "min_coverage": 10000,
@@ -50,6 +53,7 @@ _mock_database = {
     },
     "family_protection_life": {
         "product_id": "LIFE004",
+        "type": "life insurance",
         "name": "FamilyFirst Protection Plan",
         "description": "Family-oriented life insurance covering both parents and children",
         "min_coverage": 100000,
@@ -67,6 +71,7 @@ _mock_database = {
     },
     "business_owner_life": {
         "product_id": "LIFE005",
+        "type": "life insurance",
         "name": "KeyPerson Executive Life",
         "description": "Specialized life insurance for business owners with key person and buy-sell coverage",
         "min_coverage": 250000,
@@ -84,6 +89,7 @@ _mock_database = {
     },
     "health_insurance": {
         "product_id": "HEALTH001",
+        "type": "health insurance",
         "name": "HealthGuard Plus",
         "description": "Comprehensive health insurance with extensive coverage",
         "monthly_premium_range": {"min": 180, "max": 600},
@@ -99,6 +105,7 @@ _mock_database = {
     },
     "health_basic_plan": {
         "product_id": "HEALTH002",
+        "type": "health insurance",
         "name": "HealthEssentials Basic",
         "description": "Budget-friendly health insurance with core coverage and higher deductibles",
         "monthly_premium_range": {"min": 95, "max": 280},
@@ -114,6 +121,7 @@ _mock_database = {
     },
     "health_premium_executive": {
         "product_id": "HEALTH003",
+        "type": "health insurance",
         "name": "HealthElite Executive",
         "description": "Premium health insurance with concierge medical services and worldwide coverage",
         "monthly_premium_range": {"min": 450, "max": 1200},
@@ -131,6 +139,7 @@ _mock_database = {
     },
     "health_senior_care": {
         "product_id": "HEALTH004",
+        "type": "health insurance",
         "name": "SeniorHealth Complete",
         "description": "Specialized health insurance for seniors with enhanced coverage for age-related conditions",
         "monthly_premium_range": {"min": 220, "max": 750},
@@ -147,6 +156,7 @@ _mock_database = {
     },
     "car_insurance": {
         "product_id": "AUTO001",
+        "type": "auto insurance",
         "name": "DriveSecure Comprehensive",
         "description": "Full coverage auto insurance with competitive rates",
         "coverage_types": [
@@ -166,6 +176,7 @@ _mock_database = {
     },
     "home_insurance": {
         "product_id": "HOME001",
+        "type": "home insurance",
         "name": "HomeShield Complete",
         "description": "Comprehensive home insurance protecting property and belongings",
         "coverage_types": [
@@ -185,6 +196,7 @@ _mock_database = {
     },
     "travel_insurance": {
         "product_id": "TRAVEL001",
+        "type": "travel insurance",
         "name": "TravelSafe International",
         "description": "Travel insurance for domestic and international trips",
         "coverage_options": [
@@ -199,6 +211,7 @@ _mock_database = {
     },
     "disability_insurance": {
         "product_id": "DISABILITY001",
+        "type": "disability insurance",
         "name": "IncomeProtect",
         "description": "Disability insurance to protect income in case of inability to work",
         "coverage_percentage": {"min": 60, "max": 80},
@@ -208,6 +221,7 @@ _mock_database = {
     },
     "business_insurance": {
         "product_id": "BUSINESS001",
+        "type": "business insurance",
         "name": "BusinessGuard Pro",
         "description": "Comprehensive business insurance for small to medium enterprises",
         "coverage_types": [
@@ -221,6 +235,7 @@ _mock_database = {
     # New Products
     "personal_liability_insurance": {
         "product_id": "LIABILITY001",
+        "type": "personal liability insurance",
         "name": "PrivatSchutz Sorglos",
         "description": "Essential personal liability insurance covering damages to third parties.",
         "min_coverage": 5000000,
@@ -231,6 +246,7 @@ _mock_database = {
     },
     "legal_protection_insurance": {
         "product_id": "LEGAL001",
+        "type": "legal protection insurance",
         "name": "RechtSicher Privat",
         "description": "Comprehensive legal protection for private, professional, and traffic-related disputes.",
         "coverage_areas": ["Private life", "Work", "Traffic", "Housing"],
@@ -240,6 +256,7 @@ _mock_database = {
     },
     "pet_insurance": {
         "product_id": "PET001",
+        "type": "pet insurance",
         "name": "TierGesundheit Premium",
         "description": "Health insurance for your pets, covering vet bills for surgeries and treatments.",
         "pet_types_covered": ["dog", "cat"],
@@ -250,6 +267,7 @@ _mock_database = {
     },
     "motorcycle_insurance": {
         "product_id": "MOTO001",
+        "type": "motorcycle insurance",
         "name": "ZweiradSicher",
         "description": "Specialized insurance for motorcycles, scooters, and mopeds.",
         "coverage_types": ["Liability", "Partial cover", "Fully comprehensive"],
@@ -259,6 +277,7 @@ _mock_database = {
     },
     "electronics_insurance": {
         "product_id": "ELEC001",
+        "type": "electronics insurance",
         "name": "GadgetGarant",
         "description": "Protection for your valuable electronics like smartphones, laptops, and cameras.",
         "covered_perils": ["Accidental damage", "Liquid damage", "Theft", "Short circuit"],
@@ -268,6 +287,7 @@ _mock_database = {
     },
     "valuables_insurance": {
         "product_id": "VALUABLES001",
+        "type": "valuables insurance",
         "name": "WertgegenstandTresor",
         "description": "Specialized insurance for high-value items like jewelry, art, and musical instruments.",
         "covered_items": ["Jewelry & Watches", "Art & Antiques", "Musical Instruments", "Designer Handbags"],
@@ -277,6 +297,7 @@ _mock_database = {
     },
     "rental_deposit_insurance": {
         "product_id": "RENTAL001",
+        "type": "rental deposit insurance",
         "name": "Kautionsfrei Wohnen",
         "description": "An alternative to a cash rental deposit (Mietkaution), providing a guarantee to your landlord.",
         "annual_premium_rate": {"percentage_of_deposit": {"min": 3.5, "max": 5.0}},
@@ -286,6 +307,7 @@ _mock_database = {
     },
     "personal_cyber_insurance": {
         "product_id": "CYBER001",
+        "type": "cyber insurance",
         "name": "CyberSafe Home",
         "description": "Protection against online risks such as identity theft, cyberbullying, and online shopping fraud.",
         "coverage_types": [
