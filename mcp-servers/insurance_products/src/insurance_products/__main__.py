@@ -93,13 +93,8 @@ def get_product_details(product_id: str) -> dict:
     Returns:
         Dictionary with detailed product information or error if not found.
     """
-    # Get all products first
-    all_products_response = mock_database.get_all_products()
-
-    if all_products_response["status"] != "success":
-        return all_products_response
-
-    products = all_products_response["products"]
+    # Get all products
+    products = mock_database.get_all_products()
 
     # Find the specific product
     for product_key, product_data in products.items():
@@ -128,13 +123,8 @@ def get_products_by_segment(segment: str) -> dict:
     Returns:
         Dictionary with products matching the specified segment.
     """
-    # Get all products first
-    all_products_response = mock_database.get_all_products()
-
-    if all_products_response["status"] != "success":
-        return all_products_response
-
-    products = all_products_response["products"]
+    # Get all products
+    products = mock_database.get_all_products()
     matching_products = {}
 
     # Filter products by segment
@@ -153,6 +143,80 @@ def get_products_by_segment(segment: str) -> dict:
         f"Found {len(matching_products)} products for segment '{segment}'",
         products=matching_products,
         segment=segment,
+        product_count=len(matching_products),
+    )
+
+
+@mcp.tool()
+def get_products_by_type(product_type: str) -> dict:
+    """
+    Retrieves insurance products of a specific type.
+
+    This tool fetches all insurance products that match the specified product type,
+    such as "life insurance", "health insurance", or "auto insurance". It is useful
+    when an insurance broker needs to find all products within a specific insurance
+    category to present options to a customer.
+
+    Args:
+        product_type: The product type to filter by (e.g., "life insurance", "health insurance",
+                     "auto insurance", "home insurance", "travel insurance", etc.)
+
+    Returns:
+        A dictionary containing the status of the operation and the retrieved products.
+        On success, the dictionary will have the following structure:
+        {
+            "status": "success",
+            "message": "Found N products for type 'life insurance'",
+            "products": {
+                "life_insurance": {
+                    "product_id": "LIFE001",
+                    "type": "life insurance",
+                    "name": "SecureLife Premium",
+                    ...
+                },
+                ...
+            },
+            "product_type": "life insurance",
+            "product_count": N
+        }
+        On error (no products found), the dictionary will look like this:
+        {
+            "status": "error",
+            "message": "No products found for type 'xyz'",
+            "error_code": "NO_PRODUCTS_FOR_TYPE",
+            "requested_type": "xyz"
+        }
+
+    Usage Guidance:
+    This tool should be used when a broker asks about products within a specific
+    insurance category, such as "What life insurance products do we offer?" or
+    "Show me all health insurance options." It provides a filtered view of the
+    product catalog based on insurance type.
+
+    Error Handling:
+    If the tool returns a status of "error", inform the user that no products
+    were found for the specified type and suggest alternative product types.
+    """
+    # Get all products
+    products = mock_database.get_all_products()
+    matching_products = {}
+
+    # Filter products by type
+    for product_key, product_data in products.items():
+        if product_data.get("type") == product_type:
+            matching_products[product_key] = product_data
+
+    if not matching_products:
+        return _create_error_response(
+            f"No products found for type '{product_type}'",
+            "NO_PRODUCTS_FOR_TYPE",
+            requested_type=product_type,
+        )
+
+    return _create_success_response(
+        f"Found {len(matching_products)} products for type '{product_type}'",
+        products=matching_products,
+        product_type=product_type,
         product_count=len(matching_products),
     )
 
