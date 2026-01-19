@@ -22,13 +22,13 @@ data:
           summaryModel: "gemini/gemini-2.5-flash-lite"
           forcePrompt: false
           modelDisplayLabel: "Agentic Layer AI Gateway"
-        
-        - name: "Insurance Host Agent"
+
+        - name: "Agent Gateway"
           apiKey: "not-needed"
-          baseURL: "http://agent-gateway-krakend.agent-gateway-krakend:10000/insurance-host-agent"
+          baseURL: "http://agent-gateway-krakend.agent-gateway-krakend:10000"
           models:
-            default: [ "insurance-host-agent" ]
-            fetch: false
+            default: [ "showcase-cross-selling/insurance-host-agent" ]
+            fetch: true
           titleConvo: false
           summarize: false
           forcePrompt: false
