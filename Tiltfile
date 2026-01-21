@@ -30,7 +30,7 @@ helm_remote(
     'librechat',
     repo_url='oci://ghcr.io/danny-avila/librechat-chart',
     namespace='librechat',
-    values='./deploy/librechat/values.yaml',
+    values='./deploy/local/librechat/values.yaml',
 )
 
 # Deploy showcase using Helm chart with local image overrides
