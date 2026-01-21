@@ -26,7 +26,7 @@ spec:
       subject="Terminerinnerung: Ihr Versicherungs-Check-up",
       body="Sehr geehrte Frau Müller,\n\nwir möchten Sie an unser bevorstehendes Gespräch erinnern...\n\nMit freundlichen Grüßen,\nIhr SecureLife Team"
     )
-  model: {{ .Values.agents.model | quote }}
+  model: "gemini/gemini-2.5-flash-lite"
   tools:
     - name: customer-crm
       toolServerRef:

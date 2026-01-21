@@ -83,7 +83,7 @@ spec:
     - ALWAYS include customer contact details (email) in your response - the host agent needs this for sending emails.
     - If a tool returns multiple results for a name search, ask the user for clarification instead of picking one at random.
     - Be concise but thorough in your analysis.
-  model: {{ .Values.agents.model | quote }}
+  model: "gemini/gemini-2.5-flash-lite"
   tools:
     - name: customer-crm
       toolServerRef:
