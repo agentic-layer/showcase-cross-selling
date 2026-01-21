@@ -1,0 +1,15 @@
+apiVersion: v2
+name: showcase-cross-selling
+description: A multi-agent system for intelligent insurance cross-selling. This system orchestrates insurance cross-selling opportunities by analyzing customer data, identifying suitable products, and coordinating customer communications through specialized AI agents.
+type: application
+version: 0.1.0
+appVersion: 0.1.0
+home: https://github.com/agentic-layer/showcase-cross-selling
+maintainers:
+  - name: Agentic Layer Team
+    url: https://docs.agentic-layer.ai/
+keywords:
+  - agentic-layer
+  - insurance
+  - ai-agents
+  - mcp

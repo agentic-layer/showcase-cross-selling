@@ -2,6 +2,9 @@ apiVersion: runtime.agentic-layer.ai/v1alpha1
 kind: Agent
 metadata:
   name: communications-agent
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    {{ include "showcase-cross-selling.labels" . | nindent 4 }}
 spec:
   description: "Handle communication to customers by drafting and sending professional emails"
   instruction: |-
@@ -35,10 +38,10 @@ spec:
     - name: OTEL_SERVICE_NAME
       value: communications-agent
     - name: LOGLEVEL
-      value: "DEBUG"
+      value: {{ .Values.agents.logLevel | quote }}
     - name: AGENT_OTEL_ENABLED
-      value: "true"
+      value: {{ .Values.agents.otelEnabled | quote }}
   envFrom:
     - configMapRef:
-        name: otel-tempo-config
+        name: {{ .Values.externalDependencies.otelConfig.name }}
         optional: true

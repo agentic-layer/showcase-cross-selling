@@ -2,13 +2,16 @@ apiVersion: runtime.agentic-layer.ai/v1alpha1
 kind: AgenticWorkforce
 metadata:
   name: cross-selling-workforce
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    {{ include "showcase-cross-selling.labels" . | nindent 4 }}
 spec:
   # Human-readable name for the workforce
   name: "Cross selling workforce"
 
   # Description of the workforce's purpose and capabilities
   description: "A sophisticated multi-agent system for intelligent insurance cross-selling.
-  This system orchestrates insurance cross-selling opportunities by analyzing customer data, identifying suitable 
+  This system orchestrates insurance cross-selling opportunities by analyzing customer data, identifying suitable
   products, and coordinating customer communications through specialized AI agents."
 
   # Owner of the workforce (email or identifier)

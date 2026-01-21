@@ -1,0 +1,27 @@
+Thank you for installing {{ .Chart.Name }}!
+
+Release: {{ .Release.Name }}
+Namespace: {{ .Values.namespace }}
+
+IMPORTANT: External Dependencies
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+This chart requires the following external resources to exist:
+
+1. Agentic Layer CRDs must be installed:
+   - Agent (runtime.agentic-layer.ai/v1alpha1)
+   - ToolServer (runtime.agentic-layer.ai/v1alpha1)
+   - AgenticWorkforce (runtime.agentic-layer.ai/v1alpha1)
+
+2. ConfigMap: {{ .Values.externalDependencies.otelConfig.name }}
+   Purpose: OpenTelemetry Tempo configuration
+
+Verify Installation:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Check that all resources are running:
+
+  kubectl get agents,toolservers,agenticworkforces,deployments,services -n {{ .Values.namespace }}
+
+For more information:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Documentation: https://docs.agentic-layer.ai/
+Repository: https://github.com/agentic-layer/showcase-cross-selling

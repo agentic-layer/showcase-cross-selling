@@ -2,6 +2,9 @@ apiVersion: runtime.agentic-layer.ai/v1alpha1
 kind: Agent
 metadata:
   name: insurance-host-agent
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    {{ include "showcase-cross-selling.labels" . | nindent 4 }}
 spec:
   exposed: true
   framework: google-adk
@@ -32,7 +35,7 @@ spec:
      - For specific questions, provide a concise, realistic answer.
      - For full strategies, provide the structured briefing.
      - If an email was sent, add a confirmation at the end.
-   
+
     # Rules
      - NEVER show only email confirmation - always provide the professional reasoning first.
      - NEVER mention sub-agents - present everything as your own work.
@@ -54,10 +57,10 @@ spec:
     - name: OTEL_SERVICE_NAME
       value: insurance-host-agent
     - name: LOGLEVEL
-      value: "DEBUG"
+      value: {{ .Values.agents.logLevel | quote }}
     - name: AGENT_OTEL_ENABLED
-      value: "true"
+      value: {{ .Values.agents.otelEnabled | quote }}
   envFrom:
     - configMapRef:
-        name: otel-tempo-config
+        name: {{ .Values.externalDependencies.otelConfig.name }}
         optional: true

@@ -1,9 +1,6 @@
 # Insurance Cross-Selling Agentic System
 
-> **🔒 Private Repository** - This is a private repository containing proprietary demo showcases.
-
-
-A sophisticated multi-agent system for intelligent insurance cross-selling built with Google's Agent Development Kit (ADK), Model Context Protocol (MCP) servers, and agent-to-agent communication. This system orchestrates insurance cross-selling opportunities by analyzing customer data, identifying suitable products, and coordinating customer communications through specialized AI agents.
+A multi-agent system for intelligent insurance cross-selling built with Google's Agent Development Kit (ADK), Model Context Protocol (MCP) servers, and agent-to-agent communication. This system orchestrates insurance cross-selling opportunities by analyzing customer data, identifying suitable products, and coordinating customer communications through specialized AI agents.
 
 This showcase demonstrates the capabilities of the [Agentic Layer platform](http://agentic-layer.ai/) for building complex multi-agent AI systems.
 Further information about the Agentic Layer can be found in our [documentation](https://docs.agentic-layer.ai/).
@@ -104,7 +101,7 @@ Launch all services using Tilt:
 # Start all agents and MCP servers
 tilt up
 ```
-We recommend using the included Librechat instance (http://localhost:11003) to easily have conversations with the insurance host agent. 
+We recommend using the included Librechat instance (http://localhost:11003) to easily have conversations with the insurance host agent.
 
 **Expected Results:**
 - Grafana at http://localhost:11000
@@ -116,6 +113,24 @@ We recommend using the included Librechat instance (http://localhost:11003) to e
 - Cross-Selling Agent at http://localhost:11012
 - Customer CRM MCP Server at http://localhost:11020
 - Insurance Products MCP Server at http://localhost:11021
+
+## Helm Chart
+
+This project provides a Helm chart for deploying the showcase to Kubernetes clusters.
+
+### Installing from OCI Registry
+
+The Helm chart is published to GitHub Container Registry for each release tag.
+You need to install the Agentic Layer components first, see https://docs.agentic-layer.ai.
+
+```shell
+# Install the latest release
+helm install showcase-cross-selling \
+  oci://ghcr.io/agentic-layer/charts/showcase-cross-selling \
+  --version 0.6.0 \
+  --namespace showcase-cross-selling \
+  --create-namespace
+```
 
 ## Development
 
