@@ -33,6 +33,9 @@ helm_remote(
     values='./deploy/local/librechat/values.yaml',
 )
 
+# Apply local Kubernetes manifests
+k8s_yaml(kustomize('deploy/local'))
+
 # Deploy showcase using Helm chart with local image overrides
 k8s_yaml(helm(
     'chart',

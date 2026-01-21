@@ -9,10 +9,10 @@ namespace:
 images:
   toolServers:
     customerCrm:
-      image: ghcr.io/agentic-layer/showcase-cross-selling-customer-crm
+      repository: ghcr.io/agentic-layer/showcase-cross-selling-customer-crm
       tag: latest
     insuranceProducts:
-      image: ghcr.io/agentic-layer/showcase-cross-selling-insurance-products
+      repository: ghcr.io/agentic-layer/showcase-cross-selling-insurance-products
       tag: latest
 
 # Agent common configuration

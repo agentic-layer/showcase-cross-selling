@@ -8,6 +8,6 @@ metadata:
 spec:
   protocol: mcp
   transportType: http
-  image: {{ .Values.images.toolServers.insuranceProducts.image}}:{{ .Values.images.toolServers.insuranceProducts.tag }}
+  image: {{ .Values.images.toolServers.insuranceProducts.repository }}:{{ .Values.images.toolServers.insuranceProducts.tag }}
   port: 8000
   replicas: 1
