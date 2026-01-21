@@ -24,14 +24,9 @@ v1alpha1.extension(name='agent-gateway-krakend', repo_name='agentic-layer', repo
 load('ext://agent-gateway-krakend', 'agent_gateway_krakend_install')
 agent_gateway_krakend_install(version='0.5.0')
 
-# LibreChat Helm chart
-load('ext://helm_remote', 'helm_remote')
-helm_remote(
-    'librechat',
-    repo_url='oci://ghcr.io/danny-avila/librechat-chart',
-    namespace='librechat',
-    values='./deploy/local/librechat/values.yaml',
-)
+v1alpha1.extension(name='librechat', repo_name='agentic-layer', repo_path='librechat')
+load('ext://librechat', 'librechat_install')
+librechat_install()
 
 # Apply local Kubernetes manifests
 k8s_yaml(kustomize('deploy/local'))
@@ -83,10 +78,6 @@ k8s_resource('observability-dashboard', labels=['monitoring'], port_forwards=['1
 # Expose AI and Agent Gateways
 k8s_resource('ai-gateway-litellm', port_forwards=['11001:4000'])
 k8s_resource('agent-gateway-krakend', port_forwards=['11002:8080'])
-
-k8s_resource('librechat-librechat', labels=['librechat'], port_forwards=['11003:3080'])
-k8s_resource('librechat-mongodb', labels=['librechat'])
-k8s_resource('librechat-meilisearch', labels=['librechat'])
 
 k8s_resource('cross-selling-workforce', labels=['showcase'], resource_deps=['agent-runtime'], pod_readiness='ignore')
 k8s_resource('insurance-host-agent', labels=['showcase'], resource_deps=['agent-runtime'], port_forwards='11010:8000')
