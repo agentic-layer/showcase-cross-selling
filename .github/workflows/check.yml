@@ -25,3 +25,11 @@ jobs:
 
       - name: Run checks
         run: uv run poe check
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: 'v3.14.0'
+
+      - name: Lint Helm Chart
+        run: helm lint chart/

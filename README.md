@@ -114,6 +114,24 @@ We recommend using the included Librechat instance (http://localhost:11003) to e
 - Customer CRM MCP Server at http://localhost:11020
 - Insurance Products MCP Server at http://localhost:11021
 
+## Helm Chart
+
+This project provides a Helm chart for deploying the showcase to Kubernetes clusters.
+
+### Installing from OCI Registry
+
+The Helm chart is published to GitHub Container Registry for each release tag.
+You need to install the Agentic Layer components first, see https://docs.agentic-layer.ai.
+
+```shell
+# Install the latest release
+helm install showcase-cross-selling \
+  oci://ghcr.io/agentic-layer/charts/showcase-cross-selling \
+  --version 0.6.0 \
+  --namespace showcase-cross-selling \
+  --create-namespace
+```
+
 ## Development
 
 ### Developer Setup

@@ -7,19 +7,6 @@ namespace:
 
 # Image configurations
 images:
-  # Agent images (no registry prefix for local Tilt builds)
-  agents:
-    insuranceHost:
-      image: ghcr.io/agentic-layer/showcase-cross-selling-insurance-host-agent
-      tag: latest
-    crossSelling:
-      image: ghcr.io/agentic-layer/showcase-cross-selling-cross-selling-agent
-      tag: latest
-    communications:
-      image: ghcr.io/agentic-layer/showcase-cross-selling-communications-agent
-      tag: latest
-
-  # MCP Tool Server images
   toolServers:
     customerCrm:
       image: ghcr.io/agentic-layer/showcase-cross-selling-customer-crm
