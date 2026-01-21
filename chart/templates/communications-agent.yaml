@@ -2,6 +2,9 @@ apiVersion: runtime.agentic-layer.ai/v1alpha1
 kind: Agent
 metadata:
   name: communications-agent
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    {{ include "showcase-cross-selling.labels" . | nindent 4 }}
 spec:
   description: "Handle communication to customers by drafting and sending professional emails"
   instruction: |-
@@ -23,7 +26,7 @@ spec:
       subject="Terminerinnerung: Ihr Versicherungs-Check-up",
       body="Sehr geehrte Frau Müller,\n\nwir möchten Sie an unser bevorstehendes Gespräch erinnern...\n\nMit freundlichen Grüßen,\nIhr SecureLife Team"
     )
-  model: "gemini/gemini-2.5-flash-lite"
+  model: {{ .Values.agents.model | quote }}
   tools:
     - name: customer-crm
       toolServerRef:
@@ -35,10 +38,10 @@ spec:
     - name: OTEL_SERVICE_NAME
       value: communications-agent
     - name: LOGLEVEL
-      value: "DEBUG"
+      value: {{ .Values.agents.logLevel | quote }}
     - name: AGENT_OTEL_ENABLED
-      value: "true"
+      value: {{ .Values.agents.otelEnabled | quote }}
   envFrom:
     - configMapRef:
-        name: otel-tempo-config
+        name: {{ .Values.externalDependencies.otelConfig.name }}
         optional: true

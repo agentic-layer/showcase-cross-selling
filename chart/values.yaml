@@ -1,0 +1,43 @@
+# Namespace configuration
+namespace:
+  # Whether to create the namespace
+  create: true
+  # Name of the namespace
+  name: showcase-cross-selling
+
+# Image configurations
+images:
+  # Agent images (no registry prefix for local Tilt builds)
+  agents:
+    insuranceHost:
+      image: ghcr.io/agentic-layer/showcase-cross-selling-insurance-host-agent
+      tag: latest
+    crossSelling:
+      image: ghcr.io/agentic-layer/showcase-cross-selling-cross-selling-agent
+      tag: latest
+    communications:
+      image: ghcr.io/agentic-layer/showcase-cross-selling-communications-agent
+      tag: latest
+
+  # MCP Tool Server images
+  toolServers:
+    customerCrm:
+      image: ghcr.io/agentic-layer/showcase-cross-selling-customer-crm
+      tag: latest
+    insuranceProducts:
+      image: ghcr.io/agentic-layer/showcase-cross-selling-insurance-products
+      tag: latest
+
+# Agent common configuration
+agents:
+  # Log level for agents
+  logLevel: "DEBUG"
+  # Enable OpenTelemetry for agents
+  otelEnabled: "true"
+
+# External dependencies (must exist before installing this chart)
+# These are NOT created by this chart - they must be provisioned separately
+externalDependencies:
+  # OpenTelemetry configuration
+  otelConfig:
+    name: otel-tempo-config

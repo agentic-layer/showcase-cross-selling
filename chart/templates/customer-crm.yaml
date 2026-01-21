@@ -1,0 +1,13 @@
+apiVersion: runtime.agentic-layer.ai/v1alpha1
+kind: ToolServer
+metadata:
+  name: customer-crm
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    {{ include "showcase-cross-selling.labels" . | nindent 4 }}
+spec:
+  protocol: mcp
+  transportType: http
+  image: {{ .Values.images.toolServers.customerCrm.image}}:{{ .Values.images.toolServers.customerCrm.tag }}
+  port: 8000
+  replicas: 1

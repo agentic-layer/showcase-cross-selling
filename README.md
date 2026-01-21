@@ -1,9 +1,6 @@
 # Insurance Cross-Selling Agentic System
 
-> **🔒 Private Repository** - This is a private repository containing proprietary demo showcases.
-
-
-A sophisticated multi-agent system for intelligent insurance cross-selling built with Google's Agent Development Kit (ADK), Model Context Protocol (MCP) servers, and agent-to-agent communication. This system orchestrates insurance cross-selling opportunities by analyzing customer data, identifying suitable products, and coordinating customer communications through specialized AI agents.
+A multi-agent system for intelligent insurance cross-selling built with Google's Agent Development Kit (ADK), Model Context Protocol (MCP) servers, and agent-to-agent communication. This system orchestrates insurance cross-selling opportunities by analyzing customer data, identifying suitable products, and coordinating customer communications through specialized AI agents.
 
 This showcase demonstrates the capabilities of the [Agentic Layer platform](http://agentic-layer.ai/) for building complex multi-agent AI systems.
 Further information about the Agentic Layer can be found in our [documentation](https://docs.agentic-layer.ai/).
@@ -104,7 +101,7 @@ Launch all services using Tilt:
 # Start all agents and MCP servers
 tilt up
 ```
-We recommend using the included Librechat instance (http://localhost:11003) to easily have conversations with the insurance host agent. 
+We recommend using the included Librechat instance (http://localhost:11003) to easily have conversations with the insurance host agent.
 
 **Expected Results:**
 - Grafana at http://localhost:11000

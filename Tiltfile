@@ -33,8 +33,22 @@ helm_remote(
     values='./deploy/librechat/values.yaml',
 )
 
-# Apply Kubernetes manifests
-k8s_yaml(kustomize('deploy/local'))
+# Deploy showcase using Helm chart with local image overrides
+k8s_yaml(helm(
+    'chart',
+    name='showcase-cross-selling',
+    namespace='showcase-cross-selling',
+    values=[
+        'chart/values.yaml'
+    ],
+    set=[
+        # Override tool server images to use local Tilt builds
+        'images.toolServers.customerCrm.repository=customer_crm',
+        'images.toolServers.customerCrm.tag=latest',
+        'images.toolServers.insuranceProducts.repository=insurance_products',
+        'images.toolServers.insuranceProducts.tag=latest',
+    ]
+))
 
 
 # Helper function to convert snake_case to kebab-case

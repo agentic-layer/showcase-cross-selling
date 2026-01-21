@@ -1,0 +1,13 @@
+apiVersion: runtime.agentic-layer.ai/v1alpha1
+kind: ToolServer
+metadata:
+  name: insurance-products
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    {{ include "showcase-cross-selling.labels" . | nindent 4 }}
+spec:
+  protocol: mcp
+  transportType: http
+  image: {{ .Values.images.toolServers.insuranceProducts.image}}:{{ .Values.images.toolServers.insuranceProducts.tag }}
+  port: 8000
+  replicas: 1
