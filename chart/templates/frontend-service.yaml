@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    {{ include "showcase-cross-selling.labels" . | nindent 4 }}
+spec:
+  selector:
+    app: {{ template "showcase-cross-selling.fullname" . }}
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP

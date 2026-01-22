@@ -14,6 +14,9 @@ images:
     insuranceProducts:
       repository: ghcr.io/agentic-layer/showcase-cross-selling-insurance-products
       tag: latest
+  frontend:
+    repository: ghcr.io/agentic-layer/showcase-cross-selling-page
+    tag: 0.2.4
 
 # Agent common configuration
 agents:
@@ -21,6 +24,11 @@ agents:
   logLevel: "DEBUG"
   # Enable OpenTelemetry for agents
   otelEnabled: "true"
+
+# Frontend configuration
+frontend:
+  # Backend URL for the frontend to proxy agent requests
+  backendUrl: "http://agent-gateway.agent-gateway.svc.cluster.local:10000"
 
 # External dependencies (must exist before installing this chart)
 # These are NOT created by this chart - they must be provisioned separately

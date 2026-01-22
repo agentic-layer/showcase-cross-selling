@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    {{ include "showcase-cross-selling.labels" . | nindent 4 }}
+    app: {{ template "showcase-cross-selling.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "showcase-cross-selling.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "showcase-cross-selling.fullname" . }}
+    spec:
+      containers:
+        - name: frontend
+          image: {{ .Values.images.frontend.repository }}:{{ .Values.images.frontend.tag }}
+          ports:
+            - name: http-web-svc
+              containerPort: 80
+          env:
+            - name: BACKEND_URL
+              value: {{ .Values.frontend.backendUrl }}
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          readinessProbe:
+            httpGet:
+              port: http-web-svc
+              path: /health
+            initialDelaySeconds: 5
+            periodSeconds: 10
