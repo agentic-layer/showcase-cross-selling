@@ -36,3 +36,24 @@ jobs:
         run: |
           kubectl port-forward service/agent-gateway-krakend -n agent-gateway-krakend 11002:10000 &
           ./test/e2e/a2a-message.sh
+
+      - name: Logs
+        if: failure()
+        run: |
+          echo ""
+          echo "Kubernetes Pod Statuses:"
+          kubectl get pods --all-namespaces
+
+          echo ""
+          echo "Agent Gateway Logs:"
+          kubectl logs -n agent-gateway-krakend -l app=agent-gateway-krakend || true
+
+          echo ""
+          echo "AI Gateway Logs:"
+          kubectl logs -n ai-gateway -l app=ai-gateway-litellm || true
+
+          echo ""
+          echo "Agent Logs:"
+          kubectl logs -n showcase-cross-selling -l app=insurance-host-agent || true
+          kubectl logs -n showcase-cross-selling -l app=communications-agent || true
+          kubectl logs -n showcase-cross-selling -l app=cross-selling-agent || true
