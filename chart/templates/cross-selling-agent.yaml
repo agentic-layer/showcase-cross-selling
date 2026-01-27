@@ -90,7 +90,7 @@ spec:
         name: customer-crm
     - name: insurance-products
       toolServerRef:
-          name: insurance-products
+        name: insurance-products
   protocols:
     - type: A2A
       name: a2a-8000

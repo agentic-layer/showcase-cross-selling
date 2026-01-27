@@ -97,3 +97,4 @@ k8s_kind(
 
 k8s_resource('insurance-host-ragas-evaluation', labels=['testing'], resource_deps=['testkube'])
 k8s_resource('insurance-host-ragas-evaluation-trigger', labels=['testing'], resource_deps=['testkube'])
+k8s_resource('cross-selling-ragas-evaluation', labels=['testing'], resource_deps=['testkube'])

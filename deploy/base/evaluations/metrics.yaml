@@ -1,17 +1,21 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: insurance-host-metrics-config
+  name: metrics-config
   namespace: testkube
   labels:
     app: testworkflows
     testkube.io/test-category: ragas-evaluation
 data:
-  metrics.yaml: |
+  insurance-host-metrics.yaml: |
     version: "1.0"
     metrics:
       - type: class
-        class_name: ToolCallAccuracy
-
+        class_name: AgentGoalAccuracyWithoutReference
+  cross-selling-metrics.yaml: |
+    version: "1.0"
+    metrics:
       - type: class
         class_name: AgentGoalAccuracyWithoutReference
+      - type: class
+        class_name: ToolCallAccuracy

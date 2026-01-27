@@ -3,6 +3,8 @@ kind: Kustomization
 namespace: testkube
 resources:
   - datasets.yaml
-  - insurance-host-ragas-evaluation-metrics.yaml
+  - metrics.yaml
   - insurance-host-ragas-evaluation.yaml
   - insurance-host-ragas-evaluation-trigger.yaml
+  - cross-selling-ragas-evaluation.yaml
+  - cross-selling-ragas-evaluation-trigger.yaml
