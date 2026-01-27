@@ -1,6 +1,8 @@
 # Tiltfile for cross-selling use case development
 
-update_settings(max_parallel_updates=10)
+update_settings(max_parallel_updates=10, k8s_upsert_timeout_secs=1200)
+
+allow_k8s_contexts('colima')
 
 # Load .env file for environment variables
 load('ext://dotenv', 'dotenv')
@@ -30,7 +32,7 @@ librechat_install()
 
 v1alpha1.extension(name='testbench', repo_name='agentic-layer', repo_path='testbench')
 load('ext://testbench', 'testbench_install')
-testbench_install(version='0.2.3')
+testbench_install(version='0.4.1')
 
 # Apply local Kubernetes manifests
 k8s_yaml(kustomize('deploy/local'))
@@ -90,11 +92,19 @@ k8s_resource('communications-agent', labels=['showcase'], resource_deps=['agent-
 k8s_resource('cross-selling-agent', labels=['showcase'], resource_deps=['agent-runtime', 'customer-crm', 'insurance-products'], port_forwards='11012:8000')
 k8s_resource('frontend', labels=['showcase'], resource_deps=['agent-gateway'], port_forwards='11013:80')
 
-k8s_kind(
-    '^Test(Workflow.*|Trigger.*)$',
-    pod_readiness='ignore',
-)
-
 k8s_resource('insurance-host-ragas-evaluation', labels=['testing'], resource_deps=['testkube'])
 k8s_resource('insurance-host-ragas-evaluation-trigger', labels=['testing'], resource_deps=['testkube'])
 k8s_resource('cross-selling-ragas-evaluation', labels=['testing'], resource_deps=['testkube'])
+k8s_resource('cross-selling-ragas-evaluation-trigger', labels=['testing'], resource_deps=['testkube'])
+k8s_resource(
+    objects=['metrics-config:configmap:testkube'],
+    new_name='metrics-config',
+    labels=['testing'],
+    resource_deps=['testkube']
+)
+k8s_resource(
+    objects=['datasets:configmap:testkube'],
+    new_name='datasets',
+    labels=['testing'],
+    resource_deps=['testkube']
+)

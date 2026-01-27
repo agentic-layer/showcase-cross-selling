@@ -3,6 +3,8 @@ kind: ConfigMap
 metadata:
   name: datasets
   namespace: testkube
+  labels:
+      {{ include "showcase-cross-selling.labels" . | nindent 4 }}
 data:
   insurance-host-dataset.jsonl: |
     {"user_input": [{"content": "Bereite mir ein Kundengespräch mit Anna Müller vor", "type": "human"}]}

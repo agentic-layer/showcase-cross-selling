@@ -4,8 +4,7 @@ metadata:
   name: metrics-config
   namespace: testkube
   labels:
-    app: testworkflows
-    testkube.io/test-category: ragas-evaluation
+      {{ include "showcase-cross-selling.labels" . | nindent 4 }}
 data:
   insurance-host-metrics.yaml: |
     version: "1.0"
