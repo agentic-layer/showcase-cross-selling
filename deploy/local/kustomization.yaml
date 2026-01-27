@@ -3,4 +3,5 @@ kind: Kustomization
 resources:
   - otel-tempo-config.yaml
   - lgtm.yaml
+  - lgtm-grafana-dashboard-config.yaml
   - observability-dashboard.yaml

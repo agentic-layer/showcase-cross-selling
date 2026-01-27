@@ -6,6 +6,7 @@ update_settings(max_parallel_updates=10)
 load('ext://dotenv', 'dotenv')
 dotenv()
 
+# TODO tilt-extensions need to be released
 v1alpha1.extension_repo(name='agentic-layer', url='https://github.com/agentic-layer/tilt-extensions', ref='v0.8.0')
 
 v1alpha1.extension(name='cert-manager', repo_name='agentic-layer', repo_path='cert-manager')
@@ -27,6 +28,10 @@ agent_gateway_krakend_install(version='0.5.0')
 v1alpha1.extension(name='librechat', repo_name='agentic-layer', repo_path='librechat')
 load('ext://librechat', 'librechat_install')
 librechat_install()
+
+v1alpha1.extension(name='testbench', repo_name='agentic-layer', repo_path='testbench')
+load('ext://testbench', 'testbench_install')
+testbench_install(version='0.2.3')
 
 # Apply local Kubernetes manifests
 k8s_yaml(kustomize('deploy/local'))
@@ -85,3 +90,13 @@ k8s_resource('insurance-host-agent', labels=['showcase'], resource_deps=['agent-
 k8s_resource('communications-agent', labels=['showcase'], resource_deps=['agent-runtime', 'customer-crm'], port_forwards='11011:8000')
 k8s_resource('cross-selling-agent', labels=['showcase'], resource_deps=['agent-runtime', 'customer-crm', 'insurance-products'], port_forwards='11012:8000')
 k8s_resource('frontend', labels=['showcase'], resource_deps=['agent-gateway'], port_forwards='11013:80')
+
+k8s_kind(
+    '^Test(Workflow.*|Trigger.*)$',
+    pod_readiness='ignore',
+)
+
+k8s_resource('insurance-host-ragas-evaluation', labels=['testing'], resource_deps=['testkube'])
+k8s_resource('insurance-host-ragas-evaluation-trigger', labels=['testing'], resource_deps=['testkube'])
+k8s_resource('cross-selling-ragas-evaluation', labels=['testing'], resource_deps=['testkube'])
+k8s_resource('cross-selling-ragas-evaluation-trigger', labels=['testing'], resource_deps=['testkube'])

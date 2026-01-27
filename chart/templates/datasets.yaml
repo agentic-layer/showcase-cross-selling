@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: datasets
+  namespace: testkube
+  labels:
+      {{ include "showcase-cross-selling.labels" . | nindent 4 }}
+data:
+  insurance-host-dataset.jsonl: |
+    {"user_input": [{"content": "Bereite mir ein Kundengespräch mit Anna Müller vor", "type": "human"}]}
+    {"user_input": [{"content": "Erstelle eine Cross-Selling Strategie für Thomas Schmidt", "type": "human"}, {"content": "Sende eine Email an den Kunden mit der Zusammenfassung", "type": "human"}]}
+    {"user_input": [{"content": "Welche Hausratversicherung empfiehlst du für Thomas Schmidt?", "type": "human"}]}
+    {"user_input": [{"content": "Welche Lebensversicherungen haben wir im Angebot?", "type": "human"}]}
+    {"user_input": [{"content": "Zeige mir alle meine Kunden", "type": "human"}]}
+    {"user_input": [{"content": "Erstelle eine Strategie für Anna Müller und sende ihr eine Email mit den Empfehlungen", "type": "human"}]}
+    {"user_input": [{"content": "Welche Kunden haben das größte Potenzial für eine Krankenversicherung?", "type": "human"}]}
+    {"user_input": [{"content": "Welche Autoversicherungen passen zu Thomas Schmidt?", "type": "human"}]}
+    {"user_input": [{"content": "Sende eine Email an Anna Müller mit einer Terminbestätigung für unser Gespräch nächste Woche", "type": "human"}]}
+    {"user_input": [{"content": "Kannst du mir ein gutes Rezept für Lasagne empfehlen?", "type": "human"}]}
+  cross-selling-dataset.jsonl: |
+    {"user_input": [{"content": "Bereite mir ein Kundengespräch mit Anna Müller vor", "type": "human"}], "reference_tool_calls":[{"name": "search_customer_by_name", "args": {"name":  "Anna Müller"}}, {"name": "get_insurance_products", "args": {}}]}
+    {"user_input": [{"content": "Erstelle eine Cross-Selling Strategie für Thomas Schmidt", "type": "human"}], "reference_tool_calls":[{"name": "search_customer_by_name", "args": {"name":  "Thomas Schmidt"}}, {"name": "get_insurance_products", "args": {}}]}
+    {"user_input": [{"content": "Welche Versicherungsprodukten bieten wir an?", "type": "human"}], "reference_tool_calls":[{"name": "get_insurance_products", "args": {}}]}
