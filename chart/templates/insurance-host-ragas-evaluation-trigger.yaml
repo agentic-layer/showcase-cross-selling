@@ -1,18 +1,20 @@
 apiVersion: tests.testkube.io/v1
 kind: TestTrigger
 metadata:
-  name: cross-selling-ragas-evaluation-trigger
+  name: insurance-host-ragas-evaluation-trigger
   namespace: testkube
+  labels:
+      {{ include "showcase-cross-selling.labels" . | nindent 4 }}
 spec:
   resource: deployment
   resourceSelector:
-    name: cross-selling-agent
+    name: insurance-host-agent
     namespace: showcase-cross-selling
   event: modified
   action: run
   execution: testworkflow
   concurrencyPolicy: allow
   testSelector:
-    name: cross-selling-ragas-evaluation
+    name: insurance-host-ragas-evaluation
     namespace: testkube
   disabled: false

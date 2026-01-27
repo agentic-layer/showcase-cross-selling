@@ -6,6 +6,7 @@ update_settings(max_parallel_updates=10)
 load('ext://dotenv', 'dotenv')
 dotenv()
 
+# TODO tilt-extensions need to be released
 v1alpha1.extension_repo(name='agentic-layer', url='https://github.com/agentic-layer/tilt-extensions', ref='v0.8.0')
 
 v1alpha1.extension(name='cert-manager', repo_name='agentic-layer', repo_path='cert-manager')
@@ -98,3 +99,4 @@ k8s_kind(
 k8s_resource('insurance-host-ragas-evaluation', labels=['testing'], resource_deps=['testkube'])
 k8s_resource('insurance-host-ragas-evaluation-trigger', labels=['testing'], resource_deps=['testkube'])
 k8s_resource('cross-selling-ragas-evaluation', labels=['testing'], resource_deps=['testkube'])
+k8s_resource('cross-selling-ragas-evaluation-trigger', labels=['testing'], resource_deps=['testkube'])

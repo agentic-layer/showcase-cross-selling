@@ -1,8 +1,10 @@
 apiVersion: testworkflows.testkube.io/v1
 kind: TestWorkflow
 metadata:
-  name: insurance-host-ragas-evaluation
+  name: cross-selling-ragas-evaluation
   namespace: testkube
+  labels:
+      {{ include "showcase-cross-selling.labels" . | nindent 4 }}
 spec:
   content:
     files:
@@ -10,20 +12,20 @@ spec:
         contentFrom:
           configMapKeyRef:
             name: datasets
-            key: insurance-host-dataset.jsonl
+            key: cross-selling-dataset.jsonl
       - path: /app/config/metrics.yaml
         contentFrom:
           configMapKeyRef:
             name: metrics-config
-            key: insurance-host-metrics.yaml
+            key: cross-selling-metrics.yaml
 
   container:
-    image: ghcr.io/agentic-layer/testbench/testworkflows:latest
+    image: ghcr.io/agentic-layer/testbench/testworkflows:0.3.0
 
   use:
     - name: ragas-run-template
       config:
-        agentUrl: "http://insurance-host-agent.showcase-cross-selling:8000"
+        agentUrl: "http://cross-selling-agent.showcase-cross-selling:8000"
     - name: ragas-evaluate-template
       config:
         model: "gemini-2.5-flash-lite"
