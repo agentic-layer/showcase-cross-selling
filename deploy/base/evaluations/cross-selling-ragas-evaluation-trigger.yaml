@@ -1,0 +1,18 @@
+apiVersion: tests.testkube.io/v1
+kind: TestTrigger
+metadata:
+  name: cross-selling-ragas-evaluation-trigger
+  namespace: testkube
+spec:
+  resource: deployment
+  resourceSelector:
+    name: cross-selling-agent
+    namespace: showcase-cross-selling
+  event: modified
+  action: run
+  execution: testworkflow
+  concurrencyPolicy: allow
+  testSelector:
+    name: cross-selling-ragas-evaluation
+    namespace: testkube
+  disabled: false
