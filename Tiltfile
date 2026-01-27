@@ -6,7 +6,7 @@ update_settings(max_parallel_updates=10)
 load('ext://dotenv', 'dotenv')
 dotenv()
 
-v1alpha1.extension_repo(name='agentic-layer', url='https://github.com/agentic-layer/tilt-extensions', ref='v0.7.0')
+v1alpha1.extension_repo(name='agentic-layer', url='https://github.com/agentic-layer/tilt-extensions', ref='v0.8.0')
 
 v1alpha1.extension(name='cert-manager', repo_name='agentic-layer', repo_path='cert-manager')
 load('ext://cert-manager', 'cert_manager_install')
@@ -45,7 +45,7 @@ k8s_yaml(helm(
         'images.toolServers.customerCrm.tag=latest',
         'images.toolServers.insuranceProducts.repository=insurance_products',
         'images.toolServers.insuranceProducts.tag=latest',
-        'frontend.backendUrl=http://agent-gateway-krakend.agent-gateway-krakend.svc.cluster.local:10000',
+        'frontend.backendUrl=http://agent-gateway.agent-gateway.svc.cluster.local:10000',
     ]
 ))
 
@@ -77,11 +77,11 @@ k8s_resource('lgtm', labels=['monitoring'], resource_deps=[], port_forwards=['11
 k8s_resource('observability-dashboard', labels=['monitoring'], port_forwards=['11004:8000'])
 
 # Expose AI and Agent Gateways
-k8s_resource('ai-gateway-litellm', port_forwards=['11001:4000'])
-k8s_resource('agent-gateway-krakend', port_forwards=['11002:8080'])
+k8s_resource('ai-gateway', port_forwards=['11001:4000'])
+k8s_resource('agent-gateway', port_forwards=['11002:8080'])
 
 k8s_resource('cross-selling-workforce', labels=['showcase'], resource_deps=['agent-runtime'], pod_readiness='ignore')
 k8s_resource('insurance-host-agent', labels=['showcase'], resource_deps=['agent-runtime'], port_forwards='11010:8000')
 k8s_resource('communications-agent', labels=['showcase'], resource_deps=['agent-runtime', 'customer-crm'], port_forwards='11011:8000')
 k8s_resource('cross-selling-agent', labels=['showcase'], resource_deps=['agent-runtime', 'customer-crm', 'insurance-products'], port_forwards='11012:8000')
-k8s_resource('frontend', labels=['showcase'], resource_deps=['agent-gateway-krakend'], port_forwards='11013:80')
+k8s_resource('frontend', labels=['showcase'], resource_deps=['agent-gateway'], port_forwards='11013:80')

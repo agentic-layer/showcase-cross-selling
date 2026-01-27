@@ -34,7 +34,7 @@ jobs:
 
       - name: Verify Deployment
         run: |
-          kubectl port-forward service/agent-gateway-krakend -n agent-gateway-krakend 11002:10000 &
+          kubectl port-forward service/agent-gateway -n agent-gateway 11002:10000 &
           ./test/e2e/a2a-message.sh
 
       - name: Logs
@@ -46,11 +46,11 @@ jobs:
 
           echo ""
           echo "Agent Gateway Logs:"
-          kubectl logs -n agent-gateway-krakend -l app=agent-gateway-krakend || true
+          kubectl logs -n agent-gateway -l app=agent-gateway || true
 
           echo ""
           echo "AI Gateway Logs:"
-          kubectl logs -n ai-gateway -l app=ai-gateway-litellm || true
+          kubectl logs -n ai-gateway -l app=ai-gateway || true
 
           echo ""
           echo "Agent Logs:"
