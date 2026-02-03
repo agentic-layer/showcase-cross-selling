@@ -177,7 +177,7 @@ Execute the end-to-end test suite to validate the complete agent workflow:
 
 ```bash
 # Run the cross-selling conversation test
-./test/e2e/openai-api.sh
+./test/e2e/a2a-message.sh
 ```
 
 **Prerequisites for E2E Tests:**
@@ -194,7 +194,7 @@ Execute the end-to-end test suite to validate the complete agent workflow:
 ### Testing Framework
 
 **Primary Tool: Bash/cURL Integration Tests**
-- **Location**: `test/e2e/openai-api.sh`
+- **Location**: `test/e2e/a2a-message.sh`
 - **Configuration**: Tests use OpenAI-compatible API endpoints
 - **Validation**: Response content matching using `grep` with German keywords
 
