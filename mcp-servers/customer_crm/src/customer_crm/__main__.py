@@ -1,8 +1,20 @@
+import os
+
 from fastmcp import FastMCP
-from starlette.requests import Request
-from starlette.responses import JSONResponse
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
 
 from . import mock_database
+
+# Configure OpenTelemetry (reads from OTEL_SERVICE_NAME, OTEL_EXPORTER_OTLP_ENDPOINT env vars)
+if os.environ.get("OTEL_EXPORTER_OTLP_PROTOCOL", "grpc") == "grpc":
+    from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+else:
+    from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+trace_provider = TracerProvider()
+trace_provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporter()))
+trace.set_tracer_provider(trace_provider)
 
 # Create an MCP server for customer CRM data
 mcp: FastMCP = FastMCP(name="Customer CRM")
@@ -231,12 +243,6 @@ def send_email(customer_id: str, subject: str, body: str) -> dict:
     print("--------------------------")
 
     return _create_success_response(f"Email sent to customer {customer_id}")
-
-
-@mcp.custom_route("/health", methods=["GET"])
-async def health_check(_: Request) -> JSONResponse:
-    """Health check endpoint."""
-    return JSONResponse({"status": "healthy"})
 
 
 def main():
