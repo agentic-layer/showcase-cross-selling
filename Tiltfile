@@ -1,8 +1,6 @@
 # Tiltfile for cross-selling use case development
 
-update_settings(max_parallel_updates=10, k8s_upsert_timeout_secs=1200)
-
-allow_k8s_contexts('colima')
+update_settings(max_parallel_updates=10, k8s_upsert_timeout_secs=600)
 
 # Load .env file for environment variables
 load('ext://dotenv', 'dotenv')
