@@ -1,12 +1,12 @@
 # Tiltfile for cross-selling use case development
 
-update_settings(max_parallel_updates=10)
+update_settings(max_parallel_updates=10, k8s_upsert_timeout_secs=600)
 
 # Load .env file for environment variables
 load('ext://dotenv', 'dotenv')
 dotenv()
 
-v1alpha1.extension_repo(name='agentic-layer', url='https://github.com/agentic-layer/tilt-extensions', ref='v0.9.0')
+v1alpha1.extension_repo(name='agentic-layer', url='https://github.com/agentic-layer/tilt-extensions', ref='v0.9.2')
 
 v1alpha1.extension(name='cert-manager', repo_name='agentic-layer', repo_path='cert-manager')
 load('ext://cert-manager', 'cert_manager_install')
@@ -27,6 +27,10 @@ agent_gateway_krakend_install(version='0.5.3')
 v1alpha1.extension(name='librechat', repo_name='agentic-layer', repo_path='librechat')
 load('ext://librechat', 'librechat_install')
 librechat_install()
+
+v1alpha1.extension(name='testbench', repo_name='agentic-layer', repo_path='testbench')
+load('ext://testbench', 'testbench_install')
+testbench_install(version='0.4.1')
 
 # Apply local Kubernetes manifests
 k8s_yaml(kustomize('deploy/local'))
@@ -71,7 +75,7 @@ for server in mcp_servers:
     k8s_resource(snake_to_kebab(server_name), port_forwards=server['port'], labels=['showcase'], resource_deps=['agent-runtime'])
 
 # Monitoring
-k8s_resource('lgtm', labels=['monitoring'], resource_deps=[], port_forwards=['11000:3000'])
+k8s_resource('lgtm', labels=['monitoring'], resource_deps=['testbench'], port_forwards=['11000:3000'])
 
 # Observability Dashboard
 k8s_resource('observability-dashboard', labels=['monitoring'], port_forwards=['11004:8000'])
@@ -85,3 +89,20 @@ k8s_resource('insurance-host-agent', labels=['showcase'], resource_deps=['agent-
 k8s_resource('communications-agent', labels=['showcase'], resource_deps=['agent-runtime', 'customer-crm'], port_forwards='11011:8000')
 k8s_resource('cross-selling-agent', labels=['showcase'], resource_deps=['agent-runtime', 'customer-crm', 'insurance-products'], port_forwards='11012:8000')
 k8s_resource('frontend', labels=['showcase'], resource_deps=['agent-gateway'], port_forwards='11013:80')
+
+k8s_resource('insurance-host-ragas-evaluation', labels=['testing'], resource_deps=['testkube'])
+k8s_resource('insurance-host-ragas-evaluation-trigger', labels=['testing'], resource_deps=['testkube'])
+k8s_resource('cross-selling-ragas-evaluation', labels=['testing'], resource_deps=['testkube'])
+k8s_resource('cross-selling-ragas-evaluation-trigger', labels=['testing'], resource_deps=['testkube'])
+k8s_resource(
+    objects=['metrics-config:configmap:testkube'],
+    new_name='metrics-config',
+    labels=['testing'],
+    resource_deps=['testkube']
+)
+k8s_resource(
+    objects=['datasets:configmap:testkube'],
+    new_name='datasets',
+    labels=['testing'],
+    resource_deps=['testkube']
+)

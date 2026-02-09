@@ -30,7 +30,7 @@ jobs:
           tilt version
 
       - name: Run Tilt CI
-        run: tilt ci
+        run: tilt ci --timeout=30m
 
       - name: Verify Deployment
         run: |

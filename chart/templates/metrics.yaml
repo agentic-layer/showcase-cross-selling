@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: metrics-config
+  namespace: testkube
+  labels:
+      {{ include "showcase-cross-selling.labels" . | nindent 4 }}
+data:
+  insurance-host-metrics.yaml: |
+    version: "1.0"
+    metrics:
+      - type: class
+        class_name: AgentGoalAccuracyWithoutReference
+  cross-selling-metrics.yaml: |
+    version: "1.0"
+    metrics:
+      - type: class
+        class_name: AgentGoalAccuracyWithoutReference
+      - type: class
+        class_name: ToolCallAccuracy
