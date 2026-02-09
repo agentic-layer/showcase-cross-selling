@@ -75,7 +75,7 @@ for server in mcp_servers:
     k8s_resource(snake_to_kebab(server_name), port_forwards=server['port'], labels=['showcase'], resource_deps=['agent-runtime'])
 
 # Monitoring
-k8s_resource('lgtm', labels=['monitoring'], resource_deps=[], port_forwards=['11000:3000'])
+k8s_resource('lgtm', labels=['monitoring'], resource_deps=['testbench'], port_forwards=['11000:3000'])
 
 # Observability Dashboard
 k8s_resource('observability-dashboard', labels=['monitoring'], port_forwards=['11004:8000'])
