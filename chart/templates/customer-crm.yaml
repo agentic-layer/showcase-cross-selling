@@ -11,3 +11,10 @@ spec:
   image: {{ .Values.images.toolServers.customerCrm.repository }}:{{ .Values.images.toolServers.customerCrm.tag }}
   port: 8000
   replicas: 1
+  env:
+    - name: OTEL_SERVICE_NAME
+      value: customer-crm
+  envFrom:
+    - configMapRef:
+        name: {{ .Values.externalDependencies.otelConfig.name }}
+        optional: true

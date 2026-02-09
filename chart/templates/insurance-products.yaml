@@ -11,3 +11,10 @@ spec:
   image: {{ .Values.images.toolServers.insuranceProducts.repository }}:{{ .Values.images.toolServers.insuranceProducts.tag }}
   port: 8000
   replicas: 1
+  env:
+    - name: OTEL_SERVICE_NAME
+      value: insurance-products
+  envFrom:
+    - configMapRef:
+        name: {{ .Values.externalDependencies.otelConfig.name }}
+        optional: true

@@ -1,8 +1,23 @@
+import os
+
 from fastmcp import FastMCP
-from starlette.requests import Request
-from starlette.responses import JSONResponse
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
 
 from . import mock_database
+
+# Configure OpenTelemetry (reads from OTEL_SERVICE_NAME, OTEL_EXPORTER_OTLP_ENDPOINT env vars)
+trace_provider = TracerProvider()
+if os.environ.get("OTEL_EXPORTER_OTLP_PROTOCOL", "grpc") == "grpc":
+    from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter as OTLPSpanExporterGrpc
+
+    trace_provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporterGrpc()))
+else:
+    from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter as OTLPSpanExporterHttp
+
+    trace_provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporterHttp()))
+trace.set_tracer_provider(trace_provider)
 
 # Create an MCP server for insurance products
 mcp: FastMCP = FastMCP("SecureLife Insurance Products")
@@ -219,12 +234,6 @@ def get_products_by_type(product_type: str) -> dict:
         product_type=product_type,
         product_count=len(matching_products),
     )
-
-
-@mcp.custom_route("/health", methods=["GET"])
-async def health_check(_: Request) -> JSONResponse:
-    """Health check endpoint."""
-    return JSONResponse({"status": "healthy"})
 
 
 def main():
