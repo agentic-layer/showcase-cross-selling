@@ -8,12 +8,15 @@ from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from . import mock_database
 
 # Configure OpenTelemetry (reads from OTEL_SERVICE_NAME, OTEL_EXPORTER_OTLP_ENDPOINT env vars)
-if os.environ.get("OTEL_EXPORTER_OTLP_PROTOCOL", "grpc") == "grpc":
-    from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
-else:
-    from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
 trace_provider = TracerProvider()
-trace_provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporter()))
+if os.environ.get("OTEL_EXPORTER_OTLP_PROTOCOL", "grpc") == "grpc":
+    from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter as OTLPSpanExporterGrpc
+
+    trace_provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporterGrpc()))
+else:
+    from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter as OTLPSpanExporterHttp
+
+    trace_provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporterHttp()))
 trace.set_tracer_provider(trace_provider)
 
 # Create an MCP server for insurance products
