@@ -20,7 +20,12 @@ spec:
             key: insurance-host-metrics.yaml
 
   container:
-    image: ghcr.io/agentic-layer/testbench/testworkflows:0.3.0
+    env:
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        valueFrom:
+          configMapKeyRef:
+            name: otel-config
+            key: OTEL_EXPORTER_OTLP_ENDPOINT
 
   use:
     - name: ragas-run-template
@@ -28,6 +33,7 @@ spec:
         agentUrl: "http://insurance-host-agent.showcase-cross-selling:8000"
     - name: ragas-evaluate-template
       config:
+        openApiBasePath: "http://ai-gateway.ai-gateway:4000"
         model: "gemini-2.5-flash-lite"
     - name: ragas-publish-template
     - name: ragas-visualize-template

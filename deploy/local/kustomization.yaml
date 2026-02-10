@@ -4,5 +4,6 @@ resources:
   - otel-tempo-config.yaml
   - agent-gateway.yaml
   - ai-gateway.yaml
+  - otel-config-testkube.yaml
   - lgtm.yaml
   - lgtm-grafana-dashboard-config.yaml

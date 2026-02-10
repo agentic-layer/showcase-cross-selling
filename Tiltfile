@@ -37,7 +37,7 @@ librechat_install(port='11003')
 
 v1alpha1.extension(name='testbench', repo_name='agentic-layer', repo_path='testbench')
 load('ext://testbench', 'testbench_install')
-testbench_install(version='0.4.1')
+testbench_install(version='0.4.2')
 
 # Apply local Kubernetes manifests
 k8s_yaml(kustomize('deploy/local'))
