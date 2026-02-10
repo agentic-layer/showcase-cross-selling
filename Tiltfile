@@ -92,6 +92,12 @@ k8s_resource('frontend', labels=['showcase'], resource_deps=['agent-gateway'], p
 k8s_resource('insurance-host-ragas-evaluation', labels=['testing'], resource_deps=['testkube'])
 k8s_resource('cross-selling-ragas-evaluation', labels=['testing'], resource_deps=['testkube'])
 k8s_resource(
+    objects=['otel-config:configmap:testkube'],
+    new_name='testbench-otel-config',
+    labels=['testing'],
+    resource_deps=['testkube']
+)
+k8s_resource(
     objects=['metrics-config:configmap:testkube'],
     new_name='metrics-config',
     labels=['testing'],
