@@ -57,6 +57,7 @@ k8s_yaml(helm(
         'images.toolServers.insuranceProducts.repository=insurance_products',
         'images.toolServers.insuranceProducts.tag=latest',
         'frontend.backendUrl=http://agent-gateway.agent-gateway.svc.cluster.local:10000',
+        'testbenchTriggers.enabled=false',
     ]
 ))
 
@@ -89,9 +90,7 @@ k8s_resource('frontend', labels=['showcase'], resource_deps=['agent-gateway'], p
 
 # Testbench components
 k8s_resource('insurance-host-ragas-evaluation', labels=['testing'], resource_deps=['testkube'])
-k8s_resource('insurance-host-ragas-evaluation-trigger', labels=['testing'], resource_deps=['testkube'])
 k8s_resource('cross-selling-ragas-evaluation', labels=['testing'], resource_deps=['testkube'])
-k8s_resource('cross-selling-ragas-evaluation-trigger', labels=['testing'], resource_deps=['testkube'])
 k8s_resource(
     objects=['metrics-config:configmap:testkube'],
     new_name='metrics-config',

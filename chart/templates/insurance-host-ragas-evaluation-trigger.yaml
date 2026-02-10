@@ -1,3 +1,4 @@
+{{- if .Values.testbenchTriggers.enabled }}
 apiVersion: tests.testkube.io/v1
 kind: TestTrigger
 metadata:
@@ -18,3 +19,4 @@ spec:
     name: insurance-host-ragas-evaluation
     namespace: testkube
   disabled: false
+{{- end }}

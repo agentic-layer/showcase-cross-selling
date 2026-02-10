@@ -189,6 +189,24 @@ Execute the end-to-end test suite to validate the complete agent workflow:
 - OpenAI-compatible API endpoint functionality
 - Response content validation for German language interactions
 
+### Running RAGAS Evaluation TestWorkflows
+
+The project includes [TestKube](https://testkube.io/) TestWorkflows for automated RAGAS evaluation of agents. To run them manually:
+
+```bash
+# Run the cross-selling agent evaluation
+testkube run tw cross-selling-ragas-evaluation
+
+# Run the insurance host agent evaluation
+testkube run tw insurance-host-ragas-evaluation
+```
+
+Results can be viewed in the **Workflow Evaluations Dashboard** in Grafana (http://localhost:11000).
+
+**Prerequisites:**
+- All agent services must be running (`tilt up`)
+- [TestKube CLI](https://docs.testkube.io/articles/install/cli) must be installed
+
 ## Testing Tools and Their Configuration
 
 ### Testing Framework

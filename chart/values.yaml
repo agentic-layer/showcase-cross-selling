@@ -30,6 +30,10 @@ frontend:
   # Backend URL for the frontend to proxy agent requests
   backendUrl: "http://agent-gateway.agent-gateway.svc.cluster.local:10000"
 
+# Testbench trigger configuration
+testbenchTriggers:
+  enabled: true
+
 # External dependencies (must exist before installing this chart)
 # These are NOT created by this chart - they must be provisioned separately
 externalDependencies:
