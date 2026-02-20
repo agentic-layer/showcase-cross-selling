@@ -24,6 +24,8 @@ agents:
   logLevel: "DEBUG"
   # Enable OpenTelemetry for agents
   otelEnabled: "true"
+  # Enable capturing HTTP bodies in OpenTelemetry traces
+  otelCaptureHttpBodies: "true"
 
 # Frontend configuration
 frontend:

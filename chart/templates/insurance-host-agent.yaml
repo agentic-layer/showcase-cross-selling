@@ -55,11 +55,15 @@ spec:
       name: a2a-8000
   env:
     - name: OTEL_SERVICE_NAME
-      value: insurance-host-agent
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.name
     - name: LOGLEVEL
       value: {{ .Values.agents.logLevel | quote }}
     - name: AGENT_OTEL_ENABLED
       value: {{ .Values.agents.otelEnabled | quote }}
+    - name: AGENT_OTEL_CAPTURE_HTTP_BODIES
+      value: {{ .Values.agents.otelCaptureHttpBodies | quote }}
   envFrom:
     - configMapRef:
         name: {{ .Values.externalDependencies.otelConfig.name }}
