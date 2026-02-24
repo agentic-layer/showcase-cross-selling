@@ -7,3 +7,4 @@ resources:
   - otel-config-testkube.yaml
   - lgtm.yaml
   - lgtm-grafana-dashboard-config.yaml
+  - tool-gateway.yaml
