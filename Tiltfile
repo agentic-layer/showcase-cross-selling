@@ -118,6 +118,7 @@ k8s_resource(
 k8s_resource('ai-gateway', labels=['agentic-layer'], resource_deps=['agent-runtime'], port_forwards=['11001:4000'])
 k8s_resource('agent-gateway', labels=['agentic-layer'], resource_deps=['agent-runtime'], port_forwards='11002:8080')
 k8s_resource('tool-gateway', labels=['agentic-layer'], resource_deps=['agent-runtime'], port_forwards='11005:80')
+k8s_resource('agent-runtime-configuration', labels=['agentic-layer'], resource_deps=['agent-runtime'])
 k8s_resource('observability-dashboard', labels=['agentic-layer'], port_forwards='11004:8000')
 
 # Monitoring
