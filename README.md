@@ -66,7 +66,7 @@ The following tools and dependencies are required to run this project:
 brew bundle
 ```
 ```bash
-# Install Python dependencies for all MCP servers
+# Install Python dependencies (workspace — all MCP servers)
 uv sync --all-packages
 ```
 

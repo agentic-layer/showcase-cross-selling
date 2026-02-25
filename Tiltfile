@@ -80,9 +80,7 @@ for server in mcp_servers:
     server_name = server['name']
     docker_build(
         server_name,
-        context='.',
-        dockerfile='./mcp-servers/Dockerfile',
-        build_args={'MCP_SERVER_NAME': server_name},
+        context='./mcp-servers/' + server_name,
     )
     k8s_resource(snake_to_kebab(server_name), port_forwards=server['port'], labels=['showcase'], resource_deps=['agent-runtime'])
 
