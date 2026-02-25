@@ -8,16 +8,11 @@ metadata:
 spec:
   content:
     files:
-      - path: /data/datasets/ragas_dataset.jsonl
+      - path: /data/datasets/experiment.json
         contentFrom:
           configMapKeyRef:
-            name: datasets
-            key: cross-selling-dataset.jsonl
-      - path: /app/config/metrics.yaml
-        contentFrom:
-          configMapKeyRef:
-            name: metrics-config
-            key: cross-selling-metrics.yaml
+            name: experiments
+            key: cross-selling-experiment.json
 
   container:
     env:
@@ -28,12 +23,12 @@ spec:
             key: OTEL_EXPORTER_OTLP_ENDPOINT
 
   use:
-    - name: ragas-run-template
+    - name: run-template
       config:
         agentUrl: "http://cross-selling-agent.showcase-cross-selling:8000"
-    - name: ragas-evaluate-template
+    - name: evaluate-template
       config:
         openApiBasePath: "http://ai-gateway.ai-gateway:4000"
         model: "gemini-2.5-flash-lite"
-    - name: ragas-publish-template
-    - name: ragas-visualize-template
+    - name: publish-template
+    - name: visualize-template
