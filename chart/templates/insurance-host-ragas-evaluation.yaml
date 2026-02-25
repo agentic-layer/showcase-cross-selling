@@ -28,7 +28,7 @@ spec:
         agentUrl: "http://insurance-host-agent.showcase-cross-selling:8000"
     - name: evaluate-template
       config:
-        openApiBasePath: "http://ai-gateway.ai-gateway:4000"
+        openApiBasePath: "http://ai-gateway.ai-gateway"
         model: "gemini-2.5-flash-lite"
     - name: publish-template
     - name: visualize-template
