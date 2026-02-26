@@ -28,10 +28,12 @@ request=$(cat <<EOF
 EOF
 )
 
+AGENT_GATEWAY_URL="${AGENT_GATEWAY_URL:-http://localhost:11002}"
+
 # -s: silent mode (no progress meter)
 # -S: show error message even with -s
 # -f: fail silently (no HTML output on server errors like 404)
-CONVERSATION_RESPONSE=$(curl --max-time 90 --retry 5 --retry-connrefused -sfS -X POST http://localhost:11002/insurance-host-agent \
+CONVERSATION_RESPONSE=$(curl --max-time 90 --retry 5 --retry-connrefused -sfS -X POST "${AGENT_GATEWAY_URL}/insurance-host-agent" \
    -H "Content-Type: application/json" \
    -d "${request}")
 exit_code=$?
