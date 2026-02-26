@@ -100,14 +100,8 @@ k8s_resource(
     resource_deps=['testkube']
 )
 k8s_resource(
-    objects=['metrics-config:configmap:testkube'],
-    new_name='metrics-config',
-    labels=['testing'],
-    resource_deps=['testkube']
-)
-k8s_resource(
-    objects=['datasets:configmap:testkube'],
-    new_name='datasets',
+    objects=['experiments:configmap:testkube'],
+    new_name='experiments',
     labels=['testing'],
     resource_deps=['testkube']
 )
