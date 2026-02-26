@@ -34,7 +34,7 @@ jobs:
 
       - name: Verify Deployment
         run: |
-          kubectl port-forward service/agent-gateway -n agent-gateway 11002:10000 &
+          kubectl port-forward service/agent-gateway -n agent-gateway 11002:80 &
           ./test/e2e/a2a-message.sh
 
       - name: Logs
