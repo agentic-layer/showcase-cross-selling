@@ -60,7 +60,7 @@ k8s_yaml(helm(
         'images.toolServers.customerCrm.tag=latest',
         'images.toolServers.insuranceProducts.repository=insurance_products',
         'images.toolServers.insuranceProducts.tag=latest',
-        'frontend.backendUrl=http://agent-gateway.agent-gateway.svc.cluster.local:10000',
+        'frontend.backendUrl=http://agent-gateway.agent-gateway',
         'testbenchTriggers.enabled=false',
     ]
 ))

@@ -30,7 +30,7 @@ agents:
 # Frontend configuration
 frontend:
   # Backend URL for the frontend to proxy agent requests
-  backendUrl: "http://agent-gateway.agent-gateway.svc.cluster.local:10000"
+  backendUrl: "http://agent-gateway.agent-gateway"
 
 # Testbench trigger configuration
 testbenchTriggers:
