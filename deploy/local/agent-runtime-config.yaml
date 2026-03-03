@@ -5,4 +5,4 @@ metadata:
   namespace: agent-runtime-operator-system
 spec:
   agentTemplateImages:
-    googleAdk: "ghcr.io/agentic-layer/agent-template-adk:0.8.0"
+    googleAdk: "ghcr.io/agentic-layer/agent-template-adk:0.8.1"

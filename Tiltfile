@@ -22,11 +22,11 @@ ai_gateway_litellm_install(version='0.5.0', instance=False)
 
 v1alpha1.extension(name='agent-gateway-krakend', repo_name='agentic-layer', repo_path='agent-gateway-krakend')
 load('ext://agent-gateway-krakend', 'agent_gateway_krakend_install')
-agent_gateway_krakend_install(version='0.6.0', instance=False)
+agent_gateway_krakend_install(version='0.6.4', instance=False)
 
 v1alpha1.extension(name='tool-gateway-agentgateway', repo_name='agentic-layer', repo_path='tool-gateway-agentgateway')
 load('ext://tool-gateway-agentgateway', 'tool_gateway_agentgateway_install')
-tool_gateway_agentgateway_install(version='0.2.1', instance=False)
+tool_gateway_agentgateway_install(version='0.2.2', instance=False)
 
 helm_remote(
     'observability-dashboard',
