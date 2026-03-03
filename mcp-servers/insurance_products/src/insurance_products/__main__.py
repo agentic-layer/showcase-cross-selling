@@ -18,6 +18,7 @@ else:
 
     trace_provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporterHttp()))
 trace.set_tracer_provider(trace_provider)
+tracer = trace.get_tracer(__name__)
 
 # Create an MCP server for insurance products
 mcp: FastMCP = FastMCP("SecureLife Insurance Products")
@@ -88,7 +89,8 @@ def get_insurance_products() -> dict:
     again later.
     """
     # For skeleton purposes, using comprehensive mock product data
-    mock_products = mock_database.get_all_products()
+    with tracer.start_as_current_span("mock_database.get_all_products"):
+        mock_products = mock_database.get_all_products()
 
     return _create_success_response(
         "Insurance products retrieved successfully",
@@ -109,7 +111,8 @@ def get_product_details(product_id: str) -> dict:
         Dictionary with detailed product information or error if not found.
     """
     # Get all products
-    products = mock_database.get_all_products()
+    with tracer.start_as_current_span("mock_database.get_all_products", attributes={"product_id": product_id}):
+        products = mock_database.get_all_products()
 
     # Find the specific product
     for product_key, product_data in products.items():
@@ -139,7 +142,8 @@ def get_products_by_segment(segment: str) -> dict:
         Dictionary with products matching the specified segment.
     """
     # Get all products
-    products = mock_database.get_all_products()
+    with tracer.start_as_current_span("mock_database.get_all_products", attributes={"segment": segment}):
+        products = mock_database.get_all_products()
     matching_products = {}
 
     # Filter products by segment
@@ -213,7 +217,8 @@ def get_products_by_type(product_type: str) -> dict:
     were found for the specified type and suggest alternative product types.
     """
     # Get all products
-    products = mock_database.get_all_products()
+    with tracer.start_as_current_span("mock_database.get_all_products", attributes={"product_type": product_type}):
+        products = mock_database.get_all_products()
     matching_products = {}
 
     # Filter products by type

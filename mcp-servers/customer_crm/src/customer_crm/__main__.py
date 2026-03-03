@@ -18,6 +18,7 @@ else:
 
     trace_provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporterHttp()))
 trace.set_tracer_provider(trace_provider)
+tracer = trace.get_tracer(__name__)
 
 # Create an MCP server for customer CRM data
 mcp: FastMCP = FastMCP(name="Customer CRM")
@@ -114,38 +115,39 @@ def get_customer_crm_data(customer_id: str) -> dict:
     customer_id = customer_id.strip()
 
     # For skeleton purposes, using mock data based on customer_id
-    if int(customer_id.lower()[-3:]) <= mock_database.get_database_size():
-        mock_customer_data = mock_database.get_customer(customer_id)
-    else:
-        # Default customer data for other IDs
-        mock_customer_data = {
-            "customer_id": customer_id,
-            "personal_info": {
-                "name": "Max Mustermann",
-                "birth_date": "1990-01-01",
-                "age": 34,
-                "address": "Musterstraße 1, 12345 München",
-                "phone": "+49 89 12345678",
-                "email": "max.mustermann@email.com",
-                "occupation": "Office Worker",
-                "annual_income": 45000,
-                "marital_status": "single",
-                "children": 0,
-                "home_ownership": "renter",
-            },
-            "existing_policies": [],
-            "communication_history": [
-                {
-                    "date": "2024-01-05",
-                    "type": "web_inquiry",
-                    "subject": "Insurance information request",
-                    "notes": "Customer submitted online form asking for insurance quotes",
-                }
-            ],
-            "risk_profile": "medium",
-            "customer_segment": "standard",
-            "lifetime_value": 5000,
-        }
+    with tracer.start_as_current_span("mock_database.get_customer", attributes={"customer_id": customer_id}):
+        if int(customer_id.lower()[-3:]) <= mock_database.get_database_size():
+            mock_customer_data = mock_database.get_customer(customer_id)
+        else:
+            # Default customer data for other IDs
+            mock_customer_data = {
+                "customer_id": customer_id,
+                "personal_info": {
+                    "name": "Max Mustermann",
+                    "birth_date": "1990-01-01",
+                    "age": 34,
+                    "address": "Musterstraße 1, 12345 München",
+                    "phone": "+49 89 12345678",
+                    "email": "max.mustermann@email.com",
+                    "occupation": "Office Worker",
+                    "annual_income": 45000,
+                    "marital_status": "single",
+                    "children": 0,
+                    "home_ownership": "renter",
+                },
+                "existing_policies": [],
+                "communication_history": [
+                    {
+                        "date": "2024-01-05",
+                        "type": "web_inquiry",
+                        "subject": "Insurance information request",
+                        "notes": "Customer submitted online form asking for insurance quotes",
+                    }
+                ],
+                "risk_profile": "medium",
+                "customer_segment": "standard",
+                "lifetime_value": 5000,
+            }
 
     return _create_success_response(
         f"Customer CRM data retrieved for {customer_id}",
@@ -155,9 +157,11 @@ def get_customer_crm_data(customer_id: str) -> dict:
 
 @mcp.tool()
 def get_all_customer_data() -> dict:
+    with tracer.start_as_current_span("mock_database.get_all_customers"):
+        customers = mock_database.get_all_customers()
     return _create_success_response(
         "All Customer CRM data retrieved",
-        customer_data=mock_database.get_all_customers(),
+        customer_data=customers,
     )
 
 
@@ -204,7 +208,8 @@ def search_customer_by_name(name: str) -> dict:
         return _create_error_response("Customer name is required.", "MISSING_NAME")
 
     search_term = name.strip().lower()
-    all_customers = mock_database.get_all_customers()
+    with tracer.start_as_current_span("mock_database.get_all_customers", attributes={"search_name": name}):
+        all_customers = mock_database.get_all_customers()
     matches = []
 
     for customer_id, customer_data in all_customers.items():
