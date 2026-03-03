@@ -1,24 +1,11 @@
-import os
-
 from fastmcp import FastMCP
-from opentelemetry import trace
-from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.trace import get_tracer
 
 from . import mock_database
+from .otel import setup_otel
 
-# Configure OpenTelemetry (reads from OTEL_SERVICE_NAME, OTEL_EXPORTER_OTLP_ENDPOINT env vars)
-trace_provider = TracerProvider()
-if os.environ.get("OTEL_EXPORTER_OTLP_PROTOCOL", "grpc") == "grpc":
-    from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter as OTLPSpanExporterGrpc
-
-    trace_provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporterGrpc()))
-else:
-    from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter as OTLPSpanExporterHttp
-
-    trace_provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporterHttp()))
-trace.set_tracer_provider(trace_provider)
-tracer = trace.get_tracer(__name__)
+setup_otel()
+tracer = get_tracer(__name__)
 
 # Create an MCP server for insurance products
 mcp: FastMCP = FastMCP("SecureLife Insurance Products")
