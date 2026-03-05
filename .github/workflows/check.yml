@@ -10,6 +10,7 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: 'actions/checkout@v6'
@@ -21,10 +22,16 @@ jobs:
           enable-cache: true
 
       - name: Install Dependencies
-        run: uv sync --all-packages
+        run: uv sync --directory mcp-servers
 
       - name: Run checks
-        run: uv run poe check
+        run: uv run --directory mcp-servers poe check
+
+  helm-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: 'actions/checkout@v6'
 
       - name: Install Helm
         uses: azure/setup-helm@v4

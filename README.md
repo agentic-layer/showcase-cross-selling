@@ -66,8 +66,8 @@ The following tools and dependencies are required to run this project:
 brew bundle
 ```
 ```bash
-# Install Python dependencies (workspace — all MCP servers)
-uv sync --all-packages
+# Install Python dependencies
+uv sync --directory mcp-servers
 ```
 
 ### 2. Authentication Setup
@@ -154,18 +154,18 @@ pre-commit install
 **Development Commands:**
 ```bash
 # Run all quality checks
-uv run poe check
+uv run --directory mcp-servers poe check
 
 # Individual checks
-uv run poe mypy          # Type checking
-uv run poe ruff          # Linting and formatting
-uv run poe bandit        # Security analysis
-uv run poe lint-imports  # Import dependency validation
-uv run poe test          # Execute test suite
+uv run --directory mcp-servers poe mypy          # Type checking
+uv run --directory mcp-servers poe ruff          # Linting and formatting
+uv run --directory mcp-servers poe bandit        # Security analysis
+uv run --directory mcp-servers poe lint-imports  # Import dependency validation
+uv run --directory mcp-servers poe test          # Execute test suite
 
 # Auto-formatting
-uv run poe format        # Code formatting
-uv run poe lint          # Auto-fix linting issues
+uv run --directory mcp-servers poe format        # Code formatting
+uv run --directory mcp-servers poe lint          # Auto-fix linting issues
 ```
 
 
@@ -282,6 +282,10 @@ Customer and product data is automatically initialized when MCP servers start. N
 
 ```
 mcp-servers/
-├── customer_crm/        # Customer relationship management data
-└── insurance_products/  # Insurance product catalog server
+├── Dockerfile              # Single image, server selected via CMD
+├── pyproject.toml          # Unified Python project
+└── src/
+    ├── shared/             # Shared utilities (otel, middleware, response helpers)
+    ├── customer_crm/       # Customer relationship management data
+    └── insurance_products/ # Insurance product catalog server
 ```

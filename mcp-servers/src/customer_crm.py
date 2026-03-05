@@ -1,54 +1,18 @@
-import time
+"""Customer CRM MCP server."""
 
 from fastmcp import FastMCP
-from fastmcp.server.middleware import Middleware, MiddlewareContext
-from opentelemetry import metrics
 from opentelemetry.trace import get_tracer
 
-from . import mock_database
-from .otel import setup_otel
+import customer_db
+import middleware
+import otel
+import response
 
-setup_otel()
+otel.setup_otel()
 tracer = get_tracer(__name__)
-meter = metrics.get_meter(__name__)
-
-tool_call_counter = meter.create_counter("mcp.tool.calls", description="Number of MCP tool calls")
-tool_call_duration = meter.create_histogram("mcp.tool.duration", unit="s", description="Duration of MCP tool calls")
-
-
-class OtelMetricsMiddleware(Middleware):
-    """Middleware that records OpenTelemetry metrics for tool calls."""
-
-    async def on_call_tool(self, context: MiddlewareContext, call_next):  # type: ignore[override]
-        tool_name = getattr(context.message, "name", "unknown")
-        start = time.perf_counter()
-        try:
-            result = await call_next(context)
-            tool_call_counter.add(1, {"tool.name": tool_name, "status": "success"})
-            return result
-        except Exception:
-            tool_call_counter.add(1, {"tool.name": tool_name, "status": "error"})
-            raise
-        finally:
-            tool_call_duration.record(time.perf_counter() - start, {"tool.name": tool_name})
-
 
 # Create an MCP server for customer CRM data
-mcp: FastMCP = FastMCP(name="Customer CRM", middleware=[OtelMetricsMiddleware()])
-
-
-def _create_error_response(message: str, error_code: str, **additional_data) -> dict:
-    """Create a standardized error response."""
-    response = {"status": "error", "message": message, "error_code": error_code}
-    response.update(additional_data)
-    return response
-
-
-def _create_success_response(message: str, **additional_data) -> dict:
-    """Create a standardized success response."""
-    response = {"status": "success", "message": message}
-    response.update(additional_data)
-    return response
+mcp: FastMCP = FastMCP(name="Customer CRM", middleware=[middleware.OtelMetricsMiddleware()])
 
 
 # used to be "crm://customer/{customer_id}"
@@ -123,14 +87,14 @@ def get_customer_crm_data(customer_id: str) -> dict:
           with the same ID.
     """
     if not customer_id or not customer_id.strip():
-        return _create_error_response("Customer ID is required.", "MISSING_CUSTOMER_ID")
+        return response.create_error_response("Customer ID is required.", "MISSING_CUSTOMER_ID")
 
     customer_id = customer_id.strip()
 
     # For skeleton purposes, using mock data based on customer_id
-    with tracer.start_as_current_span("mock_database.get_customer", attributes={"customer_id": customer_id}):
-        if int(customer_id.lower()[-3:]) <= mock_database.get_database_size():
-            mock_customer_data = mock_database.get_customer(customer_id)
+    with tracer.start_as_current_span("customer_db.get_customer", attributes={"customer_id": customer_id}):
+        if int(customer_id.lower()[-3:]) <= customer_db.get_database_size():
+            mock_customer_data = customer_db.get_customer(customer_id)
         else:
             # Default customer data for other IDs
             mock_customer_data = {
@@ -162,7 +126,7 @@ def get_customer_crm_data(customer_id: str) -> dict:
                 "lifetime_value": 5000,
             }
 
-    return _create_success_response(
+    return response.create_success_response(
         f"Customer CRM data retrieved for {customer_id}",
         customer_data=mock_customer_data,
     )
@@ -170,9 +134,9 @@ def get_customer_crm_data(customer_id: str) -> dict:
 
 @mcp.tool()
 def get_all_customer_data() -> dict:
-    with tracer.start_as_current_span("mock_database.get_all_customers"):
-        customers = mock_database.get_all_customers()
-    return _create_success_response(
+    with tracer.start_as_current_span("customer_db.get_all_customers"):
+        customers = customer_db.get_all_customers()
+    return response.create_success_response(
         "All Customer CRM data retrieved",
         customer_data=customers,
     )
@@ -218,11 +182,11 @@ def search_customer_by_name(name: str) -> dict:
         It performs a case-insensitive partial match, so searching for "anna" will find "Anna Müller".
     """
     if not name or not name.strip():
-        return _create_error_response("Customer name is required.", "MISSING_NAME")
+        return response.create_error_response("Customer name is required.", "MISSING_NAME")
 
     search_term = name.strip().lower()
-    with tracer.start_as_current_span("mock_database.get_all_customers", attributes={"search_name": name}):
-        all_customers = mock_database.get_all_customers()
+    with tracer.start_as_current_span("customer_db.get_all_customers", attributes={"search_name": name}):
+        all_customers = customer_db.get_all_customers()
     matches = []
 
     for customer_id, customer_data in all_customers.items():
@@ -233,13 +197,13 @@ def search_customer_by_name(name: str) -> dict:
             matches.append(customer_with_id)
 
     if matches:
-        return _create_success_response(
+        return response.create_success_response(
             f"Found {len(matches)} customer(s) matching '{name}'",
             customers=matches,
             count=len(matches),
         )
     else:
-        return _create_success_response(
+        return response.create_success_response(
             f"No customers found matching '{name}'",
             customers=[],
             count=0,
@@ -263,12 +227,4 @@ def send_email(customer_id: str, subject: str, body: str) -> dict:
     print(f"Body: {body}")
     print("--------------------------")
 
-    return _create_success_response(f"Email sent to customer {customer_id}")
-
-
-def main():
-    mcp.run(transport="streamable-http", host="0.0.0.0")
-
-
-if __name__ == "__main__":
-    main()
+    return response.create_success_response(f"Email sent to customer {customer_id}")

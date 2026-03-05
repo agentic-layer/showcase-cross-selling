@@ -11,6 +11,8 @@ spec:
   image: {{ .Values.images.toolServers.insuranceProducts.repository }}:{{ .Values.images.toolServers.insuranceProducts.tag }}
   port: 8000
   replicas: 1
+  args:
+    - "insurance_products.py"
   env:
     - name: OTEL_SERVICE_NAME
       value: insurance-products
