@@ -16,6 +16,8 @@ spec:
   env:
     - name: OTEL_SERVICE_NAME
       value: insurance-products
+    - name: LOGLEVEL
+      value: {{ .Values.toolServers.logLevel | quote }}
   envFrom:
     - configMapRef:
         name: {{ .Values.externalDependencies.otelConfig.name }}

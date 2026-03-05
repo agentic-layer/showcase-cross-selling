@@ -6,6 +6,11 @@ namespace:
   name: showcase-cross-selling
 
 # Image configurations
+toolServers:
+  # Log level for tool servers
+  logLevel: "DEBUG"
+
+# Image configurations
 images:
   toolServers:
     customerCrm:
