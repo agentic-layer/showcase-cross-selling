@@ -140,6 +140,7 @@ spec:
         - name: grafana-dashboard-provisioning
           configMap:
             name: grafana-dashboard-provisioning
+            optional: true
         - name: prometheus-config
           configMap:
             name: prometheus-config
