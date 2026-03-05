@@ -15,7 +15,6 @@ tracer = get_tracer(__name__)
 mcp: FastMCP = FastMCP(name="Customer CRM", middleware=[middleware.OtelMetricsMiddleware()])
 
 
-# used to be "crm://customer/{customer_id}"
 @mcp.tool()
 def get_customer_crm_data(customer_id: str) -> dict:
     """
