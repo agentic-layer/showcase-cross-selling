@@ -1,4 +1,4 @@
-"""OpenTelemetry setup for a Google ADK Agent App."""
+"""OpenTelemetry setup for MCP servers."""
 
 import logging
 import os

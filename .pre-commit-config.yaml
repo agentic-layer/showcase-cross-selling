@@ -23,13 +23,13 @@ repos:
       - id: python-lint
         name: python-lint
         language: system
-        entry: "uv run poe lint"
+        entry: "uv run --directory mcp-servers poe lint"
         types_or: [ python ]
         pass_filenames: false
       - id: python-ruff
         name: python-ruff
         language: system
-        entry: "uv run poe ruff"
+        entry: "uv run --directory mcp-servers poe ruff"
         types_or: [ python ]
         pass_filenames: false
       - id: helm-lint

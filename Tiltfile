@@ -56,9 +56,9 @@ k8s_yaml(helm(
     ],
     set=[
         # Override tool server images to use local Tilt builds
-        'images.toolServers.customerCrm.repository=customer_crm',
+        'images.toolServers.customerCrm.repository=mcp-servers',
         'images.toolServers.customerCrm.tag=latest',
-        'images.toolServers.insuranceProducts.repository=insurance_products',
+        'images.toolServers.insuranceProducts.repository=mcp-servers',
         'images.toolServers.insuranceProducts.tag=latest',
         'frontend.backendUrl=http://agent-gateway.agent-gateway',
         'testbenchTriggers.enabled=false',
@@ -66,23 +66,13 @@ k8s_yaml(helm(
 ))
 
 
-# Helper function to convert snake_case to kebab-case
-def snake_to_kebab(snake_str):
-    return snake_str.replace('_', '-')
-
-# Open ports and sync changes to MCP servers
-mcp_servers = [
-    {'name': 'customer_crm', 'port': '11020:8000'},
-    {'name': 'insurance_products', 'port': '11021:8000'},
-]
-
-for server in mcp_servers:
-    server_name = server['name']
-    docker_build(
-        server_name,
-        context='./mcp-servers/' + server_name,
-    )
-    k8s_resource(snake_to_kebab(server_name), port_forwards=server['port'], labels=['showcase'], resource_deps=['agent-runtime'])
+# Build MCP server images from single Dockerfile, selecting the server via CMD
+docker_build(
+    'mcp-servers',
+    context='./mcp-servers',
+)
+k8s_resource('customer-crm', port_forwards='11020:8000', labels=['showcase'], resource_deps=['agent-runtime'])
+k8s_resource('insurance-products', port_forwards='11021:8000', labels=['showcase'], resource_deps=['agent-runtime'])
 
 k8s_resource('cross-selling-workforce', labels=['showcase'], resource_deps=['agent-runtime'])
 k8s_resource('insurance-host-agent', labels=['showcase'], resource_deps=['agent-runtime'], port_forwards='11010:8000')

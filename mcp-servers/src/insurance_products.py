@@ -1,57 +1,18 @@
-import time
+"""Insurance Products MCP server."""
 
 from fastmcp import FastMCP
-from fastmcp.server.middleware import Middleware, MiddlewareContext
-from opentelemetry import metrics
 from opentelemetry.trace import get_tracer
 
-from . import mock_database
-from .otel import setup_otel
+import middleware
+import otel
+import products_db
+import response
 
-setup_otel()
+otel.setup_otel()
 tracer = get_tracer(__name__)
-meter = metrics.get_meter(__name__)
-
-tool_call_counter = meter.create_counter("mcp.tool.calls", description="Number of MCP tool calls")
-tool_call_duration = meter.create_histogram("mcp.tool.duration", unit="s", description="Duration of MCP tool calls")
-
-
-class OtelMetricsMiddleware(Middleware):
-    """Middleware that records OpenTelemetry metrics for tool calls."""
-
-    async def on_call_tool(self, context: MiddlewareContext, call_next):  # type: ignore[override]
-        tool_name = getattr(context.message, "name", "unknown")
-        start = time.perf_counter()
-        try:
-            result = await call_next(context)
-            tool_call_counter.add(1, {"tool.name": tool_name, "status": "success"})
-            return result
-        except Exception:
-            tool_call_counter.add(1, {"tool.name": tool_name, "status": "error"})
-            raise
-        finally:
-            tool_call_duration.record(time.perf_counter() - start, {"tool.name": tool_name})
-
 
 # Create an MCP server for insurance products
-mcp: FastMCP = FastMCP("SecureLife Insurance Products", middleware=[OtelMetricsMiddleware()])
-
-# Company name
-insurance_company_name = "SecureLife Insurance"
-
-
-def _create_error_response(message: str, error_code: str, **additional_data) -> dict:
-    """Create a standardized error response."""
-    response = {"status": "error", "message": message, "error_code": error_code}
-    response.update(additional_data)
-    return response
-
-
-def _create_success_response(message: str, **additional_data) -> dict:
-    """Create a standardized success response."""
-    response = {"status": "success", "message": message}
-    response.update(additional_data)
-    return response
+mcp: FastMCP = FastMCP("SecureLife Insurance Products", middleware=[middleware.OtelMetricsMiddleware()])
 
 
 @mcp.tool()
@@ -102,10 +63,10 @@ def get_insurance_products() -> dict:
     again later.
     """
     # For skeleton purposes, using comprehensive mock product data
-    with tracer.start_as_current_span("mock_database.get_all_products"):
-        mock_products = mock_database.get_all_products()
+    with tracer.start_as_current_span("products_db.get_all_products"):
+        mock_products = products_db.get_all_products()
 
-    return _create_success_response(
+    return response.create_success_response(
         "Insurance products retrieved successfully",
         products=mock_products,
         product_count=len(mock_products),
@@ -124,19 +85,19 @@ def get_product_details(product_id: str) -> dict:
         Dictionary with detailed product information or error if not found.
     """
     # Get all products
-    with tracer.start_as_current_span("mock_database.get_all_products", attributes={"product_id": product_id}):
-        products = mock_database.get_all_products()
+    with tracer.start_as_current_span("products_db.get_all_products", attributes={"product_id": product_id}):
+        products = products_db.get_all_products()
 
     # Find the specific product
     for product_key, product_data in products.items():
         if product_data["product_id"] == product_id:
-            return _create_success_response(
+            return response.create_success_response(
                 f"Product details for {product_data['name']}",
                 product=product_data,
                 product_key=product_key,
             )
 
-    return _create_error_response(
+    return response.create_error_response(
         f"Product with ID '{product_id}' not found",
         "PRODUCT_NOT_FOUND",
         requested_product_id=product_id,
@@ -155,8 +116,8 @@ def get_products_by_segment(segment: str) -> dict:
         Dictionary with products matching the specified segment.
     """
     # Get all products
-    with tracer.start_as_current_span("mock_database.get_all_products", attributes={"segment": segment}):
-        products = mock_database.get_all_products()
+    with tracer.start_as_current_span("products_db.get_all_products", attributes={"segment": segment}):
+        products = products_db.get_all_products()
     matching_products = {}
 
     # Filter products by segment
@@ -165,13 +126,13 @@ def get_products_by_segment(segment: str) -> dict:
             matching_products[product_key] = product_data
 
     if not matching_products:
-        return _create_error_response(
+        return response.create_error_response(
             f"No products found for segment '{segment}'",
             "NO_PRODUCTS_FOR_SEGMENT",
             requested_segment=segment,
         )
 
-    return _create_success_response(
+    return response.create_success_response(
         f"Found {len(matching_products)} products for segment '{segment}'",
         products=matching_products,
         segment=segment,
@@ -230,8 +191,8 @@ def get_products_by_type(product_type: str) -> dict:
     were found for the specified type and suggest alternative product types.
     """
     # Get all products
-    with tracer.start_as_current_span("mock_database.get_all_products", attributes={"product_type": product_type}):
-        products = mock_database.get_all_products()
+    with tracer.start_as_current_span("products_db.get_all_products", attributes={"product_type": product_type}):
+        products = products_db.get_all_products()
     matching_products = {}
 
     # Filter products by type
@@ -240,23 +201,15 @@ def get_products_by_type(product_type: str) -> dict:
             matching_products[product_key] = product_data
 
     if not matching_products:
-        return _create_error_response(
+        return response.create_error_response(
             f"No products found for type '{product_type}'",
             "NO_PRODUCTS_FOR_TYPE",
             requested_type=product_type,
         )
 
-    return _create_success_response(
+    return response.create_success_response(
         f"Found {len(matching_products)} products for type '{product_type}'",
         products=matching_products,
         product_type=product_type,
         product_count=len(matching_products),
     )
-
-
-def main():
-    mcp.run(transport="streamable-http", host="0.0.0.0")
-
-
-if __name__ == "__main__":
-    main()
