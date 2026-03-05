@@ -39,10 +39,6 @@ spec:
       value: "communications-agent"
     - name: LOGLEVEL
       value: {{ .Values.agents.logLevel | quote }}
-    - name: AGENT_OTEL_ENABLED
-      value: {{ .Values.agents.otelEnabled | quote }}
-    - name: AGENT_OTEL_CAPTURE_HTTP_BODIES
-      value: {{ .Values.agents.otelCaptureHttpBodies | quote }}
   envFrom:
     - configMapRef:
         name: {{ .Values.externalDependencies.otelConfig.name }}
