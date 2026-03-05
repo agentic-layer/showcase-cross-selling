@@ -28,7 +28,7 @@ def setup_otel() -> None:
 
     # Traces
     trace_provider = TracerProvider()
-    if os.environ.get("OTEL_EXPORTER_OTLP_PROTOCOL", "grpc") == "grpc":
+    if os.environ.get("OTEL_EXPORTER_OTLP_PROTOCOL", "http/protobuf") == "grpc":
         from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter as OTLPSpanExporterGrpc
 
         trace_provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporterGrpc()))
@@ -42,7 +42,7 @@ def setup_otel() -> None:
     LoggingInstrumentor().instrument()
 
     logger_provider = LoggerProvider()
-    if os.environ.get("OTEL_EXPORTER_OTLP_PROTOCOL", "grpc") == "grpc":
+    if os.environ.get("OTEL_EXPORTER_OTLP_PROTOCOL", "http/protobuf") == "grpc":
         from opentelemetry.exporter.otlp.proto.grpc._log_exporter import OTLPLogExporter as OTLPLogExporterGrpc
 
         logger_provider.add_log_record_processor(BatchLogRecordProcessor(OTLPLogExporterGrpc()))
