@@ -39,7 +39,6 @@ spec:
       value: "communications-agent"
     - name: LOGLEVEL
       value: {{ .Values.agents.logLevel | quote }}
-  envFrom:
-    - configMapRef:
-        name: {{ .Values.externalDependencies.otelConfig.name }}
-        optional: true
+  {{- with .Values.extraEnv }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}

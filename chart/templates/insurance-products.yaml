@@ -18,7 +18,6 @@ spec:
       value: insurance-products
     - name: LOGLEVEL
       value: {{ .Values.toolServers.logLevel | quote }}
-  envFrom:
-    - configMapRef:
-        name: {{ .Values.externalDependencies.otelConfig.name }}
-        optional: true
+  {{- with .Values.extraEnv }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
