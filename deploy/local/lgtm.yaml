@@ -97,8 +97,8 @@ spec:
                 - /tmp/ready
           env:
             # Use observability-dashboard, if deployed (lgtm will silently ignore it otherwise)
-            - name: OTEL_EXPORTER_OTLP_ENDPOINT
-              value: "http://observability-dashboard.observability-dashboard.svc.cluster.local:8000"
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: "http://observability-dashboard.observability-dashboard.svc.cluster.local:8000/v1/traces"
             - name: ENABLE_LOGS_TEMPO
               value: "true"
             - name: ENABLE_LOGS_LOKI
@@ -145,6 +145,7 @@ spec:
         - name: grafana-dashboards
           configMap:
             name: grafana-testkube-dashboard
+            optional: true
         - name: grafana-dashboard-provisioning
           configMap:
             name: grafana-dashboard-provisioning

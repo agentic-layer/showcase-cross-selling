@@ -1,4 +1,4 @@
-{{- if .Values.testbenchTriggers.enabled }}
+{{- if and .Values.testbench.enabled .Values.testbench.triggersEnabled }}
 apiVersion: tests.testkube.io/v1
 kind: TestTrigger
 metadata:

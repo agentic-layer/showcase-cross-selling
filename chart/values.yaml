@@ -33,9 +33,12 @@ frontend:
   # Backend URL for the frontend to proxy agent requests
   backendUrl: "http://agent-gateway.agent-gateway"
 
-# Testbench trigger configuration
-testbenchTriggers:
+# Testbench configuration
+testbench:
+  # Whether to install testbench evaluations and experiments
   enabled: true
+  # Whether to install testbench triggers
+  triggersEnabled: true
 
 # Extra environment variables applied to all agents and tool servers
 # Example:

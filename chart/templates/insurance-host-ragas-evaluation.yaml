@@ -1,3 +1,4 @@
+{{- if .Values.testbench.enabled }}
 apiVersion: testworkflows.testkube.io/v1
 kind: TestWorkflow
 metadata:
@@ -32,3 +33,4 @@ spec:
         model: "gemini-2.5-flash-lite"
     - name: publish-template
     - name: visualize-template
+{{- end }}
