@@ -85,7 +85,7 @@ spec:
     spec:
       containers:
         - name: lgtm
-          image: grafana/otel-lgtm:latest
+          image: grafana/otel-lgtm:0.20.0
           ports:
             - containerPort: 3000
             - containerPort: 4317
@@ -99,6 +99,14 @@ spec:
             # Use observability-dashboard, if deployed (lgtm will silently ignore it otherwise)
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: "http://observability-dashboard.observability-dashboard.svc.cluster.local:8000"
+            - name: ENABLE_LOGS_TEMPO
+              value: "true"
+            - name: ENABLE_LOGS_LOKI
+              value: "true"
+            - name: ENABLE_LOGS_OTELCOL
+              value: "true"
+            - name: ENABLE_LOGS_PROMETHEUS
+              value: "true"
           volumeMounts:
             - name: tempo-data
               mountPath: /data/tempo
