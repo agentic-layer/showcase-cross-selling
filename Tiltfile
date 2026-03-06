@@ -53,6 +53,8 @@ k8s_yaml(helm(
         'frontend.backendUrl=http://agent-gateway.agent-gateway',
         'testbench.enabled=' + ('true' if 'testbench' in profiles else 'false'),
         'testbench.triggersEnabled=false',
+        'testbench.extraEnv[0].name=OTEL_EXPORTER_OTLP_ENDPOINT',
+        'testbench.extraEnv[0].value=http://lgtm.monitoring.svc.cluster.local:4318',
         'extraEnv[0].name=OTEL_EXPORTER_OTLP_PROTOCOL',
         'extraEnv[0].value=http/protobuf',
         'extraEnv[1].name=OTEL_EXPORTER_OTLP_ENDPOINT',
@@ -115,12 +117,6 @@ if 'testbench' in profiles:
 
     k8s_resource('insurance-host-ragas-evaluation', labels=['testing'], resource_deps=['testkube'])
     k8s_resource('cross-selling-ragas-evaluation', labels=['testing'], resource_deps=['testkube'])
-    k8s_resource(
-        objects=['otel-config:configmap:testkube'],
-        new_name='testbench-otel-config',
-        labels=['testing'],
-        resource_deps=['testkube']
-    )
     k8s_resource(
         objects=['experiments:configmap:testkube'],
         new_name='experiments',

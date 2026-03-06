@@ -17,11 +17,9 @@ spec:
 
   container:
     env:
-      - name: OTEL_EXPORTER_OTLP_ENDPOINT
-        valueFrom:
-          configMapKeyRef:
-            name: otel-config
-            key: OTEL_EXPORTER_OTLP_ENDPOINT
+    {{- with .Values.testbench.extraEnv }}
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
 
   use:
     - name: run-template
