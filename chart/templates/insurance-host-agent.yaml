@@ -7,7 +7,6 @@ metadata:
     {{ include "showcase-cross-selling.labels" . | nindent 4 }}
 spec:
   exposed: true
-  framework: google-adk
   description: "Orchestrate customer support for insurance cross selling"
   instruction: |-
     # Identity
