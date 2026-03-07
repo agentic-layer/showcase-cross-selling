@@ -1,8 +1,12 @@
 # Insurance Cross-Selling Agentic System
 
-A multi-agent system for intelligent insurance cross-selling built with Google's Agent Development Kit (ADK), Model Context Protocol (MCP) servers, and agent-to-agent communication. This system orchestrates insurance cross-selling opportunities by analyzing customer data, identifying suitable products, and coordinating customer communications through specialized AI agents.
+A multi-agent system for intelligent insurance cross-selling built with Google's Agent Development Kit (ADK), Model
+Context Protocol (MCP) servers, and agent-to-agent communication. This system orchestrates insurance cross-selling
+opportunities by analyzing customer data, identifying suitable products, and coordinating customer communications
+through specialized AI agents.
 
-This showcase demonstrates the capabilities of the [Agentic Layer platform](http://agentic-layer.ai/) for building complex multi-agent AI systems.
+This showcase demonstrates the capabilities of the [Agentic Layer platform](http://agentic-layer.ai/) for building
+complex multi-agent AI systems.
 Further information about the Agentic Layer can be found in our [documentation](https://docs.agentic-layer.ai/).
 
 ----
@@ -36,7 +40,8 @@ In this showcase, a host agent uses tools and calls other agents to facilitate u
 
 **Conversation 2:**
 
-> Nutzer: Bitte bereite mir ein Kundengespräch mit dem Kunden Thomas Schmidt vor. Sende außerdem eine Erinnerungs-Mail an den Kunden, dass das Gespräch stattfindet.
+> Nutzer: Bitte bereite mir ein Kundengespräch mit dem Kunden Thomas Schmidt vor. Sende außerdem eine Erinnerungs-Mail
+> an den Kunden, dass das Gespräch stattfindet.
 >
 > Agent: Hier ist die Vorbereitung für dein Gespräch. Die Erinnerungsmail habe ich verschickt: …
 
@@ -65,6 +70,7 @@ The following tools and dependencies are required to run this project:
 # Install system dependencies via Homebrew
 brew bundle
 ```
+
 ```bash
 # Install Python dependencies
 uv sync --directory mcp-servers
@@ -76,7 +82,6 @@ uv sync --directory mcp-servers
 # Authenticate with Google Cloud for AI model access
 gcloud auth application-default login
 ```
-
 
 ### 3. Environment Configuration
 
@@ -98,21 +103,45 @@ LITELLM_PROXY_API_KEY=sk-your-api-key
 Launch all services using Tilt:
 
 ```bash
-# Start all agents and MCP servers
+# Start core agents and MCP servers
 tilt up
 ```
-We recommend using the included Librechat instance (http://localhost:11003) to easily have conversations with the insurance host agent.
+
+#### Tilt Profiles
+
+Optional components can be enabled using profiles. Specify one or more profiles with `--profile`:
+
+```bash
+# Start with LibreChat UI
+tilt up -- --profile librechat
+
+# Start with Testbench for RAGAS evaluations
+tilt up -- --profile testbench
+
+# Combine multiple profiles
+tilt up -- --profile librechat --profile testbench
+```
+
+| Profile     | Description                                                                                                                                                |
+|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `librechat` | Deploys a [LibreChat](https://www.librechat.ai/) instance as a chat UI for interacting with the insurance host agent. Available at http://localhost:11003. |
+| `testbench` | Deploys the [Testbench](https://docs.agentic-layer.ai/) with TestKube for running RAGAS evaluation TestWorkflows against the agents.                       |
 
 **Expected Results:**
+
 - Grafana at http://localhost:11000
 - AI Gateway at http://localhost:11001
 - Agent Gateway at http://localhost:11002
-- Librechat (chat interface) at http://localhost:11003
 - Insurance Host Agent at http://localhost:11010
 - Communications Agent at http://localhost:11011
 - Cross-Selling Agent at http://localhost:11012
+- Frontend at http://localhost:11013
 - Customer CRM MCP Server at http://localhost:11020
 - Insurance Products MCP Server at http://localhost:11021
+
+With profiles enabled:
+
+- LibreChat (chat interface) at http://localhost:11003 (`librechat` profile)
 
 ## Helm Chart
 
@@ -135,9 +164,12 @@ helm install showcase-cross-selling \
 ## Development
 
 ### Developer Setup
-For detailed contributing guidelines, refer to the [global contributing guide](https://github.com/agentic-layer/.github?tab=contributing-ov-file).
+
+For detailed contributing guidelines, refer to
+the [global contributing guide](https://github.com/agentic-layer/.github?tab=contributing-ov-file).
 
 **Mandatory first step for contributors:**
+
 ```bash
 # Activate pre-commit hooks
 pre-commit install
@@ -146,12 +178,14 @@ pre-commit install
 ### Code Quality Standards
 
 **Code Style:**
+
 - **Linting**: Ruff with 120 character line limit
 - **Type Checking**: mypy for static type analysis
 - **Security**: Bandit for security vulnerability detection
 - **Import Organization**: import-linter for dependency management
 
 **Development Commands:**
+
 ```bash
 # Run all quality checks
 uv run --directory mcp-servers poe check
@@ -168,7 +202,6 @@ uv run --directory mcp-servers poe format        # Code formatting
 uv run --directory mcp-servers poe lint          # Auto-fix linting issues
 ```
 
-
 ## End-to-End (E2E) Testing
 
 ### Running E2E Tests
@@ -181,9 +214,11 @@ Execute the end-to-end test suite to validate the complete agent workflow:
 ```
 
 **Prerequisites for E2E Tests:**
+
 - All services must be running (`tilt up`)
 
 **Test Coverage:**
+
 - Cross-selling strategy generation for customer `Anna Müller`
 - Agent-to-agent communication validation
 - OpenAI-compatible API endpoint functionality
@@ -191,7 +226,8 @@ Execute the end-to-end test suite to validate the complete agent workflow:
 
 ### Running RAGAS Evaluation TestWorkflows
 
-The project includes [TestKube](https://testkube.io/) TestWorkflows for automated RAGAS evaluation of agents. To run them manually:
+The project includes [TestKube](https://testkube.io/) TestWorkflows for automated RAGAS evaluation of agents. To run
+them manually:
 
 ```bash
 # Run the cross-selling agent evaluation
@@ -204,6 +240,7 @@ testkube run tw insurance-host-ragas-evaluation
 Results can be viewed in the **Workflow Evaluations Dashboard** in Grafana (http://localhost:11000).
 
 **Prerequisites:**
+
 - All agent services must be running (`tilt up`)
 - [TestKube CLI](https://docs.testkube.io/articles/install/cli) must be installed
 
@@ -212,17 +249,20 @@ Results can be viewed in the **Workflow Evaluations Dashboard** in Grafana (http
 ### Testing Framework
 
 **Primary Tool: Bash/cURL Integration Tests**
+
 - **Location**: `test/e2e/a2a-message.sh`
 - **Configuration**: Tests use OpenAI-compatible API endpoints
 - **Validation**: Response content matching using `grep` with German keywords
 
 **Example Test Configuration:**
+
 ```bash
 # API endpoint configuration
 API_ENDPOINT="http://localhost:11002/api/v1/chat/completions"
 MODEL_NAME="insurance_host_agent"
 TIMEOUT="90"  # seconds
 ```
+
 ```bash
 # Content validation patterns
 EXPECTED_PATTERNS="cust001\|cross.sell\|strategie\|kunde"
@@ -235,11 +275,15 @@ EXPECTED_PATTERNS="cust001\|cross.sell\|strategie\|kunde"
 The system includes mock customer data accessible through the Customer CRM MCP server:
 
 **Sample Customer Record (Anna Müller):**
+
 ```json
 {
   "customer_id": "cust001",
   "name": "Anna Müller",
-  "current_policies": ["auto_insurance", "home_insurance"],
+  "current_policies": [
+    "auto_insurance",
+    "home_insurance"
+  ],
   "demographics": {
     "age": 35,
     "location": "Munich",
@@ -249,6 +293,7 @@ The system includes mock customer data accessible through the Customer CRM MCP s
 ```
 
 **Sample API Request:**
+
 ```bash
 # Test cross-selling recommendation
 curl -X POST http://localhost:11002/insurance-host-agent \
@@ -276,7 +321,6 @@ curl -X POST http://localhost:11002/insurance-host-agent \
 
 **Database Seeding:**
 Customer and product data is automatically initialized when MCP servers start. No manual seeding required.
-
 
 ## Project Architecture
 
