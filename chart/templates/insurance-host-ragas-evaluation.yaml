@@ -16,8 +16,8 @@ spec:
             key: insurance-host-experiment.json
 
   container:
-    env:
     {{- with .Values.testbench.extraEnv }}
+    env:
       {{- toYaml . | nindent 6 }}
     {{- end }}
 

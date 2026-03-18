@@ -16,8 +16,8 @@ spec:
             key: cross-selling-experiment.json
 
   container:
-    env:
     {{- with .Values.testbench.extraEnv }}
+    env:
       {{- toYaml . | nindent 6 }}
     {{- end }}
 
