@@ -15,11 +15,11 @@ spec:
             name: datasets
             key: insurance-host-experiment.json
 
+  {{- with .Values.testbench.extraEnv }}
   container:
-    {{- with .Values.testbench.extraEnv }}
     env:
       {{- toYaml . | nindent 6 }}
-    {{- end }}
+  {{- end }}
 
   use:
     - name: run-template
