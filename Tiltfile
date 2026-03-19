@@ -19,11 +19,11 @@ cert_manager_install()
 
 v1alpha1.extension(name='agent-runtime', repo_name='agentic-layer', repo_path='agent-runtime')
 load('ext://agent-runtime', 'agent_runtime_install')
-agent_runtime_install(version='0.23.0')
+agent_runtime_install(version='0.24.0')
 
 v1alpha1.extension(name='ai-gateway-litellm', repo_name='agentic-layer', repo_path='ai-gateway-litellm')
 load('ext://ai-gateway-litellm', 'ai_gateway_litellm_install')
-ai_gateway_litellm_install(version='0.7.3', instance=False)
+ai_gateway_litellm_install(version='0.7.5', instance=False)
 
 v1alpha1.extension(name='agent-gateway-krakend', repo_name='agentic-layer', repo_path='agent-gateway-krakend')
 load('ext://agent-gateway-krakend', 'agent_gateway_krakend_install')
