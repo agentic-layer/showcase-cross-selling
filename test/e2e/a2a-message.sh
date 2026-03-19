@@ -29,12 +29,19 @@ EOF
 )
 
 AGENT_GATEWAY_URL="${AGENT_GATEWAY_URL:-http://localhost:11002}"
+AGENT_GATEWAY_API_KEY="${AGENT_GATEWAY_API_KEY:-}"
 
 # -s: silent mode (no progress meter)
 # -S: show error message even with -s
 # -f: fail silently (no HTML output on server errors like 404)
+AUTH_HEADER=()
+if [[ -n "${AGENT_GATEWAY_API_KEY}" ]]; then
+  AUTH_HEADER=(-H "Authorization: Bearer ${AGENT_GATEWAY_API_KEY}")
+fi
+
 CONVERSATION_RESPONSE=$(curl --max-time 90 --retry 5 --retry-connrefused -sfS -X POST "${AGENT_GATEWAY_URL}/insurance-host-agent" \
    -H "Content-Type: application/json" \
+   "${AUTH_HEADER[@]}" \
    -d "${request}")
 exit_code=$?
 
