@@ -6,6 +6,7 @@ metadata:
   labels:
     {{ include "showcase-cross-selling.labels" . | nindent 4 }}
 spec:
+  framework: google-adk
   description: "Handle communication to customers by drafting and sending professional emails"
   instruction: |-
     You send professional German emails to customers for SecureLife Insurance.
