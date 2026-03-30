@@ -6,7 +6,6 @@ metadata:
   labels:
     {{ include "showcase-cross-selling.labels" . | nindent 4 }}
 spec:
-  framework: google-adk
   description: "Insurance Cross-Selling Agent for SecureLife Insurance - Assists employees in identifying and recommending insurance products to customers based on CRM data and product analysis"
   instruction: |-
     You are the Cross-Selling Specialist for SecureLife Insurance.
