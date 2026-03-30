@@ -6,7 +6,7 @@
     {
       "customType": "regex",
       "managerFilePatterns": [
-        "/deploy/local/agent-runtime-config\.yaml$/"
+        "/deploy/local/agent-runtime-config\\.yaml$/"
       ],
       "matchStrings": [
         "\"(?<depName>ghcr\\.io\\/[^:]+):(?<currentValue>[^\"]+)\""
