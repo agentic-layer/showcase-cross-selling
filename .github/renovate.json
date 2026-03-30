@@ -1,5 +1,15 @@
 {
   "extends": [
     "github>agentic-layer/renovate-config"
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": ["deploy/local/agent-runtime-config\\.yaml$"],
+      "matchStrings": [
+        "\"(?<depName>ghcr\\.io\\/[^:]+):(?<currentValue>[^\"]+)\""
+      ],
+      "datasourceTemplate": "docker"
+    }
   ]
 }
