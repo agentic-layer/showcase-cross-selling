@@ -77,8 +77,17 @@ k8s_resource('cross-selling-agent', labels=['showcase'], resource_deps=['agent-r
 k8s_resource('insurance-host-agent', labels=['showcase'], resource_deps=['agent-runtime', 'communications-agent', 'cross-selling-agent'], port_forwards='11010:8000')
 k8s_resource('frontend', labels=['showcase'], resource_deps=['agent-gateway'], port_forwards='11013:80')
 
+# Presidio PII Guardrail
+k8s_resource('presidio', labels=['agentic-layer'])
+k8s_resource(
+    objects=['presidio:guardrailprovider', 'pii-guard:guard'],
+    new_name='presidio-guardrail',
+    labels=['agentic-layer'],
+    resource_deps=['agent-runtime', 'presidio']
+)
+
 # Agentic Layer Components
-k8s_resource('ai-gateway', labels=['agentic-layer'], resource_deps=['agent-runtime'], port_forwards=['11001:80'])
+k8s_resource('ai-gateway', labels=['agentic-layer'], resource_deps=['agent-runtime', 'presidio-guardrail'], port_forwards='11001:80')
 k8s_resource('agent-gateway', labels=['agentic-layer'], resource_deps=['agent-runtime'], port_forwards='11002:8080')
 k8s_resource('tool-gateway', labels=['agentic-layer'], resource_deps=['agent-runtime'], port_forwards='11005:80')
 k8s_resource('agent-runtime-configuration', labels=['agentic-layer'], resource_deps=['agent-runtime'])

@@ -3,6 +3,8 @@ kind: Kustomization
 resources:
   - agent-gateway.yaml
   - ai-gateway.yaml
+  - presidio.yaml
+  - guardrail-presidio.yaml
   - lgtm.yaml
   - lgtm-grafana-dashboard-config.yaml
   - tool-gateway.yaml
