@@ -30,7 +30,7 @@ spec:
   aiGatewayRef:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-  model: "gemini/gemini-2.5-flash-lite"
+  model: "gemini/gemini-3-flash-preview"
   tools:
     - name: customer-crm
       toolServerRef:
