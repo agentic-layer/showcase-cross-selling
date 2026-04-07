@@ -27,6 +27,10 @@ toolServers:
 agents:
   # Log level for agents
   logLevel: "DEBUG"
+  # Optional AI Gateway reference for all agents
+  # aiGatewayRef:
+  #   name: ai-gateway
+  #   namespace: ai-gateway
 
 # Frontend configuration
 frontend:
