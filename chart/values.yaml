@@ -41,13 +41,9 @@ frontend:
 testbench:
   # Whether to install testbench evaluations and experiments
   enabled: true
-  # Whether to install testbench triggers
-  triggersEnabled: true
-  # Extra environment variables applied to all testbench test workflows
-  # Example:
-  #  - name: OTEL_EXPORTER_OTLP_ENDPOINT
-  #    value: "http://lgtm.monitoring.svc.cluster.local:4318"
-  extraEnv: []
+  # OTLP endpoint URL for publishing experiment metrics
+  # Example: "http://lgtm.monitoring.svc.cluster.local:4318"
+  otlpEndpoint: ""
 
 # Extra environment variables applied to all agents and tool servers
 # Example:

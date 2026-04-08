@@ -1,0 +1,81 @@
+{{- if .Values.testbench.enabled }}
+apiVersion: testbench.agentic-layer.ai/v1alpha1
+kind: Experiment
+metadata:
+  name: insurance-host-experiment
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    {{ include "showcase-cross-selling.labels" . | nindent 4 }}
+spec:
+  agentRef:
+    name: insurance-host-agent
+    namespace: {{ .Values.namespace.name }}
+
+  {{- with .Values.testbench.otlpEndpoint }}
+  otlpEndpoint: {{ . | quote }}
+  {{- end }}
+
+  trigger:
+    enabled: true
+  schedule:
+    cron: "0 * * * *"
+
+  dataset:
+    inline:
+      llmAsAJudgeModel: "gemini-2.5-flash-lite"
+      defaultThreshold: 0.9
+      scenarios:
+        - name: "Kundengespräch vorbereiten"
+          steps:
+            - input: "Bereite mir ein Kundengespräch mit Anna Müller vor"
+              metrics:
+                - metricName: AgentGoalAccuracyWithoutReference
+        - name: "Cross-Selling Strategie mit Email"
+          steps:
+            - input: "Erstelle eine Cross-Selling Strategie für Thomas Schmidt"
+              metrics:
+                - metricName: AgentGoalAccuracyWithoutReference
+            - input: "Sende eine Email an den Kunden mit der Zusammenfassung"
+              metrics:
+                - metricName: AgentGoalAccuracyWithoutReference
+        - name: "Hausratversicherung empfehlen"
+          steps:
+            - input: "Welche Hausratversicherung empfiehlst du für Thomas Schmidt?"
+              metrics:
+                - metricName: AgentGoalAccuracyWithoutReference
+        - name: "Lebensversicherungen auflisten"
+          steps:
+            - input: "Welche Lebensversicherungen haben wir im Angebot?"
+              metrics:
+                - metricName: AgentGoalAccuracyWithoutReference
+        - name: "Alle Kunden anzeigen"
+          steps:
+            - input: "Zeige mir alle meine Kunden"
+              metrics:
+                - metricName: AgentGoalAccuracyWithoutReference
+        - name: "Strategie erstellen und Email senden"
+          steps:
+            - input: "Erstelle eine Strategie für Anna Müller und sende ihr eine Email mit den Empfehlungen"
+              metrics:
+                - metricName: AgentGoalAccuracyWithoutReference
+        - name: "Krankenversicherung Potenzial"
+          steps:
+            - input: "Welche Kunden haben das größte Potenzial für eine Krankenversicherung?"
+              metrics:
+                - metricName: AgentGoalAccuracyWithoutReference
+        - name: "Autoversicherung für Kunden"
+          steps:
+            - input: "Welche Autoversicherungen passen zu Thomas Schmidt?"
+              metrics:
+                - metricName: AgentGoalAccuracyWithoutReference
+        - name: "Terminbestätigung per Email"
+          steps:
+            - input: "Sende eine Email an Anna Müller mit einer Terminbestätigung für unser Gespräch nächste Woche"
+              metrics:
+                - metricName: AgentGoalAccuracyWithoutReference
+        - name: "Off-Topic Anfrage"
+          steps:
+            - input: "Kannst du mir ein gutes Rezept für Lasagne empfehlen?"
+              metrics:
+                - metricName: AgentGoalAccuracyWithoutReference
+{{- end }}

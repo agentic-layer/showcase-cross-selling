@@ -52,9 +52,7 @@ k8s_yaml(helm(
         'images.toolServers.insuranceProducts.tag=latest',
         'frontend.backendUrl=http://agent-gateway.agent-gateway',
         'testbench.enabled=' + ('true' if 'testbench' in profiles else 'false'),
-        'testbench.triggersEnabled=false',
-        'testbench.extraEnv[0].name=OTEL_EXPORTER_OTLP_ENDPOINT',
-        'testbench.extraEnv[0].value=http://lgtm.monitoring.svc.cluster.local:4318',
+        'testbench.otlpEndpoint=http://lgtm.monitoring.svc.cluster.local:4318',
         'extraEnv[0].name=OTEL_EXPORTER_OTLP_PROTOCOL',
         'extraEnv[0].value=http/protobuf',
         'extraEnv[1].name=OTEL_EXPORTER_OTLP_ENDPOINT',
@@ -122,16 +120,10 @@ k8s_resource('observability-dashboard', labels=['agentic-layer'], port_forwards=
 v1alpha1.extension(name='testbench', repo_name='agentic-layer', repo_path='testbench')
 load('ext://testbench', 'testbench_install')
 if 'testbench' in profiles:
-    testbench_install(version='0.5.0')
+    testbench_install(version='0.7.3', operator_version='0.7.3')
 
-    k8s_resource('insurance-host-ragas-evaluation', labels=['testing'], resource_deps=['testkube'])
-    k8s_resource('cross-selling-ragas-evaluation', labels=['testing'], resource_deps=['testkube'])
-    k8s_resource(
-        objects=['experiments:configmap:testkube'],
-        new_name='experiments',
-        labels=['testing'],
-        resource_deps=['testkube']
-    )
+    k8s_resource('insurance-host-experiment', labels=['testing'], resource_deps=['testbench', 'ai-gateway'])
+    k8s_resource('cross-selling-experiment', labels=['testing'], resource_deps=['testbench', 'ai-gateway'])
 
 # LibreChat
 v1alpha1.extension(name='librechat', repo_name='agentic-layer', repo_path='librechat')

@@ -1,0 +1,70 @@
+{{- if .Values.testbench.enabled }}
+apiVersion: testbench.agentic-layer.ai/v1alpha1
+kind: Experiment
+metadata:
+  name: cross-selling-experiment
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    {{ include "showcase-cross-selling.labels" . | nindent 4 }}
+spec:
+  agentRef:
+    name: cross-selling-agent
+    namespace: {{ .Values.namespace.name }}
+
+  {{- with .Values.testbench.otlpEndpoint }}
+  otlpEndpoint: {{ . | quote }}
+  {{- end }}
+
+  trigger:
+    enabled: true
+  schedule:
+    cron: "0 * * * *"
+
+  dataset:
+    inline:
+      llmAsAJudgeModel: "gemini-2.5-flash-lite"
+      defaultThreshold: 0.9
+      scenarios:
+        - name: "Kundengespräch vorbereiten"
+          steps:
+            - input: "Bereite mir ein Kundengespräch mit Anna Müller vor"
+              reference:
+                toolCalls:
+                  - name: search_customer_by_name
+                    args:
+                      name: "Anna Müller"
+                  - name: get_insurance_products
+                    args: {}
+              metrics:
+                - metricName: AgentGoalAccuracyWithoutReference
+                - metricName: ToolCallAccuracy
+                  parameters:
+                    strict_order: false
+        - name: "Cross-Selling Strategie erstellen"
+          steps:
+            - input: "Erstelle eine Cross-Selling Strategie für Thomas Schmidt"
+              reference:
+                toolCalls:
+                  - name: search_customer_by_name
+                    args:
+                      name: "Thomas Schmidt"
+                  - name: get_insurance_products
+                    args: {}
+              metrics:
+                - metricName: AgentGoalAccuracyWithoutReference
+                - metricName: ToolCallAccuracy
+                  parameters:
+                    strict_order: false
+        - name: "Versicherungsprodukte auflisten"
+          steps:
+            - input: "Welche Versicherungsprodukten bieten wir an?"
+              reference:
+                toolCalls:
+                  - name: get_insurance_products
+                    args: {}
+              metrics:
+                - metricName: AgentGoalAccuracyWithoutReference
+                - metricName: ToolCallAccuracy
+                  parameters:
+                    strict_order: false
+{{- end }}
