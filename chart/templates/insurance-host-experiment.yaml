@@ -11,9 +11,10 @@ spec:
     name: insurance-host-agent
     namespace: {{ .Values.namespace.name }}
 
-  {{- with .Values.testbench.otlpEndpoint }}
-  otlpEndpoint: {{ . | quote }}
-  {{- end }}
+  env:
+    {{- with .Values.extraEnv }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
 
   trigger:
     enabled: true

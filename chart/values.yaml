@@ -41,9 +41,6 @@ frontend:
 testbench:
   # Whether to install testbench evaluations and experiments
   enabled: true
-  # OTLP endpoint URL for publishing experiment metrics
-  # Example: "http://lgtm.monitoring.svc.cluster.local:4318"
-  otlpEndpoint: ""
 
 # Extra environment variables applied to all agents and tool servers
 # Example:
