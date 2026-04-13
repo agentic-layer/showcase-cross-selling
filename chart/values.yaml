@@ -41,6 +41,8 @@ frontend:
 testbench:
   # Whether to install testbench evaluations and experiments
   enabled: true
+  # Optional cron schedule for experiments (e.g., "0 * * * *")
+  # schedule:
 
 # Extra environment variables applied to all agents and tool servers
 # Example:

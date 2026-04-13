@@ -18,8 +18,10 @@ spec:
 
   trigger:
     enabled: true
+  {{- with .Values.testbench.schedule }}
   schedule:
-    cron: "0 * * * *"
+    cron: {{ . | quote }}
+  {{- end }}
 
   dataset:
     inline:
