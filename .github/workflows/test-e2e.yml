@@ -38,6 +38,7 @@ jobs:
           ./test/e2e/a2a-message.sh
 
       - name: Logs
+        if: always()
         run: |
           echo ""
           echo "Kubernetes Pod Statuses:"
