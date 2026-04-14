@@ -8,6 +8,8 @@ dependencies = [
     "opentelemetry-exporter-otlp-proto-http>=1.28.0",
     "opentelemetry-exporter-otlp-proto-grpc>=1.28.0",
     "opentelemetry-instrumentation-logging>=0.61b0",
+    "opentelemetry-instrumentation-starlette>=0.61b0",
+    "opentelemetry-instrumentation-httpx>=0.61b0",
 ]
 
 [dependency-groups]

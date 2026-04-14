@@ -5,8 +5,10 @@ import os
 
 from opentelemetry import _logs, metrics, trace
 from opentelemetry.exporter.otlp.proto.http.metric_exporter import OTLPMetricExporter
+from opentelemetry.instrumentation.httpx import HTTPXClientInstrumentor
 from opentelemetry.instrumentation.logging import LoggingInstrumentor
 from opentelemetry.instrumentation.logging.handler import LoggingHandler
+from opentelemetry.instrumentation.starlette import StarletteInstrumentor
 from opentelemetry.sdk._logs import LoggerProvider
 from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
 from opentelemetry.sdk.metrics import MeterProvider
@@ -37,6 +39,10 @@ def setup_otel() -> None:
 
         trace_provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporterHttp()))
     trace.set_tracer_provider(trace_provider)
+
+    # HTTP instrumentation - creates SERVER spans for incoming requests and CLIENT spans for outgoing requests
+    StarletteInstrumentor().instrument()
+    HTTPXClientInstrumentor().instrument()
 
     # Logs - inject trace context into log records and export logs via OTLP
     LoggingInstrumentor().instrument()
