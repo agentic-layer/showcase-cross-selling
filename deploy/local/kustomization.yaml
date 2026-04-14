@@ -6,6 +6,5 @@ resources:
   - presidio.yaml
   - guardrail-presidio.yaml
   - lgtm.yaml
-  - lgtm-grafana-dashboard-config.yaml
   - tool-gateway.yaml
   - agent-runtime-config.yaml
