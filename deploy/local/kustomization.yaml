@@ -8,3 +8,36 @@ resources:
   - lgtm.yaml
   - tool-gateway.yaml
   - agent-runtime-config.yaml
+configMapGenerator:
+  - name: grafana-dashboard-http
+    namespace: monitoring
+    files:
+      - grafana-dashboard-http.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      disableNameSuffixHash: true
+  - name: grafana-dashboard-litellm
+    namespace: monitoring
+    files:
+      - grafana-dashboard-litellm.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      disableNameSuffixHash: true
+  - name: grafana-dashboard-http-services
+    namespace: monitoring
+    files:
+      - grafana-dashboard-http-services.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      disableNameSuffixHash: true
+  - name: grafana-dashboard-agents
+    namespace: monitoring
+    files:
+      - grafana-dashboard-agents.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      disableNameSuffixHash: true
