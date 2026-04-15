@@ -15,8 +15,8 @@ images:
       repository: ghcr.io/agentic-layer/showcase-cross-selling-mcp-servers
       tag: latest
   frontend:
-    repository: ghcr.io/agentic-layer/showcase-cross-selling-page
-    tag: 0.2.4
+    repository: ghcr.io/agentic-layer/showcase-cross-selling-frontend
+    tag: latest
 
 # Image configurations
 toolServers:

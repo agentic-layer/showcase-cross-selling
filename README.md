@@ -325,7 +325,14 @@ Customer and product data is automatically initialized when MCP servers start. N
 ## Project Architecture
 
 ```
-mcp-servers/
+frontend/                   # React/TypeScript frontend application
+├── Dockerfile              # Multi-stage build (Node.js → Nginx)
+├── package.json            # Frontend dependencies
+├── vite.config.ts          # Vite build configuration
+├── nginx.conf.template     # Nginx reverse proxy config
+└── src/                    # React source code
+
+mcp-servers/                # Python MCP servers
 ├── Dockerfile              # Single image, server selected via CMD
 ├── pyproject.toml          # Unified Python project
 └── src/
