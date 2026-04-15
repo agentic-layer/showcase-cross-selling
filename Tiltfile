@@ -91,7 +91,7 @@ k8s_resource('tool-gateway', labels=['agentic-layer'], resource_deps=['agent-run
 k8s_resource('agent-runtime-configuration', labels=['agentic-layer'], resource_deps=['agent-runtime'])
 
 # Monitoring
-k8s_resource('lgtm', labels=['monitoring'], port_forwards=['11000:3000', '11100:9090'])
+k8s_resource('lgtm', labels=['monitoring'], port_forwards=['11000:3000', '11100:9090', '11101:3200', '11102:4040'])
 
 # Secrets for LLM API keys
 google_api_key = os.environ.get('GOOGLE_API_KEY', '')
