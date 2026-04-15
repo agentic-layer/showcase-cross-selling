@@ -1,8 +1,6 @@
 
 import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { ClaimsProvider } from '@/components/ClaimsProvider';
-import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
 import ChatInterface, { ChatInterfaceRef } from '@/components/ChatInterface';
 
@@ -23,7 +21,6 @@ const DashboardPage = () => {
   };
 
   return (
-    <ClaimsProvider>
       <div className="min-h-screen bg-background">
         {/* Add logout button to header */}
         <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
@@ -120,7 +117,6 @@ const DashboardPage = () => {
         </main>
         <Footer />
       </div>
-    </ClaimsProvider>
   );
 };
 
