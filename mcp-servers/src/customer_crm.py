@@ -132,16 +132,6 @@ def get_customer_crm_data(customer_id: str) -> dict:
 
 
 @mcp.tool()
-def get_all_customer_data() -> dict:
-    with tracer.start_as_current_span("customer_db.get_all_customers"):
-        customers = customer_db.get_all_customers()
-    return response.create_success_response(
-        "All Customer CRM data retrieved",
-        customer_data=customers,
-    )
-
-
-@mcp.tool()
 def search_customer_by_name(name: str) -> dict:
     """
     Searches for customers by name (case-insensitive, partial match).
