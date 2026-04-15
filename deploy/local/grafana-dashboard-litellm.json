@@ -724,7 +724,7 @@
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 26
+        "y": 33
       },
       "id": 20,
       "options": {
@@ -944,9 +944,9 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 12,
+        "w": 8,
         "x": 0,
-        "y": 33
+        "y": 26
       },
       "id": 23,
       "options": {
@@ -982,27 +982,70 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "Spend by model (USD)",
+      "description": "Total spend by model (USD) for the selected time range",
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
-          "custom": {
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            }
+          "mappings": [],
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 8,
+        "y": 33
+      },
+      "id": 24,
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "values": ["value", "percent"]
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": ["sum"],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(increase(litellm_spend_metric_total[$__range])) by (model)",
+          "legendFormat": "{{model}}",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Spend by Model",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "description": "Total spend (USD) across all models for the selected time range",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
           },
           "mappings": [],
-          "min": 0,
           "unit": "currencyUSD",
           "thresholds": {
             "mode": "absolute",
@@ -1018,22 +1061,22 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 12,
-        "x": 12,
+        "w": 8,
+        "x": 16,
         "y": 33
       },
-      "id": 24,
+      "id": 25,
       "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["sum"],
+          "fields": "",
+          "values": false
         },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
+        "textMode": "auto"
       },
       "targets": [
         {
@@ -1042,14 +1085,14 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "sum(rate(litellm_spend_metric_total[$__rate_interval])) by (model)",
-          "legendFormat": "{{model}}",
-          "range": true,
+          "expr": "sum(increase(litellm_spend_metric_total[$__range]))",
+          "legendFormat": "Total Spend",
+          "instant": true,
           "refId": "A"
         }
       ],
-      "title": "Spend by Model",
-      "type": "timeseries"
+      "title": "Total Spend",
+      "type": "stat"
     },
     {
       "collapsed": false,
@@ -1306,7 +1349,7 @@
         "y": 49
       },
       "id": 500,
-      "title": "By Team, Key & Client",
+      "title": "By Key & Client",
       "type": "row"
     },
     {
@@ -1314,7 +1357,7 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "Requests by team alias",
+      "description": "Requests by API key (hashed)",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1350,82 +1393,8 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 8,
+        "w": 12,
         "x": 0,
-        "y": 50
-      },
-      "id": 40,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(litellm_requests_metric_total[$__rate_interval])) by (team_alias)",
-          "legendFormat": "{{team_alias}}",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "Requests / sec by Team",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
-      "description": "Requests by API key alias",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "drawStyle": "line",
-            "fillOpacity": 20,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "normal"
-            }
-          },
-          "mappings": [],
-          "min": 0,
-          "unit": "reqps",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 8,
-        "x": 8,
         "y": 50
       },
       "id": 41,
@@ -1448,8 +1417,8 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "sum(rate(litellm_requests_metric_total[$__rate_interval])) by (api_key_alias)",
-          "legendFormat": "{{api_key_alias}}",
+          "expr": "sum(rate(litellm_requests_metric_total[$__rate_interval])) by (hashed_api_key)",
+          "legendFormat": "{{hashed_api_key}}",
           "range": true,
           "refId": "A"
         }
@@ -1498,8 +1467,8 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 8,
-        "x": 16,
+        "w": 12,
+        "x": 12,
         "y": 50
       },
       "id": 42,
@@ -1536,37 +1505,14 @@
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "Spend by team",
+      "description": "Total spend by API key (USD) for the selected time range",
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
-          "custom": {
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            }
-          },
           "mappings": [],
-          "min": 0,
-          "unit": "currencyUSD",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
+          "unit": "currencyUSD"
         },
         "overrides": []
       },
@@ -1579,13 +1525,19 @@
       "id": 43,
       "options": {
         "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "values": ["value", "percent"]
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": ["sum"],
+          "fields": "",
+          "values": false
         },
         "tooltip": {
-          "mode": "multi",
+          "mode": "single",
           "sort": "desc"
         }
       },
@@ -1596,51 +1548,28 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "sum(rate(litellm_spend_metric_total[$__rate_interval])) by (team_alias)",
-          "legendFormat": "{{team_alias}}",
-          "range": true,
+          "expr": "sum(increase(litellm_spend_metric_total[$__range])) by (hashed_api_key)",
+          "legendFormat": "{{hashed_api_key}}",
+          "instant": true,
           "refId": "A"
         }
       ],
-      "title": "Spend by Team",
-      "type": "timeseries"
+      "title": "Spend by API Key",
+      "type": "piechart"
     },
     {
       "datasource": {
         "type": "prometheus",
         "uid": "${datasource}"
       },
-      "description": "Spend by user agent",
+      "description": "Total spend by user agent (USD) for the selected time range",
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
-          "custom": {
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            }
-          },
           "mappings": [],
-          "min": 0,
-          "unit": "currencyUSD",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
+          "unit": "currencyUSD"
         },
         "overrides": []
       },
@@ -1653,13 +1582,19 @@
       "id": 44,
       "options": {
         "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "values": ["value", "percent"]
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": ["sum"],
+          "fields": "",
+          "values": false
         },
         "tooltip": {
-          "mode": "multi",
+          "mode": "single",
           "sort": "desc"
         }
       },
@@ -1670,14 +1605,14 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "sum(rate(litellm_spend_metric_total[$__rate_interval])) by (user_agent)",
+          "expr": "sum(increase(litellm_spend_metric_total[$__range])) by (user_agent)",
           "legendFormat": "{{user_agent}}",
-          "range": true,
+          "instant": true,
           "refId": "A"
         }
       ],
       "title": "Spend by User Agent",
-      "type": "timeseries"
+      "type": "piechart"
     },
     {
       "collapsed": false,
@@ -1939,7 +1874,7 @@
           },
           "editorMode": "code",
           "expr": "litellm_remaining_api_key_requests_for_model",
-          "legendFormat": "{{model}} ({{api_key_alias}})",
+          "legendFormat": "{{model}} ({{hashed_api_key}})",
           "range": true,
           "refId": "A"
         }
@@ -2013,7 +1948,7 @@
           },
           "editorMode": "code",
           "expr": "litellm_remaining_api_key_tokens_for_model",
-          "legendFormat": "{{model}} ({{api_key_alias}})",
+          "legendFormat": "{{model}} ({{hashed_api_key}})",
           "range": true,
           "refId": "A"
         }
