@@ -1,0 +1,1415 @@
+import React, { useState } from 'react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ChevronDown, ChevronRight } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+
+interface PersonalInfo {
+  name: string;
+  birth_date: string;
+  age: number;
+  address: string;
+  phone?: string;
+  email?: string;
+  occupation: string;
+  annual_income: number;
+  marital_status: string;
+  children?: number;
+  home_ownership: string;
+}
+
+interface Policy {
+  policy_id: string;
+  product_type: string;
+  premium_amount: number;
+  coverage_amount?: number;
+  start_date: string;
+  status?: string;
+  [key: string]: unknown;
+}
+
+interface CommunicationRecord {
+  date: string;
+  type: string;
+  subject: string;
+  notes: string;
+}
+
+interface Customer {
+  customer_id?: string;
+  personal_info: PersonalInfo;
+  existing_policies: Policy[];
+  communication_history?: CommunicationRecord[];
+  risk_profile: string;
+  customer_segment: string;
+  lifetime_value: number;
+}
+
+const customerData: Record<string, Customer> = {
+    "cust001": {
+        "customer_id": "cust001",
+        "personal_info": {
+            "name": "Anna Müller",
+            "birth_date": "1985-03-15",
+            "age": 39,
+            "address": "Hauptstraße 123, 10115 Berlin",
+            "phone": "+49 30 12345678",
+            "email": "anna.mueller@email.com",
+            "occupation": "Software Engineer",
+            "annual_income": 75000,
+            "marital_status": "married",
+            "children": 2,
+            "home_ownership": "owner",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL001",
+                "product_type": "Car Insurance",
+                "premium_amount": 85.30,
+                "coverage_amount": 50000,
+                "start_date": "2021-06-01",
+                "status": "active",
+                "vehicle": "BMW 3 Series, 2020",
+            }
+        ],
+        "communication_history": [
+            {
+                "date": "2024-01-15",
+                "type": "phone_call",
+                "subject": "Policy renewal inquiry",
+                "notes": "Customer asked about car insurance policy renewal and mentioned recently buying a house",
+            },
+            {
+                "date": "2023-12-20",
+                "type": "email",
+                "subject": "Claim status inquiry",
+                "notes": "Follow-up on minor car accident claim - settled successfully",
+            },
+            {
+                "date": "2023-11-28",
+                "type": "phone_call",
+                "subject": "Home insurance inquiry",
+                "notes": "Customer mentioned she already has home insurance with another provider when asked about our home insurance products",
+            },
+            {
+                "date": "2023-10-05",
+                "type": "phone_call",
+                "subject": "Life insurance inquiry",
+                "notes": "Customer expressed interest in life insurance after birth of second child but did not proceed",
+            },
+        ],
+        "risk_profile": "low",
+        "customer_segment": "premium",
+        "lifetime_value": 15000,
+    },
+    "cust002": {
+        "customer_id": "cust002",
+        "personal_info": {
+            "name": "Thomas Schmidt",
+            "birth_date": "1975-08-22",
+            "age": 49,
+            "address": "Lindenallee 45, 20099 Hamburg",
+            "phone": "+49 40 98765432",
+            "email": "thomas.schmidt@email.com",
+            "occupation": "Business Manager",
+            "annual_income": 95000,
+            "marital_status": "married",
+            "children": 1,
+            "home_ownership": "owner",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL003",
+                "product_type": "Life Insurance",
+                "premium_amount": 150.00,
+                "coverage_amount": 300000,
+                "start_date": "2019-03-10",
+                "status": "active",
+                "type": "term_life",
+            },
+            {
+                "policy_id": "POL004",
+                "product_type": "Home Insurance",
+                "premium_amount": 180.00,
+                "coverage_amount": 400000,
+                "start_date": "2020-07-15",
+                "status": "active",
+            },
+        ],
+        "communication_history": [
+            {
+                "date": "2024-02-10",
+                "type": "email",
+                "subject": "Policy review request",
+                "notes": "Customer requested annual policy review and asked about investment products",
+            },
+            {
+                "date": "2023-11-18",
+                "type": "phone_call",
+                "subject": "Claim notification",
+                "notes": "Minor home damage claim due to storm - processed quickly",
+            },
+        ],
+        "risk_profile": "low",
+        "customer_segment": "premium",
+        "lifetime_value": 25000,
+    },
+    "cust003": {
+        "customer_id": "cust003",
+        "personal_info": {
+            "name": "Lukas Weber",
+            "birth_date": "1993-05-20",
+            "age": 32,
+            "address": "Leopoldstr. 55, 80802 München",
+            "phone": "+49 89 23456789",
+            "email": "lukas.weber@email.com",
+            "occupation": "IT Consultant",
+            "annual_income": 85000,
+            "marital_status": "single",
+            "children": 0,
+            "home_ownership": "renter",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL005",
+                "product_type": "Personal Liability Insurance",
+                "premium_amount": 7.50,
+                "start_date": "2022-01-10",
+            },
+            {
+                "policy_id": "POL006",
+                "product_type": "Legal Protection Insurance",
+                "premium_amount": 25.00,
+                "start_date": "2022-01-10",
+            },
+            {
+                "policy_id": "POL007",
+                "product_type": "Personal Cyber Insurance",
+                "premium_amount": 12.00,
+                "start_date": "2023-08-01",
+            },
+        ],
+        "communication_history": [],
+        "risk_profile": "low",
+        "customer_segment": "young_professionals",
+        "lifetime_value": 8000,
+    },
+    "cust004": {
+        "customer_id": "cust004",
+        "personal_info": {
+            "name": "Sophie Becker",
+            "birth_date": "2004-02-12",
+            "age": 21,
+            "address": "Warschauer Str. 33, 10243 Berlin",
+            "phone": "+49 30 34567890",
+            "email": "sophie.becker@email.com",
+            "occupation": "Student",
+            "annual_income": 12000,
+            "marital_status": "single",
+            "children": 0,
+            "home_ownership": "renter",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL008",
+                "product_type": "Personal Liability Insurance",
+                "premium_amount": 5.00,
+                "start_date": "2023-10-01",
+            },
+            {
+                "policy_id": "POL009",
+                "product_type": "Rental Deposit Insurance",
+                "premium_amount": 8.00,
+                "start_date": "2023-10-01",
+            },
+        ],
+        "communication_history": [],
+        "risk_profile": "medium",
+        "customer_segment": "students",
+        "lifetime_value": 1500,
+    },
+    "cust005": {
+        "customer_id": "cust005",
+        "personal_info": {
+            "name": "Dr. Elias Roth",
+            "birth_date": "1980-11-30",
+            "age": 44,
+            "address": "Goetheplatz 2, 60313 Frankfurt",
+            "phone": "+49 69 45678901",
+            "email": "elias.roth@email.com",
+            "occupation": "Doctor",
+            "annual_income": 150000,
+            "marital_status": "married",
+            "children": 2,
+            "home_ownership": "owner",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL010",
+                "product_type": "Health Insurance",
+                "premium_amount": 550.00,
+                "start_date": "2010-04-15",
+            },
+            {
+                "policy_id": "POL011",
+                "product_type": "Business Insurance",
+                "premium_amount": 120.00,
+                "start_date": "2010-04-15",
+            },
+            {
+                "policy_id": "POL012",
+                "product_type": "Life Insurance",
+                "premium_amount": 200.00,
+                "coverage_amount": 750000,
+                "start_date": "2015-06-20",
+            },
+            {
+                "policy_id": "POL013",
+                "product_type": "Home Insurance",
+                "premium_amount": 250.00,
+                "start_date": "2018-09-01",
+            },
+            {
+                "policy_id": "POL014",
+                "product_type": "Valuables Insurance",
+                "premium_amount": 50.00,
+                "start_date": "2021-03-10",
+            },
+        ],
+        "communication_history": [],
+        "risk_profile": "low",
+        "customer_segment": "high_income",
+        "lifetime_value": 85000,
+    },
+    "cust006": {
+        "customer_id": "cust006",
+        "personal_info": {
+            "name": "Mia Wagner",
+            "birth_date": "1997-01-18",
+            "age": 28,
+            "address": "Schanzenstr. 8, 20357 Hamburg",
+            "phone": "+49 40 56789012",
+            "email": "mia.wagner@email.com",
+            "occupation": "Graphic Designer",
+            "annual_income": 48000,
+            "marital_status": "single",
+            "children": 0,
+            "home_ownership": "renter",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL015",
+                "product_type": "Pet Insurance",
+                "premium_amount": 45.00,
+                "start_date": "2022-07-22",
+            },
+            {
+                "policy_id": "POL016",
+                "product_type": "Personal Liability Insurance",
+                "premium_amount": 6.00,
+                "start_date": "2019-05-01",
+            },
+        ],
+        "communication_history": [],
+        "risk_profile": "low",
+        "customer_segment": "young_professionals",
+        "lifetime_value": 4500,
+    },
+    "cust007": {
+        "customer_id": "cust007",
+        "personal_info": {
+            "name": "Felix Hoffmann",
+            "birth_date": "1973-07-07",
+            "age": 52,
+            "address": "Venloer Str. 202, 50823 Köln",
+            "phone": "+49 221 67890123",
+            "email": "felix.hoffmann@email.com",
+            "occupation": "Craftsman",
+            "annual_income": 65000,
+            "marital_status": "married",
+            "children": 2,
+            "home_ownership": "owner",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL017",
+                "product_type": "Business Insurance",
+                "premium_amount": 80.00,
+                "start_date": "2005-01-15",
+            },
+            {
+                "policy_id": "POL018",
+                "product_type": "Health Insurance",
+                "premium_amount": 450.00,
+                "start_date": "2005-01-15",
+            },
+            {
+                "policy_id": "POL019",
+                "product_type": "Car Insurance",
+                "premium_amount": 55.00,
+                "start_date": "2010-03-12",
+            },
+        ],
+        "communication_history": [],
+        "risk_profile": "medium",
+        "customer_segment": "business_owners",
+        "lifetime_value": 35000,
+    },
+    "cust008": {
+        "customer_id": "cust008",
+        "personal_info": {
+            "name": "Lena Schulz",
+            "birth_date": "1957-09-01",
+            "age": 67,
+            "address": "Königsallee 100, 40215 Düsseldorf",
+            "phone": "+49 211 78901234",
+            "email": "lena.schulz@email.com",
+            "occupation": "Retiree",
+            "annual_income": 32000,
+            "marital_status": "widowed",
+            "children": 1,
+            "home_ownership": "owner",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL020",
+                "product_type": "Home Insurance",
+                "premium_amount": 110.00,
+                "start_date": "1995-12-01",
+            },
+            {
+                "policy_id": "POL021",
+                "product_type": "Personal Liability Insurance",
+                "premium_amount": 8.00,
+                "start_date": "1995-12-01",
+            },
+        ],
+        "communication_history": [],
+        "risk_profile": "low",
+        "customer_segment": "families",
+        "lifetime_value": 18000,
+    },
+    "cust009": {
+        "customer_id": "cust009",
+        "personal_info": {
+            "name": "Jonas Zimmermann",
+            "birth_date": "2000-03-25",
+            "age": 25,
+            "address": "Königstraße 1A, 70173 Stuttgart",
+            "phone": "+49 711 89012345",
+            "email": "jonas.zimmermann@email.com",
+            "occupation": "Mechanical Engineer",
+            "annual_income": 55000,
+            "marital_status": "single",
+            "children": 0,
+            "home_ownership": "renter",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL022",
+                "product_type": "Car Insurance",
+                "premium_amount": 70.00,
+                "start_date": "2023-09-01",
+            },
+            {
+                "policy_id": "POL023",
+                "product_type": "Personal Liability Insurance",
+                "premium_amount": 6.50,
+                "start_date": "2023-09-01",
+            },
+        ],
+        "communication_history": [],
+        "risk_profile": "medium",
+        "customer_segment": "young_professionals",
+        "lifetime_value": 5000,
+    },
+    "cust010": {
+        "customer_id": "cust010",
+        "personal_info": {
+            "name": "Hanna Köhler",
+            "birth_date": "1987-04-14",
+            "age": 38,
+            "address": "Karl-Liebknecht-Straße 13, 04107 Leipzig",
+            "phone": "+49 341 90123456",
+            "email": "hanna.koehler@email.com",
+            "occupation": "Teacher",
+            "annual_income": 58000,
+            "marital_status": "married",
+            "children": 1,
+            "home_ownership": "owner",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL024",
+                "product_type": "Life Insurance",
+                "premium_amount": 60.00,
+                "coverage_amount": 200000,
+                "start_date": "2019-11-01",
+            },
+            {
+                "policy_id": "POL025",
+                "product_type": "Personal Liability Insurance",
+                "premium_amount": 10.00,
+                "start_date": "2015-08-20",
+            },
+            {
+                "policy_id": "POL026",
+                "product_type": "Car Insurance",
+                "premium_amount": 45.00,
+                "start_date": "2017-06-15",
+            },
+        ],
+        "communication_history": [],
+        "risk_profile": "low",
+        "customer_segment": "families",
+        "lifetime_value": 12000,
+    },
+    "cust011": {
+        "customer_id": "cust011",
+        "personal_info": {
+            "name": "Leon Bauer",
+            "birth_date": "1984-01-10",
+            "age": 41,
+            "address": "Westenhellweg 5, 44137 Dortmund",
+            "phone": "+49 231 01234567",
+            "email": "leon.bauer@email.com",
+            "occupation": "Sales Manager",
+            "annual_income": 90000,
+            "marital_status": "divorced",
+            "children": 2,
+            "home_ownership": "renter",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL027",
+                "product_type": "Car Insurance",
+                "premium_amount": 90.00,
+                "start_date": "2020-02-02",
+            },
+            {
+                "policy_id": "POL028",
+                "product_type": "Legal Protection Insurance",
+                "premium_amount": 30.00,
+                "start_date": "2021-05-10",
+            },
+            {
+                "policy_id": "POL029",
+                "product_type": "Life Insurance",
+                "premium_amount": 110.00,
+                "coverage_amount": 250000,
+                "start_date": "2018-01-15",
+            },
+        ],
+        "communication_history": [],
+        "risk_profile": "medium",
+        "customer_segment": "premium",
+        "lifetime_value": 22000,
+    },
+    "cust012": {
+        "customer_id": "cust012",
+        "personal_info": {
+            "name": "Emilia Fuchs",
+            "birth_date": "1996-06-21",
+            "age": 29,
+            "address": "Rüttenscheider Str. 120, 45131 Essen",
+            "phone": "+49 201 12345678",
+            "email": "emilia.fuchs@email.com",
+            "occupation": "Social Worker",
+            "annual_income": 42000,
+            "marital_status": "single",
+            "children": 0,
+            "home_ownership": "renter",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL030",
+                "product_type": "Personal Liability Insurance",
+                "premium_amount": 5.50,
+                "start_date": "2018-09-01",
+            }
+        ],
+        "communication_history": [],
+        "risk_profile": "low",
+        "customer_segment": "standard",
+        "lifetime_value": 1000,
+    },
+    "cust013": {
+        "customer_id": "cust013",
+        "personal_info": {
+            "name": "Noah Meyer",
+            "birth_date": "1989-12-03",
+            "age": 35,
+            "address": "Schlachte 32, 28195 Bremen",
+            "phone": "+49 421 23456789",
+            "email": "noah.meyer@email.com",
+            "occupation": "Architect",
+            "annual_income": 72000,
+            "marital_status": "married",
+            "home_ownership": "owner",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL031",
+                "product_type": "Home Insurance",
+                "premium_amount": 190.00,
+                "start_date": "2022-01-20",
+            },
+            {
+                "policy_id": "POL032",
+                "product_type": "Disability Insurance",
+                "premium_amount": 80.00,
+                "start_date": "2020-03-01",
+            },
+        ],
+        "communication_history": [],
+        "risk_profile": "low",
+        "customer_segment": "families",
+        "lifetime_value": 19000,
+    },
+    "cust014": {
+        "customer_id": "cust014",
+        "personal_info": {
+            "name": "Laura Keller",
+            "birth_date": "2003-08-19",
+            "age": 21,
+            "address": "Prager Str. 15, 01069 Dresden",
+            "phone": "+49 351 34567890",
+            "email": "laura.keller@email.com",
+            "occupation": "Trainee",
+            "annual_income": 21000,
+            "marital_status": "single",
+            "children": 0,
+            "home_ownership": "renter",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL033",
+                "product_type": "Personal Liability Insurance",
+                "premium_amount": 5.00,
+                "start_date": "2023-08-01",
+            },
+            {
+                "policy_id": "POL034",
+                "product_type": "Motorcycle Insurance",
+                "premium_amount": 35.00,
+                "start_date": "2024-04-01",
+            },
+        ],
+        "communication_history": [],
+        "risk_profile": "high",
+        "customer_segment": "students",
+        "lifetime_value": 2500,
+    },
+    "cust015": {
+        "customer_id": "cust015",
+        "personal_info": {
+            "name": "Ben Richter",
+            "birth_date": "1977-10-05",
+            "age": 47,
+            "address": "Lister Meile 77, 30161 Hannover",
+            "phone": "+49 511 45678901",
+            "email": "ben.richter@email.com",
+            "occupation": "Police Officer",
+            "annual_income": 68000,
+            "marital_status": "married",
+            "children": 3,
+            "home_ownership": "owner",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL035",
+                "product_type": "Life Insurance",
+                "premium_amount": 95.00,
+                "coverage_amount": 350000,
+                "start_date": "2010-01-01",
+            },
+            {
+                "policy_id": "POL036",
+                "product_type": "Home Insurance",
+                "premium_amount": 150.00,
+                "start_date": "2012-07-15",
+            },
+            {
+                "policy_id": "POL037",
+                "product_type": "Legal Protection Insurance",
+                "premium_amount": 35.00,
+                "start_date": "2010-01-01",
+            },
+        ],
+        "communication_history": [],
+        "risk_profile": "low",
+        "customer_segment": "families",
+        "lifetime_value": 28000,
+    },
+    "cust016": {
+        "customer_id": "cust016",
+        "personal_info": {
+            "name": "Clara Wolf",
+            "birth_date": "1994-03-11",
+            "age": 31,
+            "address": "Karolinenstraße 1, 90402 Nürnberg",
+            "phone": "+49 911 56789012",
+            "email": "clara.wolf@email.com",
+            "occupation": "Marketing Manager",
+            "annual_income": 65000,
+            "marital_status": "single",
+            "children": 0,
+            "home_ownership": "renter",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL038",
+                "product_type": "Travel Insurance",
+                "premium_amount": 10.00,
+                "start_date": "2023-01-01",
+                "type": "annual",
+            },
+            {
+                "policy_id": "POL039",
+                "product_type": "Personal Cyber Insurance",
+                "premium_amount": 15.00,
+                "start_date": "2022-06-01",
+            },
+        ],
+        "communication_history": [],
+        "risk_profile": "low",
+        "customer_segment": "young_professionals",
+        "lifetime_value": 3000,
+    },
+    "cust017": {
+        "customer_id": "cust017",
+        "personal_info": {
+            "name": "Paul Neumann",
+            "birth_date": "1963-05-29",
+            "age": 62,
+            "address": "Königstraße 50, 47051 Duisburg",
+            "phone": "+49 203 67890123",
+            "email": "paul.neumann@email.com",
+            "occupation": "Early Retiree",
+            "annual_income": 45000,
+            "marital_status": "married",
+            "children": 2,
+            "home_ownership": "owner",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL040",
+                "product_type": "Home Insurance",
+                "premium_amount": 130.00,
+                "start_date": "2000-08-10",
+            },
+            {
+                "policy_id": "POL041",
+                "product_type": "Car Insurance",
+                "premium_amount": 40.00,
+                "start_date": "1998-05-20",
+            },
+        ],
+        "communication_history": [],
+        "risk_profile": "low",
+        "customer_segment": "families",
+        "lifetime_value": 20000,
+    },
+    "cust018": {
+        "customer_id": "cust018",
+        "personal_info": {
+            "name": "Marie Schwarz",
+            "birth_date": "1999-02-17",
+            "age": 26,
+            "address": "Kortumstraße 89, 44787 Bochum",
+            "phone": "+49 234 78901234",
+            "email": "marie.schwarz@email.com",
+            "occupation": "Nurse",
+            "annual_income": 45000,
+            "marital_status": "single",
+            "children": 0,
+            "home_ownership": "renter",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL042",
+                "product_type": "Personal Liability Insurance",
+                "premium_amount": 6.00,
+                "start_date": "2020-08-15",
+            },
+            {
+                "policy_id": "POL043",
+                "product_type": "Disability Insurance",
+                "premium_amount": 50.00,
+                "start_date": "2021-01-20",
+            },
+        ],
+        "communication_history": [],
+        "risk_profile": "medium",
+        "customer_segment": "professionals",
+        "lifetime_value": 6000,
+    },
+    "cust019": {
+        "customer_id": "cust019",
+        "personal_info": {
+            "name": "Finn Lange",
+            "birth_date": "1992-09-08",
+            "age": 32,
+            "address": "Friedrich-Ebert-Straße 10, 42103 Wuppertal",
+            "phone": "+49 202 89012345",
+            "email": "finn.lange@email.com",
+            "occupation": "Software Developer",
+            "annual_income": 78000,
+            "marital_status": "married",
+            "children": 1,
+            "home_ownership": "owner",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL044",
+                "product_type": "Home Insurance",
+                "premium_amount": 160.00,
+                "start_date": "2023-03-01",
+            },
+            {
+                "policy_id": "POL045",
+                "product_type": "Electronics Insurance",
+                "premium_amount": 20.00,
+                "start_date": "2023-03-01",
+            },
+            {
+                "policy_id": "POL046",
+                "product_type": "Life Insurance",
+                "premium_amount": 70.00,
+                "coverage_amount": 250000,
+                "start_date": "2022-10-01",
+            },
+        ],
+        "communication_history": [],
+        "risk_profile": "low",
+        "customer_segment": "families",
+        "lifetime_value": 15000,
+    },
+    "cust020": {
+        "customer_id": "cust020",
+        "personal_info": {
+            "name": "Lina Schreiber",
+            "birth_date": "1970-01-25",
+            "age": 55,
+            "address": "Jahnplatz 5, 33602 Bielefeld",
+            "phone": "+49 521 90123456",
+            "email": "lina.schreiber@email.com",
+            "occupation": "Civil Servant",
+            "annual_income": 62000,
+            "marital_status": "single",
+            "children": 0,
+            "home_ownership": "owner",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL047",
+                "product_type": "Health Insurance",
+                "premium_amount": 350.00,
+                "start_date": "2002-07-01",
+            },
+            {
+                "policy_id": "POL048",
+                "product_type": "Legal Protection Insurance",
+                "premium_amount": 20.00,
+                "start_date": "2015-01-01",
+            },
+        ],
+        "communication_history": [],
+        "risk_profile": "low",
+        "customer_segment": "professionals",
+        "lifetime_value": 40000,
+    },
+    "cust021": {
+        "customer_id": "cust021",
+        "personal_info": {
+            "name": "Moritz Haas",
+            "birth_date": "2001-04-12",
+            "age": 24,
+            "address": "Bertha-von-Suttner-Platz 1, 53111 Bonn",
+            "phone": "+49 228 01234567",
+            "email": "moritz.haas@email.com",
+            "occupation": "PhD Student",
+            "annual_income": 24000,
+            "marital_status": "single",
+            "children": 0,
+            "home_ownership": "renter",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL049",
+                "product_type": "Personal Liability Insurance",
+                "premium_amount": 5.50,
+                "start_date": "2022-10-01",
+            },
+            {
+                "policy_id": "POL050",
+                "product_type": "Rental Deposit Insurance",
+                "premium_amount": 7.00,
+                "start_date": "2022-10-01",
+            },
+        ],
+        "communication_history": [],
+        "risk_profile": "low",
+        "customer_segment": "students",
+        "lifetime_value": 1500,
+    },
+    "cust022": {
+        "customer_id": "cust022",
+        "personal_info": {
+            "name": "Ida Simon",
+            "birth_date": "1986-06-06",
+            "age": 39,
+            "address": "Prinzipalmarkt 10, 48143 Münster",
+            "phone": "+49 251 12345678",
+            "email": "ida.simon@email.com",
+            "occupation": "Freelance Journalist",
+            "annual_income": 55000,
+            "marital_status": "single",
+            "children": 0,
+            "home_ownership": "renter",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL051",
+                "product_type": "Business Insurance",
+                "premium_amount": 50.00,
+                "start_date": "2018-02-01",
+            },
+            {
+                "policy_id": "POL052",
+                "product_type": "Health Insurance",
+                "premium_amount": 400.00,
+                "start_date": "2018-02-01",
+            },
+            {
+                "policy_id": "POL053",
+                "product_type": "Travel Insurance",
+                "premium_amount": 12.00,
+                "start_date": "2018-02-01",
+                "type": "annual",
+            },
+        ],
+        "communication_history": [],
+        "risk_profile": "medium",
+        "customer_segment": "self_employed",
+        "lifetime_value": 30000,
+    },
+    "cust023": {
+        "customer_id": "cust023",
+        "personal_info": {
+            "name": "Anton Graf",
+            "birth_date": "1981-08-23",
+            "age": 43,
+            "address": "Kaiserstraße 140, 76133 Karlsruhe",
+            "phone": "+49 721 23456789",
+            "email": "anton.graf@email.com",
+            "occupation": "Bank Clerk",
+            "annual_income": 70000,
+            "marital_status": "married",
+            "children": 2,
+            "home_ownership": "owner",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL054",
+                "product_type": "Life Insurance",
+                "premium_amount": 85.00,
+                "coverage_amount": 300000,
+                "start_date": "2014-07-11",
+            },
+            {
+                "policy_id": "POL055",
+                "product_type": "Home Insurance",
+                "premium_amount": 140.00,
+                "start_date": "2016-09-01",
+            },
+        ],
+        "communication_history": [],
+        "risk_profile": "low",
+        "customer_segment": "families",
+        "lifetime_value": 25000,
+    },
+    "cust024": {
+        "customer_id": "cust024",
+        "personal_info": {
+            "name": "Johanna Franke",
+            "birth_date": "1997-03-02",
+            "age": 28,
+            "address": "Paradeplatz 1, 68161 Mannheim",
+            "phone": "+49 621 34567890",
+            "email": "johanna.franke@email.com",
+            "occupation": "HR Specialist",
+            "annual_income": 58000,
+            "marital_status": "single",
+            "children": 0,
+            "home_ownership": "renter",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL056",
+                "product_type": "Legal Protection Insurance",
+                "premium_amount": 22.00,
+                "start_date": "2022-11-10",
+            },
+            {
+                "policy_id": "POL057",
+                "product_type": "Personal Liability Insurance",
+                "premium_amount": 6.50,
+                "start_date": "2021-08-01",
+            },
+        ],
+        "communication_history": [],
+        "risk_profile": "low",
+        "customer_segment": "young_professionals",
+        "lifetime_value": 3500,
+    },
+    "cust025": {
+        "customer_id": "cust025",
+        "personal_info": {
+            "name": "Oskar Peters",
+            "birth_date": "1989-05-15",
+            "age": 36,
+            "address": "Maximilianstraße 2, 86150 Augsburg",
+            "phone": "+49 821 45678901",
+            "email": "oskar.peters@email.com",
+            "occupation": "Professional Musician",
+            "annual_income": 45000,
+            "marital_status": "single",
+            "children": 0,
+            "home_ownership": "renter",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL058",
+                "product_type": "Valuables Insurance",
+                "premium_amount": 30.00,
+                "start_date": "2019-01-20",
+                "item": "Cello",
+            },
+            {
+                "policy_id": "POL059",
+                "product_type": "Personal Liability Insurance",
+                "premium_amount": 7.00,
+                "start_date": "2019-01-20",
+            },
+        ],
+        "communication_history": [],
+        "risk_profile": "medium",
+        "customer_segment": "professionals",
+        "lifetime_value": 4000,
+    },
+    "cust026": {
+        "customer_id": "cust026",
+        "personal_info": {
+            "name": "Charlotte Gärtner",
+            "birth_date": "1966-07-07",
+            "age": 59,
+            "address": "Wilhelmstraße 40, 65183 Wiesbaden",
+            "phone": "+49 611 56789012",
+            "email": "charlotte.gaertner@email.com",
+            "occupation": "Librarian",
+            "annual_income": 53000,
+            "marital_status": "married",
+            "children": 1,
+            "home_ownership": "owner",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL060",
+                "product_type": "Home Insurance",
+                "premium_amount": 125.00,
+                "start_date": "2005-04-18",
+            },
+            {
+                "policy_id": "POL061",
+                "product_type": "Legal Protection Insurance",
+                "premium_amount": 25.00,
+                "start_date": "2010-06-01",
+            },
+        ],
+        "communication_history": [],
+        "risk_profile": "low",
+        "customer_segment": "families",
+        "lifetime_value": 21000,
+    },
+    "cust027": {
+        "customer_id": "cust027",
+        "personal_info": {
+            "name": "Jakob Seidel",
+            "birth_date": "1998-09-19",
+            "age": 26,
+            "address": "Bahnhofstraße 50, 45879 Gelsenkirchen",
+            "phone": "+49 209 67890123",
+            "email": "jakob.seidel@email.com",
+            "occupation": "Factory Worker",
+            "annual_income": 38000,
+            "marital_status": "single",
+            "children": 0,
+            "home_ownership": "renter",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL062",
+                "product_type": "Car Insurance",
+                "premium_amount": 88.00,
+                "start_date": "2020-10-10",
+            },
+            {
+                "policy_id": "POL063",
+                "product_type": "Personal Liability Insurance",
+                "premium_amount": 6.00,
+                "start_date": "2020-10-10",
+            },
+        ],
+        "communication_history": [],
+        "risk_profile": "medium",
+        "customer_segment": "standard",
+        "lifetime_value": 6000,
+    },
+    "cust028": {
+        "customer_id": "cust028",
+        "personal_info": {
+            "name": "Greta Sommer",
+            "birth_date": "1995-02-28",
+            "age": 30,
+            "address": "Hindenburgstraße 1, 41061 Mönchengladbach",
+            "phone": "+49 2161 78901234",
+            "email": "greta.sommer@email.com",
+            "occupation": "Retail Manager",
+            "annual_income": 52000,
+            "marital_status": "married",
+            "children": 1,
+            "home_ownership": "renter",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL064",
+                "product_type": "Pet Insurance",
+                "premium_amount": 25.00,
+                "start_date": "2023-01-15",
+                "pet": "Cat",
+            },
+            {
+                "policy_id": "POL065",
+                "product_type": "Life Insurance",
+                "premium_amount": 45.00,
+                "coverage_amount": 150000,
+                "start_date": "2022-08-01",
+            },
+        ],
+        "communication_history": [],
+        "risk_profile": "low",
+        "customer_segment": "families",
+        "lifetime_value": 9000,
+    },
+    "cust029": {
+        "customer_id": "cust029",
+        "personal_info": {
+            "name": "Theodor Winter",
+            "birth_date": "1953-11-11",
+            "age": 71,
+            "address": "Bohlweg 60, 38100 Braunschweig",
+            "phone": "+49 531 89012345",
+            "email": "theodor.winter@email.com",
+            "occupation": "Retiree",
+            "annual_income": 40000,
+            "marital_status": "married",
+            "children": 2,
+            "home_ownership": "owner",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL066",
+                "product_type": "Travel Insurance",
+                "premium_amount": 15.00,
+                "start_date": "2019-01-01",
+                "type": "annual",
+            },
+            {
+                "policy_id": "POL067",
+                "product_type": "Health Insurance",
+                "premium_amount": 600.00,
+                "start_date": "2018-11-01",
+            },
+        ],
+        "communication_history": [],
+        "risk_profile": "medium",
+        "customer_segment": "frequent_travelers",
+        "lifetime_value": 32000,
+    },
+    "cust030": {
+        "customer_id": "cust030",
+        "personal_info": {
+            "name": "Frieda Vogel",
+            "birth_date": "2005-01-05",
+            "age": 20,
+            "address": "Holtenauer Str. 100, 24105 Kiel",
+            "phone": "+49 431 90123456",
+            "email": "frieda.vogel@email.com",
+            "occupation": "University Student",
+            "annual_income": 10000,
+            "marital_status": "single",
+            "children": 0,
+            "home_ownership": "renter",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL068",
+                "product_type": "Electronics Insurance",
+                "premium_amount": 12.00,
+                "start_date": "2024-02-20",
+            },
+            {
+                "policy_id": "POL069",
+                "product_type": "Personal Liability Insurance",
+                "premium_amount": 5.00,
+                "start_date": "2023-09-30",
+            },
+        ],
+        "communication_history": [],
+        "risk_profile": "low",
+        "customer_segment": "students",
+        "lifetime_value": 1200,
+    },
+    "cust031": {
+        "customer_id": "cust031",
+        "personal_info": {
+            "name": "Karl Busch",
+            "birth_date": "1974-06-16",
+            "age": 51,
+            "address": "Straße der Nationen 25, 09111 Chemnitz",
+            "phone": "+49 371 01234567",
+            "email": "karl.busch@email.com",
+            "occupation": "Taxi Driver",
+            "annual_income": 40000,
+            "marital_status": "divorced",
+            "children": 1,
+            "home_ownership": "renter",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL070",
+                "product_type": "Business Insurance",
+                "premium_amount": 150.00,
+                "start_date": "2015-03-01",
+                "details": "Commercial Auto",
+            },
+            {
+                "policy_id": "POL071",
+                "product_type": "Health Insurance",
+                "premium_amount": 420.00,
+                "start_date": "2015-03-01",
+            },
+        ],
+        "communication_history": [],
+        "risk_profile": "high",
+        "customer_segment": "self_employed",
+        "lifetime_value": 28000,
+    },
+    "cust032": {
+        "customer_id": "cust032",
+        "personal_info": {
+            "name": "Emma Lorentz",
+            "birth_date": "1982-04-04",
+            "age": 43,
+            "address": "Marktplatz 5, 06108 Halle (Saale)",
+            "phone": "+49 345 12345678",
+            "email": "emma.lorentz@email.com",
+            "occupation": "Biologist",
+            "annual_income": 67000,
+            "marital_status": "married",
+            "children": 2,
+            "home_ownership": "owner",
+        },
+        "existing_policies": [
+            {
+                "policy_id": "POL072",
+                "product_type": "Life Insurance",
+                "premium_amount": 90.00,
+                "coverage_amount": 300000,
+                "start_date": "2013-08-15",
+            },
+            {
+                "policy_id": "POL073",
+                "product_type": "Home Insurance",
+                "premium_amount": 135.00,
+                "start_date": "2015-11-20",
+            },
+            {
+                "policy_id": "POL074",
+                "product_type": "Car Insurance",
+                "premium_amount": 50.00,
+                "start_date": "2016-01-10",
+            },
+        ],
+        "communication_history": [],
+        "risk_profile": "low",
+        "customer_segment": "families",
+        "lifetime_value": 26000,
+    },
+};
+
+const CustomerDataTable: React.FC = () => {
+  const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
+
+  const formatCurrency = (amount: number): string => {
+    return new Intl.NumberFormat('de-DE', {
+      style: 'currency',
+      currency: 'EUR',
+    }).format(amount);
+  };
+
+  const formatDate = (dateString: string): string => {
+    return new Date(dateString).toLocaleDateString('de-DE');
+  };
+
+  const getRiskProfileColor = (risk: string): string => {
+    switch (risk) {
+      case 'low':
+        return 'bg-green-100 text-green-800 hover:bg-green-100';
+      case 'medium':
+        return 'bg-yellow-100 text-yellow-800 hover:bg-yellow-100';
+      case 'high':
+        return 'bg-red-100 text-red-800 hover:bg-red-100';
+      default:
+        return 'bg-gray-100 text-gray-800 hover:bg-gray-100';
+    }
+  };
+
+  const toggleRow = (customerId: string) => {
+    const newExpanded = new Set(expandedRows);
+    if (newExpanded.has(customerId)) {
+      newExpanded.delete(customerId);
+    } else {
+      newExpanded.add(customerId);
+    }
+    setExpandedRows(newExpanded);
+  };
+
+  const customers = Object.entries(customerData);
+
+  return (
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle>Kundendaten</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[50px]"></TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Age</TableHead>
+                <TableHead>Occupation</TableHead>
+                <TableHead>Income</TableHead>
+                <TableHead>Risk Profile</TableHead>
+                <TableHead>Segment</TableHead>
+                <TableHead>Lifetime Value</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {customers.map(([customerId, customer]) => (
+                <React.Fragment key={customerId}>
+                  <TableRow
+                    className="cursor-pointer hover:bg-muted/50"
+                    onClick={() => toggleRow(customerId)}
+                  >
+                    <TableCell>
+                      {expandedRows.has(customerId) ? (
+                        <ChevronDown className="h-4 w-4" />
+                      ) : (
+                        <ChevronRight className="h-4 w-4" />
+                      )}
+                    </TableCell>
+                    <TableCell className="font-medium">{customer.personal_info.name}</TableCell>
+                    <TableCell>{customer.personal_info.age}</TableCell>
+                    <TableCell>{customer.personal_info.occupation}</TableCell>
+                    <TableCell>{formatCurrency(customer.personal_info.annual_income)}</TableCell>
+                    <TableCell>
+                      <Badge className={getRiskProfileColor(customer.risk_profile)}>
+                        {customer.risk_profile}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline">{customer.customer_segment}</Badge>
+                    </TableCell>
+                    <TableCell>{formatCurrency(customer.lifetime_value)}</TableCell>
+                  </TableRow>
+                  {expandedRows.has(customerId) && (
+                    <TableRow>
+                      <TableCell colSpan={8} className="p-0">
+                        <div className="p-6 bg-muted/20">
+                          <div className="grid gap-6 md:grid-cols-2">
+                            <div>
+                              <h4 className="font-semibold mb-3">Existing Policies</h4>
+                              <div className="space-y-2">
+                                {customer.existing_policies.map((policy) => (
+                                  <div key={policy.policy_id} className="p-3 bg-background rounded border">
+                                    <div className="flex justify-between items-start">
+                                      <div>
+                                        <p className="font-medium">{policy.product_type}</p>
+                                        <p className="text-sm text-muted-foreground">
+                                          Policy ID: {policy.policy_id}
+                                        </p>
+                                        <p className="text-sm text-muted-foreground">
+                                          Start: {formatDate(policy.start_date)}
+                                        </p>
+                                      </div>
+                                      <div className="text-right">
+                                        <p className="font-medium">{formatCurrency(policy.premium_amount)}/month</p>
+                                        {policy.coverage_amount && (
+                                          <p className="text-sm text-muted-foreground">
+                                            Coverage: {formatCurrency(policy.coverage_amount)}
+                                          </p>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                            <div>
+                              <h4 className="font-semibold mb-3">Communication History</h4>
+                              <div className="space-y-2">
+                                {customer.communication_history ? customer.communication_history.map((comm, index) => (
+                                  <div key={index} className="p-3 bg-background rounded border">
+                                    <div className="flex justify-between items-start mb-2">
+                                      <p className="font-medium">{comm.subject}</p>
+                                      <Badge variant="secondary" className="text-xs">
+                                        {comm.type.replace('_', ' ')}
+                                      </Badge>
+                                    </div>
+                                    <p className="text-sm text-muted-foreground mb-1">
+                                      {formatDate(comm.date)}
+                                    </p>
+                                    <p className="text-sm">{comm.notes}</p>
+                                  </div>
+                                )) : (
+                                  <p className="text-sm text-muted-foreground">No communication history available</p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </React.Fragment>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+export default CustomerDataTable;

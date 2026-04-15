@@ -50,6 +50,9 @@ k8s_yaml(helm(
         'images.toolServers.customerCrm.tag=latest',
         'images.toolServers.insuranceProducts.repository=mcp-servers',
         'images.toolServers.insuranceProducts.tag=latest',
+        # Override frontend image to use local Tilt build
+        'images.frontend.repository=frontend',
+        'images.frontend.tag=latest',
         'frontend.backendUrl=http://agent-gateway.agent-gateway',
         'testbench.enabled=' + ('true' if 'testbench' in profiles else 'false'),
         'testbench.otlpEndpoint=http://lgtm.monitoring.svc.cluster.local:4318',
@@ -65,6 +68,12 @@ k8s_yaml(helm(
 docker_build(
     'mcp-servers',
     context='./mcp-servers',
+)
+
+# Build frontend image
+docker_build(
+    'frontend',
+    context='./frontend',
 )
 k8s_resource('customer-crm', port_forwards='11020:8000', labels=['showcase'], resource_deps=['agent-runtime'])
 k8s_resource('insurance-products', port_forwards='11021:8000', labels=['showcase'], resource_deps=['agent-runtime'])
