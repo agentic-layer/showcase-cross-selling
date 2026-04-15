@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Send, Bot, User, Loader2 } from 'lucide-react';
+import Markdown from 'react-markdown';
 import { useToast } from '@/hooks/use-toast';
 
 interface Message {
@@ -152,7 +153,13 @@ const ChatInterface = forwardRef<ChatInterfaceRef>((props, ref) => {
                           ? 'bg-primary text-primary-foreground ml-auto max-w-full'
                           : 'bg-muted text-muted-foreground max-w-full'
                       }`}>
-                        <p className="whitespace-pre-wrap break-words overflow-wrap-anywhere">{message.content}</p>
+                        {message.role === 'assistant' ? (
+                          <div className="prose prose-sm prose-invert max-w-none break-words overflow-wrap-anywhere prose-p:my-1 prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5 prose-headings:my-2 prose-pre:my-2">
+                            <Markdown>{message.content}</Markdown>
+                          </div>
+                        ) : (
+                          <p className="whitespace-pre-wrap break-words overflow-wrap-anywhere">{message.content}</p>
+                        )}
                         <p className={`text-xs mt-1 opacity-70 ${
                           message.role === 'user' ? 'text-primary-foreground/70' : 'text-muted-foreground/70'
                         }`}>
