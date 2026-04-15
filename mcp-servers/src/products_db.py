@@ -1,7 +1,6 @@
 # cust001 & 002 use extended formatting - 003 to 032 have their formatting collapsed
 _mock_database = {
-    "life_insurance": {
-        "product_id": "LIFE001",
+    "LIFE001": {
         "type": "life insurance",
         "name": "SecureLife Premium",
         "description": "Comprehensive life insurance with flexible coverage options",
@@ -17,8 +16,7 @@ _mock_database = {
         ],
         "target_segments": ["families", "high_income", "business_owners"],
     },
-    "term_life_basic": {
-        "product_id": "LIFE002",
+    "LIFE002": {
         "type": "life insurance",
         "name": "StartLife Term",
         "description": "Affordable term life insurance designed for young professionals and first-time buyers",
@@ -34,8 +32,7 @@ _mock_database = {
         ],
         "target_segments": ["young_professionals", "students", "families"],
     },
-    "senior_life_insurance": {
-        "product_id": "LIFE003",
+    "LIFE003": {
         "type": "life insurance",
         "name": "GoldenYears Life Coverage",
         "description": "Simplified life insurance for seniors with guaranteed acceptance",
@@ -51,8 +48,7 @@ _mock_database = {
         ],
         "target_segments": ["seniors", "families"],
     },
-    "family_protection_life": {
-        "product_id": "LIFE004",
+    "LIFE004": {
         "type": "life insurance",
         "name": "FamilyFirst Protection Plan",
         "description": "Family-oriented life insurance covering both parents and children",
@@ -69,8 +65,7 @@ _mock_database = {
         ],
         "target_segments": ["families", "young_professionals"],
     },
-    "business_owner_life": {
-        "product_id": "LIFE005",
+    "LIFE005": {
         "type": "life insurance",
         "name": "KeyPerson Executive Life",
         "description": "Specialized life insurance for business owners with key person and buy-sell coverage",
@@ -87,8 +82,7 @@ _mock_database = {
         ],
         "target_segments": ["business_owners", "high_income", "professionals"],
     },
-    "health_insurance": {
-        "product_id": "HEALTH001",
+    "HEALTH001": {
         "type": "health insurance",
         "name": "HealthGuard Plus",
         "description": "Comprehensive health insurance with extensive coverage",
@@ -103,8 +97,7 @@ _mock_database = {
         ],
         "target_segments": ["families", "self_employed", "premium"],
     },
-    "health_basic_plan": {
-        "product_id": "HEALTH002",
+    "HEALTH002": {
         "type": "health insurance",
         "name": "HealthEssentials Basic",
         "description": "Budget-friendly health insurance with core coverage and higher deductibles",
@@ -119,8 +112,7 @@ _mock_database = {
         ],
         "target_segments": ["young_professionals", "students", "self_employed"],
     },
-    "health_premium_executive": {
-        "product_id": "HEALTH003",
+    "HEALTH003": {
         "type": "health insurance",
         "name": "HealthElite Executive",
         "description": "Premium health insurance with concierge medical services and worldwide coverage",
@@ -137,8 +129,7 @@ _mock_database = {
         ],
         "target_segments": ["high_income", "premium", "business_owners"],
     },
-    "health_senior_care": {
-        "product_id": "HEALTH004",
+    "HEALTH004": {
         "type": "health insurance",
         "name": "SeniorHealth Complete",
         "description": "Specialized health insurance for seniors with enhanced coverage for age-related conditions",
@@ -154,8 +145,7 @@ _mock_database = {
         ],
         "target_segments": ["seniors", "families", "premium"],
     },
-    "car_insurance": {
-        "product_id": "AUTO001",
+    "AUTO001": {
         "type": "auto insurance",
         "name": "DriveSecure Comprehensive",
         "description": "Full coverage auto insurance with competitive rates",
@@ -174,8 +164,7 @@ _mock_database = {
         "average_premium_range": {"min": 60, "max": 200},
         "target_segments": ["all_drivers", "families", "young_professionals"],
     },
-    "car_insurance_basic": {
-        "product_id": "AUTO002",
+    "AUTO002": {
         "type": "auto insurance",
         "name": "DriveSmart Basic",
         "description": "Affordable liability-only auto insurance for budget-conscious drivers",
@@ -188,8 +177,7 @@ _mock_database = {
         "average_premium_range": {"min": 35, "max": 90},
         "target_segments": ["students", "young_professionals", "budget_conscious"],
     },
-    "car_insurance_premium": {
-        "product_id": "AUTO003",
+    "AUTO003": {
         "type": "auto insurance",
         "name": "DriveElite Premium",
         "description": "Premium auto insurance with enhanced coverage and concierge services",
@@ -216,8 +204,7 @@ _mock_database = {
             "Personal concierge service",
         ],
     },
-    "home_insurance": {
-        "product_id": "HOME001",
+    "HOME001": {
         "type": "home insurance",
         "name": "HomeShield Complete",
         "description": "Comprehensive home insurance protecting property and belongings",
@@ -236,8 +223,7 @@ _mock_database = {
         "average_premium_range": {"min": 80, "max": 300},
         "target_segments": ["homeowners", "premium", "families"],
     },
-    "home_insurance_condo": {
-        "product_id": "HOME002",
+    "HOME002": {
         "type": "home insurance",
         "name": "CondoGuard Essentials",
         "description": "Specialized insurance for condominium and apartment owners",
@@ -257,8 +243,7 @@ _mock_database = {
             "Tenant discrimination coverage",
         ],
     },
-    "home_insurance_premium": {
-        "product_id": "HOME003",
+    "HOME003": {
         "type": "home insurance",
         "name": "EstateProtect Elite",
         "description": "Premium home insurance for high-value properties with enhanced coverage limits",
@@ -286,8 +271,7 @@ _mock_database = {
             "Concierge claims service",
         ],
     },
-    "travel_insurance": {
-        "product_id": "TRAVEL001",
+    "TRAVEL001": {
         "type": "travel insurance",
         "name": "TravelSafe International",
         "description": "Travel insurance for domestic and international trips",
@@ -301,8 +285,7 @@ _mock_database = {
         "trip_duration_max": 365,
         "target_segments": ["frequent_travelers", "families", "business_travelers"],
     },
-    "travel_insurance_basic": {
-        "product_id": "TRAVEL002",
+    "TRAVEL002": {
         "type": "travel insurance",
         "name": "TripGuard Basic",
         "description": "Affordable travel insurance for short domestic and European trips",
@@ -316,8 +299,7 @@ _mock_database = {
             "Coverage for COVID-19 related cancellations",
         ],
     },
-    "travel_insurance_annual": {
-        "product_id": "TRAVEL003",
+    "TRAVEL003": {
         "type": "travel insurance",
         "name": "GlobalExplorer Annual Plan",
         "description": "Comprehensive annual travel insurance for frequent travelers",
@@ -340,8 +322,7 @@ _mock_database = {
             "Business equipment protection",
         ],
     },
-    "disability_insurance": {
-        "product_id": "DISABILITY001",
+    "DISABILITY001": {
         "type": "disability insurance",
         "name": "IncomeProtect",
         "description": "Disability insurance to protect income in case of inability to work",
@@ -350,8 +331,7 @@ _mock_database = {
         "waiting_period_options": [30, 90, 180, 365],
         "target_segments": ["high_income", "professionals", "skilled_workers"],
     },
-    "disability_insurance_basic": {
-        "product_id": "DISABILITY002",
+    "DISABILITY002": {
         "type": "disability insurance",
         "name": "IncomeGuard Basic",
         "description": "Affordable disability insurance with essential income protection",
@@ -361,8 +341,7 @@ _mock_database = {
         "target_segments": ["young_professionals", "skilled_workers", "budget_conscious"],
         "features": ["Simplified underwriting", "Covers accidents and illness", "Optional partial disability rider"],
     },
-    "disability_insurance_executive": {
-        "product_id": "DISABILITY003",
+    "DISABILITY003": {
         "type": "disability insurance",
         "name": "ExecutiveIncome Elite",
         "description": "Premium disability insurance for high-income professionals and executives",
@@ -378,8 +357,7 @@ _mock_database = {
             "Student loan payment rider",
         ],
     },
-    "business_insurance": {
-        "product_id": "BUSINESS001",
+    "BUSINESS001": {
         "type": "business insurance",
         "name": "BusinessGuard Pro",
         "description": "Comprehensive business insurance for small to medium enterprises",
@@ -391,8 +369,7 @@ _mock_database = {
         ],
         "target_segments": ["business_owners", "self_employed", "professionals"],
     },
-    "business_insurance_startup": {
-        "product_id": "BUSINESS002",
+    "BUSINESS002": {
         "type": "business insurance",
         "name": "StartupShield Essentials",
         "description": "Affordable business insurance package for startups and freelancers",
@@ -406,8 +383,7 @@ _mock_database = {
             "Digital certificate issuance",
         ],
     },
-    "business_insurance_enterprise": {
-        "product_id": "BUSINESS003",
+    "BUSINESS003": {
         "type": "business insurance",
         "name": "EnterpriseProtect Complete",
         "description": "Comprehensive business insurance for established companies with complex needs",
@@ -431,8 +407,7 @@ _mock_database = {
         ],
     },
     # New Products
-    "personal_liability_insurance": {
-        "product_id": "LIABILITY001",
+    "LIABILITY001": {
         "type": "personal liability insurance",
         "name": "PrivatSchutz Sorglos",
         "description": "Essential personal liability insurance covering damages to third parties.",
@@ -442,8 +417,7 @@ _mock_database = {
         "features": ["Coverage for personal injury and property damage", "Loss of keys coverage", "Worldwide coverage"],
         "target_segments": ["all_drivers", "families", "young_professionals", "homeowners", "students"],
     },
-    "personal_liability_insurance_family": {
-        "product_id": "LIABILITY002",
+    "LIABILITY002": {
         "type": "personal liability insurance",
         "name": "FamilienSchutz Plus",
         "description": "Enhanced personal liability insurance for families with children",
@@ -460,8 +434,7 @@ _mock_database = {
         ],
         "target_segments": ["families", "homeowners"],
     },
-    "personal_liability_insurance_premium": {
-        "product_id": "LIABILITY003",
+    "LIABILITY003": {
         "type": "personal liability insurance",
         "name": "PremiumSchutz Excellence",
         "description": "Premium personal liability insurance with maximum coverage and additional benefits",
@@ -480,8 +453,7 @@ _mock_database = {
         ],
         "target_segments": ["high_income", "premium", "business_owners", "families"],
     },
-    "legal_protection_insurance": {
-        "product_id": "LEGAL001",
+    "LEGAL001": {
         "type": "legal protection insurance",
         "name": "RechtSicher Privat",
         "description": "Comprehensive legal protection for private, professional, and traffic-related disputes.",
@@ -490,8 +462,7 @@ _mock_database = {
         "features": ["Free initial legal consultation", "Mediation services", "Choice of own lawyer"],
         "target_segments": ["families", "professionals", "all_drivers", "homeowners"],
     },
-    "legal_protection_insurance_traffic": {
-        "product_id": "LEGAL002",
+    "LEGAL002": {
         "type": "legal protection insurance",
         "name": "VerkehrsRecht Mobil",
         "description": "Specialized legal protection focused on traffic and vehicle-related disputes",
@@ -505,8 +476,7 @@ _mock_database = {
         ],
         "target_segments": ["all_drivers", "young_professionals", "frequent_travelers"],
     },
-    "legal_protection_insurance_comprehensive": {
-        "product_id": "LEGAL003",
+    "LEGAL003": {
         "type": "legal protection insurance",
         "name": "RechtSchutz Total Premium",
         "description": "All-inclusive legal protection with extended coverage including internet and data privacy",
@@ -529,8 +499,7 @@ _mock_database = {
         ],
         "target_segments": ["high_income", "premium", "business_owners", "professionals"],
     },
-    "pet_insurance": {
-        "product_id": "PET001",
+    "PET001": {
         "type": "pet insurance",
         "name": "TierGesundheit Premium",
         "description": "Health insurance for your pets, covering vet bills for surgeries and treatments.",
@@ -540,8 +509,7 @@ _mock_database = {
         "features": ["Direct billing with vets", "Preventive care allowance", "Coverage for hereditary conditions"],
         "target_segments": ["families", "pet_owners"],
     },
-    "pet_insurance_basic": {
-        "product_id": "PET002",
+    "PET002": {
         "type": "pet insurance",
         "name": "TierSchutz OP",
         "description": "Affordable surgery-only pet insurance for unexpected medical emergencies",
@@ -556,8 +524,7 @@ _mock_database = {
         ],
         "target_segments": ["families", "pet_owners", "budget_conscious"],
     },
-    "pet_insurance_multi_pet": {
-        "product_id": "PET003",
+    "PET003": {
         "type": "pet insurance",
         "name": "TierFamilie Complete",
         "description": "Comprehensive multi-pet insurance with family discounts",
@@ -574,8 +541,7 @@ _mock_database = {
         ],
         "target_segments": ["families", "pet_owners", "premium"],
     },
-    "motorcycle_insurance": {
-        "product_id": "MOTO001",
+    "MOTO001": {
         "type": "motorcycle insurance",
         "name": "ZweiradSicher",
         "description": "Specialized insurance for motorcycles, scooters, and mopeds.",
@@ -584,8 +550,7 @@ _mock_database = {
         "average_premium_range": {"min": 20, "max": 150},
         "target_segments": ["all_drivers", "young_professionals"],
     },
-    "motorcycle_insurance_basic": {
-        "product_id": "MOTO002",
+    "MOTO002": {
         "type": "motorcycle insurance",
         "name": "ScooterStart Basic",
         "description": "Affordable liability-only insurance for scooters and small motorcycles under 125cc",
@@ -595,8 +560,7 @@ _mock_database = {
         "target_segments": ["students", "young_professionals", "budget_conscious"],
         "features": ["Quick online quote", "Monthly payment option", "Roadside assistance add-on available"],
     },
-    "motorcycle_insurance_premium": {
-        "product_id": "MOTO003",
+    "MOTO003": {
         "type": "motorcycle insurance",
         "name": "BikerElite Premium",
         "description": "Comprehensive insurance for high-value motorcycles with enhanced coverage",
@@ -617,8 +581,7 @@ _mock_database = {
             "Helmet and gear coverage",
         ],
     },
-    "electronics_insurance": {
-        "product_id": "ELEC001",
+    "ELEC001": {
         "type": "electronics insurance",
         "name": "GadgetGarant",
         "description": "Protection for your valuable electronics like smartphones, laptops, and cameras.",
@@ -627,8 +590,7 @@ _mock_database = {
         "premium_factors": ["Device value", "Coverage scope"],
         "target_segments": ["students", "young_professionals", "families", "frequent_travelers"],
     },
-    "electronics_insurance_smartphone": {
-        "product_id": "ELEC002",
+    "ELEC002": {
         "type": "electronics insurance",
         "name": "SmartphoneSchutz Direkt",
         "description": "Specialized insurance for smartphones with same-day repair service",
@@ -644,8 +606,7 @@ _mock_database = {
             "Worldwide coverage",
         ],
     },
-    "electronics_insurance_comprehensive": {
-        "product_id": "ELEC003",
+    "ELEC003": {
         "type": "electronics insurance",
         "name": "TechProtect Complete",
         "description": "Comprehensive insurance for all your electronics including home office equipment",
@@ -669,8 +630,7 @@ _mock_database = {
             "Cyber incident support",
         ],
     },
-    "valuables_insurance": {
-        "product_id": "VALUABLES001",
+    "VALUABLES001": {
         "type": "valuables insurance",
         "name": "WertgegenstandTresor",
         "description": "Specialized insurance for high-value items like jewelry, art, and musical instruments.",
@@ -679,8 +639,7 @@ _mock_database = {
         "features": ["Worldwide all-risk coverage", "No deductible option", "Coverage during transit"],
         "target_segments": ["high_income", "premium", "professionals"],
     },
-    "valuables_insurance_jewelry": {
-        "product_id": "VALUABLES002",
+    "VALUABLES002": {
         "type": "valuables insurance",
         "name": "SchmuckSchutz Premium",
         "description": "Dedicated jewelry and watch insurance with comprehensive protection",
@@ -696,8 +655,7 @@ _mock_database = {
         ],
         "target_segments": ["high_income", "premium", "jewelry_owners"],
     },
-    "valuables_insurance_collection": {
-        "product_id": "VALUABLES003",
+    "VALUABLES003": {
         "type": "valuables insurance",
         "name": "KollektionProtect Elite",
         "description": "Premium insurance for collectors including art, wine, coins, and memorabilia",
@@ -720,8 +678,7 @@ _mock_database = {
         ],
         "target_segments": ["high_income", "premium", "collectors", "investors"],
     },
-    "rental_deposit_insurance": {
-        "product_id": "RENTAL001",
+    "RENTAL001": {
         "type": "rental deposit insurance",
         "name": "Kautionsfrei Wohnen",
         "description": "An alternative to a cash rental deposit (Mietkaution), providing a guarantee to your landlord.",
@@ -730,8 +687,7 @@ _mock_database = {
         "features": ["Frees up cash", "Quick and easy online application", "Accepted by most landlords"],
         "target_segments": ["students", "young_professionals", "families"],
     },
-    "rental_deposit_insurance_student": {
-        "product_id": "RENTAL002",
+    "RENTAL002": {
         "type": "rental deposit insurance",
         "name": "StudentKaution Start",
         "description": "Affordable rental deposit guarantee designed specifically for students and apprentices",
@@ -746,8 +702,7 @@ _mock_database = {
         ],
         "target_segments": ["students", "apprentices"],
     },
-    "rental_deposit_insurance_family": {
-        "product_id": "RENTAL003",
+    "RENTAL003": {
         "type": "rental deposit insurance",
         "name": "FamilienKaution Plus",
         "description": "Premium rental deposit insurance for families with higher coverage limits and additional benefits",
@@ -762,8 +717,7 @@ _mock_database = {
         ],
         "target_segments": ["families", "high_income", "professionals"],
     },
-    "personal_cyber_insurance": {
-        "product_id": "CYBER001",
+    "CYBER001": {
         "type": "cyber insurance",
         "name": "CyberSafe Home",
         "description": "Protection against online risks such as identity theft, cyberbullying, and online shopping fraud.",
@@ -777,8 +731,7 @@ _mock_database = {
         "features": ["24/7 support hotline", "Psychological support after cyberbullying", "Proactive security advice"],
         "target_segments": ["families", "high_income", "professionals", "students"],
     },
-    "personal_cyber_insurance_basic": {
-        "product_id": "CYBER002",
+    "CYBER002": {
         "type": "cyber insurance",
         "name": "OnlineSchutz Basic",
         "description": "Essential cyber protection for individuals focusing on identity theft and online fraud",
@@ -792,8 +745,7 @@ _mock_database = {
         ],
         "target_segments": ["students", "young_professionals", "budget_conscious"],
     },
-    "personal_cyber_insurance_family": {
-        "product_id": "CYBER003",
+    "CYBER003": {
         "type": "cyber insurance",
         "name": "FamilyCyber Complete",
         "description": "Comprehensive family cyber insurance covering all household members and devices",

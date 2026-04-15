@@ -15,87 +15,63 @@ tracer = get_tracer(__name__)
 mcp: FastMCP = FastMCP("SecureLife Insurance Products", middleware=[middleware.OtelMetricsMiddleware()])
 
 
+def _summarize_product(product_id: str, product_data: dict) -> dict:
+    """Extract a slim product summary with only the essential fields."""
+    return {
+        "product_id": product_id,
+        "name": product_data.get("name"),
+        "type": product_data.get("type"),
+        "description": product_data.get("description"),
+        "target_segments": product_data.get("target_segments"),
+    }
+
+
 @mcp.tool()
 def get_insurance_products() -> dict:
     """
-    Retrieves all available insurance products from the product database.
+    Retrieves slim summaries of all available insurance products.
 
-    This tool fetches a comprehensive list of all insurance products offered,
-    including details about their features, pricing, and eligibility criteria.
-    It is the primary method for discovering what insurance options are available
-    to customers.
+    Returns product_id, name, type, description, and target_segments for each product.
+    Use get_product_details to get complete information about a specific product.
 
     Returns:
-        A dictionary containing the status of the operation and the retrieved products.
-        On success, the dictionary will have the following structure:
-        {
-            "status": "success",
-            "message": "Insurance products retrieved successfully",
-            "products": {
-                "life_insurance": {
-                    "product_id": "LIFE001",
-                    "name": "SecureLife Premium",
-                    "description": "Comprehensive life insurance with flexible coverage options",
-                    ...
-                },
-                "health_insurance": { ... },
-                ...
-            },
-            "product_count": 7
-        }
-        On failure, the dictionary might look like this:
-        {
-            "status": "error",
-            "error_message": "Failed to connect to the product database."
-        }
-
-    Usage Guidance:
-    This tool should be used when a user (an insurance broker) asks a general question about the types
-    of insurance available, such as "What insurance products do we offer?", "Can you tell
-    me about our products?", or "I'm looking for a specific insurance for a customer." It provides the
-    foundational information needed to answer broad queries and can be the first
-    step before using more specific tools to get quotes or filter products.
-
-
-    Error Handling:
-    If the tool returns a status of "error", inform the user that you are
-    currently unable to retrieve the product information and suggest they try
-    again later.
+        Dictionary with product summaries and product_count on success, or error details on failure.
     """
-    # For skeleton purposes, using comprehensive mock product data
     with tracer.start_as_current_span("products_db.get_all_products"):
         mock_products = products_db.get_all_products()
 
+    summaries = {key: _summarize_product(key, data) for key, data in mock_products.items()}
+
     return response.create_success_response(
         "Insurance products retrieved successfully",
-        products=mock_products,
-        product_count=len(mock_products),
+        products=summaries,
+        product_count=len(summaries),
     )
 
 
 @mcp.tool()
 def get_product_details(product_id: str) -> dict:
     """
-    Retrieves detailed information about a specific insurance product.
+    Retrieves complete information about a specific insurance product.
+
+    Use this tool to get full product details (pricing, features, eligibility, etc.)
+    after identifying a product via one of the list tools.
 
     Args:
         product_id: The ID of the insurance product to retrieve details for
 
     Returns:
-        Dictionary with detailed product information or error if not found.
+        Dictionary with complete product information or error if not found.
     """
-    # Get all products
-    with tracer.start_as_current_span("products_db.get_all_products", attributes={"product_id": product_id}):
-        products = products_db.get_all_products()
-
     # Find the specific product
-    for product_key, product_data in products.items():
-        if product_data["product_id"] == product_id:
-            return response.create_success_response(
-                f"Product details for {product_data['name']}",
-                product=product_data,
-                product_key=product_key,
-            )
+    with tracer.start_as_current_span("products_db.get_all_products", attributes={"product_id": product_id}):
+        product_data = products_db.get_all_products().get(product_id)
+    if product_data is not None:
+        return response.create_success_response(
+            f"Product details for {product_data['name']}",
+            product=product_data,
+            product_id=product_id,
+        )
 
     return response.create_error_response(
         f"Product with ID '{product_id}' not found",
@@ -107,13 +83,16 @@ def get_product_details(product_id: str) -> dict:
 @mcp.tool()
 def get_products_by_segment(segment: str) -> dict:
     """
-    Retrieves insurance products that target a specific customer segment.
+    Retrieves slim summaries of insurance products targeting a specific customer segment.
+
+    Returns product_id, name, type, description, and target_segments for each match.
+    Use get_product_details for complete information about a specific product.
 
     Args:
         segment: The customer segment to filter by (e.g., "families", "high_income", "business_owners")
 
     Returns:
-        Dictionary with products matching the specified segment.
+        Dictionary with product summaries matching the segment, or error if none found.
     """
     # Get all products
     with tracer.start_as_current_span("products_db.get_all_products", attributes={"segment": segment}):
@@ -121,9 +100,9 @@ def get_products_by_segment(segment: str) -> dict:
     matching_products = {}
 
     # Filter products by segment
-    for product_key, product_data in products.items():
+    for product_id, product_data in products.items():
         if "target_segments" in product_data and segment in product_data["target_segments"]:
-            matching_products[product_key] = product_data
+            matching_products[product_id] = _summarize_product(product_id, product_data)
 
     if not matching_products:
         return response.create_error_response(
@@ -143,52 +122,17 @@ def get_products_by_segment(segment: str) -> dict:
 @mcp.tool()
 def get_products_by_type(product_type: str) -> dict:
     """
-    Retrieves insurance products of a specific type.
+    Retrieves slim summaries of insurance products of a specific type.
 
-    This tool fetches all insurance products that match the specified product type,
-    such as "life insurance", "health insurance", or "auto insurance". It is useful
-    when an insurance broker needs to find all products within a specific insurance
-    category to present options to a customer.
+    Returns product_id, name, type, description, and target_segments for each match.
+    Use get_product_details for complete information about a specific product.
 
     Args:
         product_type: The product type to filter by (e.g., "life insurance", "health insurance",
                      "auto insurance", "home insurance", "travel insurance", etc.)
 
     Returns:
-        A dictionary containing the status of the operation and the retrieved products.
-        On success, the dictionary will have the following structure:
-        {
-            "status": "success",
-            "message": "Found N products for type 'life insurance'",
-            "products": {
-                "life_insurance": {
-                    "product_id": "LIFE001",
-                    "type": "life insurance",
-                    "name": "SecureLife Premium",
-                    ...
-                },
-                ...
-            },
-            "product_type": "life insurance",
-            "product_count": N
-        }
-        On error (no products found), the dictionary will look like this:
-        {
-            "status": "error",
-            "message": "No products found for type 'xyz'",
-            "error_code": "NO_PRODUCTS_FOR_TYPE",
-            "requested_type": "xyz"
-        }
-
-    Usage Guidance:
-    This tool should be used when a broker asks about products within a specific
-    insurance category, such as "What life insurance products do we offer?" or
-    "Show me all health insurance options." It provides a filtered view of the
-    product catalog based on insurance type.
-
-    Error Handling:
-    If the tool returns a status of "error", inform the user that no products
-    were found for the specified type and suggest alternative product types.
+        Dictionary with product summaries matching the type, or error if none found.
     """
     # Get all products
     with tracer.start_as_current_span("products_db.get_all_products", attributes={"product_type": product_type}):
@@ -196,9 +140,9 @@ def get_products_by_type(product_type: str) -> dict:
     matching_products = {}
 
     # Filter products by type
-    for product_key, product_data in products.items():
+    for product_id, product_data in products.items():
         if product_data.get("type") == product_type:
-            matching_products[product_key] = product_data
+            matching_products[product_id] = _summarize_product(product_id, product_data)
 
     if not matching_products:
         return response.create_error_response(
