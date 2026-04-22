@@ -52,13 +52,9 @@ In this showcase, a host agent uses tools and calls other agents to facilitate u
 
 The following tools and dependencies are required to run this project:
 
-- **Python 3.13+**: Required for all agent components and MCP servers
-- **Google Cloud SDK**: For ADK and Vertex AI integration
-- **uv 0.5.0+**: Python package manager for dependency management
-- **Tilt**: Kubernetes development environment orchestration
+- **[mise](https://mise.jdx.dev/)**: Dev tool manager — installs Python, uv, pre-commit, tilt
 - **Docker**: For containerization and local Kubernetes
-- **Google Cloud Account**: With access to Vertex AI or Google AI APIs
-- **Slack Bot Token** (optional): For communications agent integration
+- **Gemini API Key**
 
 ----
 
@@ -67,8 +63,8 @@ The following tools and dependencies are required to run this project:
 ### 1. Install Dependencies
 
 ```bash
-# Install system dependencies via Homebrew
-brew bundle
+# Install all development tools via mise (Python, uv, pre-commit, tilt, jq, helm, kustomize)
+mise install
 ```
 
 ```bash
