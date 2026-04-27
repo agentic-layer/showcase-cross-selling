@@ -10,13 +10,18 @@ This chart requires the following external resources to exist:
 1. Agentic Layer CRDs must be installed:
    - Agent (runtime.agentic-layer.ai/v1alpha1)
    - ToolServer (runtime.agentic-layer.ai/v1alpha1)
+   - ToolRoute (runtime.agentic-layer.ai/v1alpha1)
    - AgenticWorkforce (runtime.agentic-layer.ai/v1alpha1)
+
+2. A ToolGateway must be reachable. By default, ToolRoutes resolve the
+   default ToolGateway from the "tool-gateway" namespace. Override
+   `toolGateway.ref` in values.yaml to pin to a specific ToolGateway.
 
 Verify Installation:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Check that all resources are running:
 
-  kubectl get agents,toolservers,agenticworkforces,deployments,services -n {{ .Values.namespace }}
+  kubectl get agents,toolservers,toolroutes,agenticworkforces,deployments,services -n {{ .Values.namespace }}
 
 For more information:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

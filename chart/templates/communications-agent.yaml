@@ -33,8 +33,9 @@ spec:
   model: "gemini/gemini-3-flash-preview"
   tools:
     - name: customer-crm
-      toolServerRef:
-        name: customer-crm
+      upstream:
+        toolRouteRef:
+          name: customer-crm
   protocols:
     - type: A2A
       name: a2a-8000
