@@ -19,7 +19,7 @@ cert_manager_install()
 
 v1alpha1.extension(name='agent-runtime', repo_name='agentic-layer', repo_path='agent-runtime')
 load('ext://agent-runtime', 'agent_runtime_install')
-agent_runtime_install(version='0.27.1')
+agent_runtime_install(version='0.28.0-rc.2')
 
 v1alpha1.extension(name='ai-gateway-litellm', repo_name='agentic-layer', repo_path='ai-gateway-litellm')
 load('ext://ai-gateway-litellm', 'ai_gateway_litellm_install')
@@ -31,7 +31,7 @@ agent_gateway_krakend_install(version='0.6.6', instance=False)
 
 v1alpha1.extension(name='tool-gateway-agentgateway', repo_name='agentic-layer', repo_path='tool-gateway-agentgateway')
 load('ext://tool-gateway-agentgateway', 'tool_gateway_agentgateway_install')
-tool_gateway_agentgateway_install(version='0.2.4', instance=False)
+tool_gateway_agentgateway_install(version='0.3.0-rc.2', instance=False)
 
 # Apply local Kubernetes manifests
 k8s_yaml(kustomize('deploy/local'))
@@ -75,12 +75,14 @@ docker_build(
     'frontend',
     context='./frontend',
 )
-k8s_resource('customer-crm', port_forwards='11020:8000', labels=['showcase'], resource_deps=['agent-runtime'])
-k8s_resource('insurance-products', port_forwards='11021:8000', labels=['showcase'], resource_deps=['agent-runtime'])
+k8s_resource('customer-crm:toolserver', port_forwards='11020:8000', labels=['showcase'], resource_deps=['agent-runtime'])
+k8s_resource('customer-crm:toolroute', labels=['showcase'], resource_deps=['agent-runtime', 'customer-crm:toolserver'])
+k8s_resource('insurance-products:toolserver', port_forwards='11021:8000', labels=['showcase'], resource_deps=['agent-runtime'])
+k8s_resource('insurance-products:toolroute', labels=['showcase'], resource_deps=['agent-runtime', 'insurance-products:toolserver'])
 
 k8s_resource('cross-selling-workforce', labels=['showcase'], resource_deps=['agent-runtime'])
-k8s_resource('communications-agent', labels=['showcase'], resource_deps=['agent-runtime', 'customer-crm'], port_forwards='11011:8000')
-k8s_resource('cross-selling-agent', labels=['showcase'], resource_deps=['agent-runtime', 'customer-crm', 'insurance-products'], port_forwards='11012:8000')
+k8s_resource('communications-agent', labels=['showcase'], resource_deps=['agent-runtime', 'customer-crm:toolroute'], port_forwards='11011:8000')
+k8s_resource('cross-selling-agent', labels=['showcase'], resource_deps=['agent-runtime', 'customer-crm:toolroute', 'insurance-products:toolroute'], port_forwards='11012:8000')
 k8s_resource('insurance-host-agent', labels=['showcase'], resource_deps=['agent-runtime', 'communications-agent', 'cross-selling-agent'], port_forwards='11010:8000')
 k8s_resource('frontend', labels=['showcase'], resource_deps=['agent-gateway'], port_forwards='11013:80')
 

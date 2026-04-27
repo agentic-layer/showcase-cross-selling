@@ -21,3 +21,19 @@ spec:
   {{- with .Values.extraEnv }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
+---
+apiVersion: runtime.agentic-layer.ai/v1alpha1
+kind: ToolRoute
+metadata:
+  name: customer-crm
+  namespace: {{ $.Values.namespace.name }}
+  labels:
+    {{ include "showcase-cross-selling.labels" $ | nindent 4 }}
+spec:
+  {{- with .Values.toolGateway.ref }}
+  toolGatewayRef:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  upstream:
+    toolServerRef:
+      name: customer-crm
