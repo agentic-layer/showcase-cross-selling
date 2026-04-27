@@ -36,9 +36,10 @@ agents:
 # Leave ref empty to let the tool-gateway operator resolve the default ToolGateway
 # (a ToolGateway in the well-known "tool-gateway" namespace).
 # Override to pin to a specific ToolGateway, e.g.:
-#   ref:
-#     name: tool-gateway
-#     namespace: tool-gateway
+#   toolGateway:
+#     ref:
+#       name: tool-gateway
+#       namespace: tool-gateway
 toolGateway:
   ref: {}
 

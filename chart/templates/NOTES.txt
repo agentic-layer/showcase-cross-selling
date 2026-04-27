@@ -1,7 +1,7 @@
 Thank you for installing {{ .Chart.Name }}!
 
 Release: {{ .Release.Name }}
-Namespace: {{ .Values.namespace }}
+Namespace: {{ .Values.namespace.name }}
 
 IMPORTANT: External Dependencies
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -21,7 +21,7 @@ Verify Installation:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Check that all resources are running:
 
-  kubectl get agents,toolservers,toolroutes,agenticworkforces,deployments,services -n {{ .Values.namespace }}
+  kubectl get agents,toolservers,toolroutes,agenticworkforces,deployments,services -n {{ .Values.namespace.name }}
 
 For more information:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

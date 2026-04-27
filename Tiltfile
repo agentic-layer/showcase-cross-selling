@@ -76,13 +76,13 @@ docker_build(
     context='./frontend',
 )
 k8s_resource('customer-crm:toolserver', port_forwards='11020:8000', labels=['showcase'], resource_deps=['agent-runtime'])
-k8s_resource('customer-crm:toolroute', labels=['showcase'], resource_deps=['agent-runtime'])
+k8s_resource('customer-crm:toolroute', labels=['showcase'], resource_deps=['agent-runtime', 'customer-crm:toolserver'])
 k8s_resource('insurance-products:toolserver', port_forwards='11021:8000', labels=['showcase'], resource_deps=['agent-runtime'])
-k8s_resource('insurance-products:toolroute', labels=['showcase'], resource_deps=['agent-runtime'])
+k8s_resource('insurance-products:toolroute', labels=['showcase'], resource_deps=['agent-runtime', 'insurance-products:toolserver'])
 
 k8s_resource('cross-selling-workforce', labels=['showcase'], resource_deps=['agent-runtime'])
-k8s_resource('communications-agent', labels=['showcase'], resource_deps=['agent-runtime', 'customer-crm:toolserver'], port_forwards='11011:8000')
-k8s_resource('cross-selling-agent', labels=['showcase'], resource_deps=['agent-runtime', 'customer-crm:toolserver', 'insurance-products:toolserver'], port_forwards='11012:8000')
+k8s_resource('communications-agent', labels=['showcase'], resource_deps=['agent-runtime', 'customer-crm:toolroute'], port_forwards='11011:8000')
+k8s_resource('cross-selling-agent', labels=['showcase'], resource_deps=['agent-runtime', 'customer-crm:toolroute', 'insurance-products:toolroute'], port_forwards='11012:8000')
 k8s_resource('insurance-host-agent', labels=['showcase'], resource_deps=['agent-runtime', 'communications-agent', 'cross-selling-agent'], port_forwards='11010:8000')
 k8s_resource('frontend', labels=['showcase'], resource_deps=['agent-gateway'], port_forwards='11013:80')
 
