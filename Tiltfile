@@ -31,7 +31,7 @@ agent_gateway_krakend_install(version='0.6.7', instance=False)
 
 v1alpha1.extension(name='tool-gateway-agentgateway', repo_name='agentic-layer', repo_path='tool-gateway-agentgateway')
 load('ext://tool-gateway-agentgateway', 'tool_gateway_agentgateway_install')
-tool_gateway_agentgateway_install(version='0.3.0-rc.2', instance=False)
+tool_gateway_agentgateway_install(version='0.3.0', instance=False)
 
 # Apply local Kubernetes manifests
 k8s_yaml(kustomize('deploy/local'))
