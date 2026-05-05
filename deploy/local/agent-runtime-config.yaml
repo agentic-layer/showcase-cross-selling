@@ -7,4 +7,4 @@ spec:
   defaultFramework: msaf
   agentTemplateImages:
     googleAdk: "ghcr.io/agentic-layer/agent-template-adk:0.9.1"
-    msaf: "ghcr.io/agentic-layer/agent-template-msaf:0.2.2"
+    msaf: "ghcr.io/agentic-layer/agent-template-msaf:0.3.1"
