@@ -18,6 +18,7 @@ Further information about the Agentic Layer can be found in our [documentation](
 - [Getting Started](#getting-started)
 - [Development](#development)
 - [End-to-End (E2E) Testing](#end-to-end-e2e-testing)
+- [PII Guardrail Demo](#pii-guardrail-demo)
 - [Testing Tools and Their Configuration](#testing-tools-and-their-configuration)
 - [Sample Data](#sample-data)
 - [Project Architecture](#project-architecture)
@@ -239,6 +240,87 @@ Results can be viewed in the **Workflow Evaluations Dashboard** in Grafana (http
 
 - All agent services must be running (`tilt up`)
 - [TestKube CLI](https://docs.testkube.io/articles/install/cli) must be installed
+
+## PII Guardrail Demo
+
+The showcase enforces a PII guardrail at the AI Gateway using
+[Presidio](https://microsoft.github.io/presidio/). Customer emails and
+phone numbers are masked before they reach the LLM, while the broker's
+workflow continues to work end-to-end because the agents reference
+customers by `customer_id`, not by PII.
+
+The guardrail is configured in `deploy/local/guardrail-presidio.yaml`.
+
+### Run the Demo
+
+Start the stack with a chat UI — either the showcase frontend
+(default) or LibreChat:
+
+```bash
+# Option A: showcase frontend at http://localhost:11013
+tilt up
+
+# Option B: LibreChat at http://localhost:11003
+tilt up -- --profile librechat
+```
+
+Then open the chat UI and walk through the two scenarios below.
+They show different sides of the guardrail.
+
+#### Scenario 1: Workflow continues to work without PII
+
+Send these messages to the host agent in order:
+
+1. *Bitte bereite mir ein Kundengespräch mit der Kundin Anna Müller vor.*
+2. *Bitte verschicke eine E-Mail an die Kundin mit einer Agenda.*
+
+Expected: a German cross-selling strategy for Anna Müller, followed
+by a confirmation that the email was sent. The strategy contains no
+email address and no phone number — yet the email send still
+succeeds, because the `send_email` tool addresses the recipient by
+`customer_id`.
+
+#### Scenario 2: Agent refuses direct PII requests
+
+In a fresh conversation, ask the host agent directly for a customer's
+contact data:
+
+> Wie lautet die Email-Adresse von Anna Müller?
+
+Expected: the agent refuses in German, explains that contact data is
+private, and offers to send an email on the broker's behalf — for
+example: *"Die E-Mail-Adresse von Anna Müller unterliegt dem
+Datenschutz und kann daher nicht an Sie weitergegeben werden. Gerne
+kann ich jedoch eine E-Mail in Ihrem Namen verfassen…"*.
+
+This behaviour is enforced by the `# PII Protection` rules in the
+`insurance-host-agent` and `cross-selling-agent` instructions
+(`chart/templates/*.yaml`). Without them, the LLM would only see a
+`<EMAIL_ADDRESS>` placeholder where the real email used to be and
+would tend to fabricate a plausible-looking address to fill the
+gap. The prompt rules teach the agent to recognise the masked state
+and decline instead.
+
+### Verify Masking Happened
+
+Inspect the Presidio pod logs for masked tokens in the anonymizer
+payload:
+
+```bash
+kubectl -n ai-gateway logs deploy/presidio | grep -E '<EMAIL_ADDRESS>|<PHONE_NUMBER>'
+```
+
+Or open Grafana at http://localhost:11000 and find the Presidio
+analyze/anonymize span on the request trace.
+
+### Why This Matters
+
+The mock `send_email(customer_id, subject, body)` does not need an email
+address — the system maps `customer_id` to the recipient downstream.
+The cross-selling LLM call only needs the customer's profile signals
+(age, occupation, family situation, existing policies) to recommend
+products. PII is therefore unnecessary in the LLM context, and the
+guardrail enforces that.
 
 ## Testing Tools and Their Configuration
 

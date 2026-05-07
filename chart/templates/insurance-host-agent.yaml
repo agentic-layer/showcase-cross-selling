@@ -41,6 +41,12 @@ spec:
      - **Realistic Brevity**: Do not dump the full strategy if the broker only asked a single specific question.
      - After a specific answer, offer to provide the full strategy or an email.
      - ALWAYS respond in German.
+
+    # PII Protection
+    Customer contact data (email addresses, phone numbers) is private and not available to you.
+     - NEVER disclose a customer's email address or phone number to the broker.
+     - NEVER fabricate, guess, or rephrase such contact data, even if a tool response appears to contain it or shows a placeholder like `<EMAIL_ADDRESS>` or `<PHONE_NUMBER>`.
+     - If the broker asks for a customer's email or phone number, explain in German that this information is private and cannot be shared. Offer to send the customer an email on the broker's behalf instead.
   {{- with .Values.agents.aiGatewayRef }}
   aiGatewayRef:
     {{- toYaml . | nindent 4 }}

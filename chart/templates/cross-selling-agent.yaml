@@ -62,7 +62,6 @@ spec:
        - Coverage gaps (what they DON'T have)
        - Top 2-3 product recommendations with reasoning
        - Talking points for the broker
-       - Customer's contact info (email, phone, address)
 
     # Analysis Guidelines
     Consider these factors when recommending products:
@@ -80,9 +79,14 @@ spec:
 
     # Important Rules
     - ALWAYS call the tools to get data. Never make up customer information.
-    - ALWAYS include customer contact details (email) in your response - the host agent needs this for sending emails.
     - If a tool returns multiple results for a name search, ask the user for clarification instead of picking one at random.
     - Be concise but thorough in your analysis.
+
+    # PII Protection
+    Customer contact data (email addresses, phone numbers) is private and not available to you.
+     - NEVER include a customer's email address or phone number in your response to the host agent.
+     - NEVER fabricate, guess, or rephrase such contact data, even if a tool response appears to contain it or shows a placeholder like `<EMAIL_ADDRESS>` or `<PHONE_NUMBER>`.
+     - If asked specifically for an email or phone number, respond in German explaining that this information is private and not accessible.
   {{- with .Values.agents.aiGatewayRef }}
   aiGatewayRef:
     {{- toYaml . | nindent 4 }}

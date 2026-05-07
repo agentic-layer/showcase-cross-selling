@@ -21,6 +21,7 @@ metadata:
 spec:
   mode:
     - pre_call
+    - post_call
   description: Detect and mask PII in user inputs before they are sent to the LLM.
   providerRef:
     name: presidio
@@ -29,8 +30,18 @@ spec:
     language: "de"
     scoreThresholds:
       ALL: "0.7"
+      # PhoneRecognizer scores German numbers around 0.4 in JSON-value context
+      # (e.g. "phone":"+49 30 12345678"). The global 0.7 threshold filters
+      # those out, so we lower it for PHONE_NUMBER specifically.
+      PHONE_NUMBER: "0.4"
     # Per-entity actions: "MASK" redacts the entity, "BLOCK" rejects the request.
     # The keys also determine which entity types are detected.
+    # LOCATION is intentionally omitted: Presidio's German SpacyRecognizer
+    # produces severe false positives on prompt content (e.g. masks the word
+    # "German" in 'ALWAYS respond in German') without reliably catching full
+    # street addresses. Address masking would require a custom recognizer in
+    # the upstream Presidio image and is deferred as a follow-up.
     entityActions:
       EMAIL_ADDRESS: "MASK"
+      PHONE_NUMBER: "MASK"
       CREDIT_CARD: "BLOCK"
