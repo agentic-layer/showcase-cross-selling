@@ -31,9 +31,11 @@ jobs:
         run: tilt ci --timeout=30m
 
       - name: Verify Deployment
-        run: |
-          kubectl port-forward service/agent-gateway -n agent-gateway 11002:80 &
-          ./test/e2e/a2a-message.sh
+        env:
+          OPENAI_API_KEY: "no"
+          OPENAI_BASE_URL: "http://localhost:11001"
+          OTEL_EXPORTER_OTLP_ENDPOINT: "http://localhost:4318"
+        run: uvx --from agentic-layer-testbench==0.9.2 testworkflow .github/workflows/experiment/config.yaml
 
       - name: Logs
         if: always()

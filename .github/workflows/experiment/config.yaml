@@ -1,0 +1,12 @@
+dataset:
+   source: file
+   path: "./.github/workflows/experiment/insurance-host-agent.json"
+
+agent:
+  url: "http://localhost:11010"
+
+evaluate:
+  fail_on_metric_failure: true
+
+experiment:
+  name: "insurance-host-agent-evaluation"
