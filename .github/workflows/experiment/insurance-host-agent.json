@@ -1,0 +1,69 @@
+{
+  "llm_as_a_judge_model": "gemini-3-flash-preview",
+  "default_threshold": 0.9,
+  "scenarios": [
+    {
+      "name": "Cross-Selling Strategie mit Email",
+      "steps": [
+        {
+          "input": "Erstelle eine Cross-Selling Strategie für Thomas Schmidt",
+          "metrics": [
+            {
+              "metric_name": "AgentGoalAccuracyWithoutReference"
+            }
+          ]
+        },
+        {
+          "input": "Sende eine Email an den Kunden mit der Zusammenfassung",
+          "metrics": [
+            {
+              "metric_name": "AgentGoalAccuracyWithoutReference"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Hausratversicherung empfehlen",
+      "steps": [
+        {
+          "input": "Welche Hausratversicherung empfiehlst du für Thomas Schmidt?",
+          "metrics": [
+            {
+              "metric_name": "AgentGoalAccuracyWithoutReference"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Lebensversicherungen auflisten",
+      "steps": [
+        {
+          "input": "Welche Lebensversicherungen haben wir im Angebot?",
+          "metrics": [
+            {
+              "metric_name": "AgentGoalAccuracyWithoutReference"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Off-Topic Anfrage",
+      "steps": [
+        {
+          "input": "Kannst du mir ein gutes Rezept für Lasagne empfehlen?",
+          "reference": {
+            "response": "Der Agent lehnt die Anfrage höflich ab, da Kochrezepte nicht zu seinem Aufgabenbereich als Versicherungsassistent gehören, und bietet stattdessen Unterstützung bei versicherungsbezogenen Themen an."
+          },
+          "metrics": [
+            {
+              "metric_name": "AgentGoalAccuracyWithReference"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
