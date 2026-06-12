@@ -131,7 +131,7 @@ k8s_resource('observability-dashboard', labels=['agentic-layer'], port_forwards=
 v1alpha1.extension(name='testbench', repo_name='agentic-layer', repo_path='testbench')
 load('ext://testbench', 'testbench_install')
 if 'testbench' in profiles:
-    testbench_install(version='0.9.1')
+    testbench_install(version='0.10.0')
 
     k8s_resource('insurance-host-experiment', labels=['showcase'], resource_deps=['testbench', 'ai-gateway'])
     k8s_resource('cross-selling-experiment', labels=['showcase'], resource_deps=['testbench', 'ai-gateway'])
