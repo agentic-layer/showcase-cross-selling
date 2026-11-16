@@ -2,4 +2,4 @@
 python = "3.14"
 uv = "0.13.8"
 pre-commit = "4.6.0"
-tilt = "0.37.3"
+tilt = "0.37.9"
